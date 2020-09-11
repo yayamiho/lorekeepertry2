@@ -180,6 +180,11 @@ main > .row {
 @media (max-width: 767px) {
 	.site-mobile-header {
 		top: 54px !important;
+    }
+    
+    .timestamp {
+		margin-left: 1rem!important;
+		margin-right: 1rem!important;
 	}
 }
 
@@ -257,11 +262,6 @@ main > .row {
     
 	.site-footer .navbar .navbar-nav {
 		flex-wrap: wrap; justify-content: center;
-	}
-	
-	.timestamp {
-		margin-left: 1rem!important;
-		margin-right: 1rem!important;
 	}
 }
 
@@ -390,6 +390,10 @@ main > .row {
     overflow-wrap: break-word;
     word-break: break-word;
 }
+.small-icon {
+    height: 2rem;
+    padding-right: .5rem;
+}
 
 /* NOTIFICATIONS *********************************************************************************/
 
@@ -477,6 +481,10 @@ tr.outflow {
     color: inherit;
     text-decoration: none;
 }
+tr.accountbound {
+    background-color: rgba(0,0,0,0.05);
+    border-radius: .25rem;
+}
 
 /* CHARACTERS ************************************************************************************/
 
@@ -544,6 +552,9 @@ tr.outflow {
 .user-items .category-selected .inventory-item, .user-characters .category-selected .character-item {
     background-color: rgba(0,0,0,0.05);
     border-radius: .25rem;
+}
+.user-items .category-selected.select-item-row {
+    background-color: rgba(0,0,0,0.05);
 }
 
 /* SHOPS *****************************************************************************************/
