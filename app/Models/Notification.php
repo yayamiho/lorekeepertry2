@@ -141,4 +141,11 @@ class Notification extends Model
     const BOOKMARK_OWNER                  = 36;
     const BOOKMARK_IMAGE                  = 37;
     const CHARACTER_TRANSFER_ACCEPTABLE   = 38;
+    
+    const AWARD_GRANT                     = 341;
+    const AWARD_REMOVAL                   = 342;
+    const AWARD_TRANSFER                  = 343;
+    const FORCED_AWARD_TRANSFER           = 344;
+    const CHARACTER_AWARD_GRANT           = 345;
+    const CHARACTER_AWARD_REMOVAL         = 346;
 }

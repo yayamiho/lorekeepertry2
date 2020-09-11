@@ -12,10 +12,15 @@ use App\Models\Currency\Currency;
 use App\Models\Currency\CurrencyLog;
 use App\Models\Item\ItemLog;
 use App\Models\Shop\ShopLog;
+use App\Models\Award\AwardLog;
 use App\Models\User\UserCharacterLog;
 use App\Models\Submission\Submission;
 use App\Models\Submission\SubmissionCharacter;
 use App\Models\Character\CharacterBookmark;
+
+use App\Models\Character\CharacterDesignUpdate;
+use App\Models\Character\CharacterTransfer;
+use App\Models\Trade;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -65,7 +70,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public $timestamps = true;
 
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
@@ -93,7 +98,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany('App\Models\Notification');
     }
-    
+
     /**
      * Get all the user's characters, regardless of whether they are full characters of myo slots.
      */
@@ -101,7 +106,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany('App\Models\Character\Character')->orderBy('sort', 'DESC');
     }
-    
+
     /**
      * Get the user's characters.
      */
@@ -109,7 +114,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany('App\Models\Character\Character')->where('is_myo_slot', 0)->orderBy('sort', 'DESC');
     }
-    
+
     /**
      * Get the user's MYO slots.
      */
@@ -117,7 +122,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany('App\Models\Character\Character')->where('is_myo_slot', 1)->orderBy('id', 'DESC');
     }
-    
+
     /**
      * Get the user's rank data.
      */
@@ -125,7 +130,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->belongsTo('App\Models\Rank\Rank');
     }
-    
+
     /**
      * Get the user's items.
      */
@@ -134,8 +139,16 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsToMany('App\Models\Item\Item', 'user_items')->withPivot('data', 'updated_at', 'id')->whereNull('user_items.deleted_at')->whereNull('user_items.holding_type');
     }
 
+    /**
+     * Get the user's awards.
+     */
+    public function awards()
+    {
+        return $this->belongsToMany('App\Models\Award\Award', 'user_awards')->withPivot('count', 'data', 'updated_at', 'id')->whereNull('user_awards.deleted_at');
+    }
+
     /**********************************************************************************************
-    
+
         SCOPES
 
     **********************************************************************************************/
@@ -204,7 +217,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function hasPower($power)
     {
-        return $this->rank->hasPower($power); 
+        return $this->rank->hasPower($power);
     }
 
     /**
@@ -280,7 +293,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**********************************************************************************************
-    
+
         OTHER FUNCTIONS
 
     **********************************************************************************************/
@@ -367,6 +380,23 @@ class User extends Authenticatable implements MustVerifyEmail
             $query->where('sender_id', $user->id)->whereNotIn('log_type', ['Staff Grant', 'Staff Removal']);
         })->orWhere(function($query) use ($user) {
             $query->where('recipient_id', $user->id);
+        })->orderBy('id', 'DESC');
+        if($limit) return $query->take($limit)->get();
+        else return $query->paginate(30);
+    }
+        /**
+     * Get the user's award logs.
+     *
+     * @param  int  $limit
+     * @return \Illuminate\Support\Collection|\Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function getAwardLogs($limit = 10)
+    {
+        $user = $this;
+        $query = AwardLog::with('award')->where(function($query) use ($user) {
+            $query->with('sender')->where('sender_type', 'User')->where('sender_id', $user->id)->whereNotIn('log_type', ['Staff Grant', 'Prompt Rewards', 'Claim Rewards']);
+        })->orWhere(function($query) use ($user) {
+            $query->with('recipient')->where('recipient_type', 'User')->where('recipient_id', $user->id)->where('log_type', '!=', 'Staff Removal');
         })->orderBy('id', 'DESC');
         if($limit) return $query->take($limit)->get();
         else return $query->paginate(30);

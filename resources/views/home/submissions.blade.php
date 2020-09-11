@@ -54,8 +54,9 @@
         </tbody>
     </table>
     {!! $submissions->render() !!}
+    <div class="text-center mt-4 small text-muted">{{ $submissions->total() }} {{ $isClaims ? 'claim' : 'submission' }}{{ $submissions->total() == 1 ? '' : 's' }} found.</div>
 @else 
-    <p>No {{ $isClaims ? 'claims' : 'submissions' }} found.</p>
+    <div class="text-center mt-4 small text-muted">{{ $submissions->total() }} {{ $isClaims ? 'claim' : 'submission' }}{{ $submissions->total() == 1 ? '' : 's' }} found.</div>
 @endif
 
 @endsection

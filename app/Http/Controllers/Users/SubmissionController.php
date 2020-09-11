@@ -8,8 +8,13 @@ use DB;
 use Auth;
 use Settings;
 use App\Models\User\User;
+use App\Models\User\UserItem;
+use App\Models\User\UserAward;
 use App\Models\Character\Character;
 use App\Models\Item\Item;
+use App\Models\Item\ItemCategory;
+use App\Models\Award\Award;
+use App\Models\Award\AwardCategory;
 use App\Models\Currency\Currency;
 use App\Models\Submission\Submission;
 use App\Models\Submission\SubmissionCharacter;
@@ -68,7 +73,8 @@ class SubmissionController extends Controller
         if(!$submission) abort(404);
         return view('home.submission', [
             'submission' => $submission,
-            'user' => $submission->user
+            'user' => $submission->user,
+            'awardsrow' => Award::all()->keyBy('id')
         ]);
     }
 
@@ -81,6 +87,7 @@ class SubmissionController extends Controller
     public function getNewSubmission(Request $request)
     {
         $closed = !Settings::get('is_prompts_open');
+        $awardcase = UserAward::with('award')->whereNull('deleted_at')->where('count', '>', '0')->where('user_id', Auth::user()->id)->get();
         return view('home.create_submission', [
             'closed' => $closed,
             'isClaim' => false
@@ -89,7 +96,8 @@ class SubmissionController extends Controller
             'prompts' => Prompt::active()->sortAlphabetical()->pluck('name', 'id')->toArray(),
             'characterCurrencies' => Currency::where('is_character_owned', 1)->orderBy('sort_character', 'DESC')->pluck('name', 'id'),
             'items' => Item::orderBy('name')->pluck('name', 'id'),
-            'currencies' => Currency::where('is_user_owned', 1)->orderBy('name')->pluck('name', 'id')
+            'currencies' => Currency::where('is_user_owned', 1)->orderBy('name')->pluck('name', 'id'),
+            'awards' => Award::orderBy('name')->pluck('name', 'id')
         ]));
     }
 
@@ -182,7 +190,8 @@ class SubmissionController extends Controller
         if(!$submission) abort(404);
         return view('home.submission', [
             'submission' => $submission,
-            'user' => $submission->user
+            'user' => $submission->user,
+            'awardsrow' => Award::all()->keyBy('id')
         ]);
     }
     
@@ -202,7 +211,8 @@ class SubmissionController extends Controller
             'submission' => new Submission,
             'characterCurrencies' => Currency::where('is_character_owned', 1)->orderBy('sort_character', 'DESC')->pluck('name', 'id'),
             'items' => Item::orderBy('name')->pluck('name', 'id'),
-            'currencies' => Currency::where('is_user_owned', 1)->orderBy('name')->pluck('name', 'id')
+            'currencies' => Currency::where('is_user_owned', 1)->orderBy('name')->pluck('name', 'id'),
+            'awards' => Award::orderBy('name')->pluck('name', 'id')
         ]));
     }
     

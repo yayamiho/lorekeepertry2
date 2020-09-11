@@ -46,7 +46,12 @@ return [
     'manage_submissions' => [
         'name' => 'Manage Submissions',
         'description' => 'Allow rank to view the submissions queue, edit rewards attached to a submission and approve/reject them.'
+    ],
+    'edit_awardcases' => [
+        'name' => 'Edit Awardcases',
+        'description' => 'Allow rank to create and edit awards and user awardcases.'
     ]
+
 
 
 ];

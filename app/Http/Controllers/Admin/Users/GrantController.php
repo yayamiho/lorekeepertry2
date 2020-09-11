@@ -6,11 +6,14 @@ use Auth;
 use Config;
 use Illuminate\Http\Request;
 
+use App\Models\User\User;
 use App\Models\Item\Item;
+use App\Models\Award\Award;
 use App\Models\Currency\Currency;
 
 use App\Services\CurrencyManager;
 use App\Services\InventoryManager;
+use App\Services\AwardCaseManager;
 
 use App\Http\Controllers\Controller;
 
@@ -24,6 +27,7 @@ class GrantController extends Controller
     public function getUserCurrency()
     {
         return view('admin.grants.user_currency', [
+            'users' => User::orderBy('id')->pluck('name', 'id'),
             'userCurrencies' => Currency::where('is_user_owned', 1)->orderBy('sort_user', 'DESC')->pluck('name', 'id')
         ]);
     }
@@ -55,6 +59,7 @@ class GrantController extends Controller
     public function getItems()
     {
         return view('admin.grants.items', [
+            'users' => User::orderBy('id')->pluck('name', 'id'),
             'items' => Item::orderBy('name')->pluck('name', 'id')
         ]);
     }
@@ -63,7 +68,7 @@ class GrantController extends Controller
      * Grants or removes items from multiple users.
      *
      * @param  \Illuminate\Http\Request        $request
-     * @param  App\Services\InvenntoryManager  $service
+     * @param  App\Services\InventoryManager  $service
      * @return \Illuminate\Http\RedirectResponse
      */
     public function postItems(Request $request, InventoryManager $service)
@@ -77,5 +82,36 @@ class GrantController extends Controller
         }
         return redirect()->back();
     }
+    
+    /**
+     * Show the award grant page.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getAwards()
+    {
+        return view('admin.grants.awards', [
+            'users' => User::orderBy('id')->pluck('name', 'id'),
+            'awards' => Award::orderBy('name')->pluck('name', 'id')
+        ]);
+    }
 
-}
+    /**
+     * Grants or removes awards from multiple users.
+     *
+     * @param  \Illuminate\Http\Request        $request
+     * @param  App\Services\AwardCaseManager  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postAwards(Request $request, AwardCaseManager $service)
+    {
+        $data = $request->only(['names', 'award_ids', 'quantities', 'data', 'disallow_transfer', 'notes']);
+        if($service->grantAwards($data, Auth::user())) {
+            flash('Awards granted successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+ }

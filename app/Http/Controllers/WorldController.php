@@ -10,11 +10,14 @@ use App\Models\Species\Species;
 use App\Models\Species\Subtype;
 use App\Models\Item\ItemCategory;
 use App\Models\Item\Item;
+use App\Models\Award\AwardCategory;
+use App\Models\Award\Award;
 use App\Models\Feature\FeatureCategory;
 use App\Models\Feature\Feature;
 use App\Models\Character\CharacterCategory;
 use App\Models\Prompt\PromptCategory;
 use App\Models\Prompt\Prompt;
+use App\Models\Shop\Shop;
 
 class WorldController extends Controller
 {
@@ -116,6 +119,22 @@ class WorldController extends Controller
         $name = $request->get('name');
         if($name) $query->where('name', 'LIKE', '%'.$name.'%');
         return view('world.item_categories', [  
+            'categories' => $query->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
+        ]);
+    }
+    
+        /**
+     * Shows the award categories page.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getAwardCategories(Request $request)
+    {
+        $query = AwardCategory::query();
+        $name = $request->get('name');
+        if($name) $query->where('name', 'LIKE', '%'.$name.'%');
+        return view('world.award_categories', [  
             'categories' => $query->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
         ]);
     }
@@ -234,6 +253,73 @@ class WorldController extends Controller
         return view('world.items', [
             'items' => $query->paginate(20)->appends($request->query()),
             'categories' => ['none' => 'Any Category'] + ItemCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray()
+        ]);
+    }
+        
+     /**
+     * Shows the awards page.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getAwards(Request $request)
+    {
+        $query = Award::with('category');
+        $data = $request->only(['award_category_id', 'name', 'sort']);
+        if(isset($data['award_category_id']) && $data['award_category_id'] != 'none') 
+            $query->where('award_category_id', $data['award_category_id']);
+        if(isset($data['name'])) 
+            $query->where('name', 'LIKE', '%'.$data['name'].'%');
+
+        if(isset($data['sort'])) 
+        {
+            switch($data['sort']) {
+                case 'alpha':
+                    $query->sortAlphabetical();
+                    break;
+                case 'alpha-reverse':
+                    $query->sortAlphabetical(true);
+                    break;
+                case 'category':
+                    $query->sortCategory();
+                    break;
+                case 'newest':
+                    $query->sortNewest();
+                    break;
+                case 'oldest':
+                    $query->sortOldest();
+                    break;
+            }
+        } 
+        else $query->sortCategory();
+
+        return view('world.awards', [
+            'awards' => $query->paginate(20)->appends($request->query()),
+            'categories' => ['none' => 'Any Category'] + AwardCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'shops' => Shop::orderBy('sort', 'DESC')->get()
+        ]);
+    }
+
+    
+    /**
+     * Shows an individual award's page.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getAward($id)
+    {
+        $categories = AwardCategory::orderBy('sort', 'DESC')->get();
+        $award = Award::where('id', $id)->first();
+        if(!$award) abort(404);
+
+        return view('world.award_page', [
+            'award' => $award,
+            'imageUrl' => $award->imageUrl, 
+            'name' => $award->displayName, 
+            'description' => $award->parsed_description,
+            'categories' => $categories->keyBy('id'),
+            'shops' => Shop::orderBy('sort', 'DESC')->get()
         ]);
     }
 

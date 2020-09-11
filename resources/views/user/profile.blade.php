@@ -57,7 +57,11 @@
                     <div class="row">
                         @foreach($items as $item)
                             <div class="col-md-3 col-6 profile-inventory-item">
-                                <img src="{{ $item->imageUrl }}" data-toggle="tooltip" title="{{ $item->name }}" />
+                                @if($item->imageUrl)
+                                    <img src="{{ $item->imageUrl }}" data-toggle="tooltip" title="{{ $item->name }}" />
+                                @else
+                                    <p>{{ $item->name }}</p>
+                                @endif
                             </div>
                         @endforeach
                     </div>
@@ -69,6 +73,29 @@
         </div>
     </div>
 </div>
+    <div class="card mb-3">
+        <div class="card-body text-center">
+            <h5 class="card-title">Awards</h5>
+            <div class="card-body">
+                @if(count($awards))
+                    <div class="row">
+                        @foreach($awards as $award)
+                            <div class="col-md-3 col-6 profile-inventory-item">
+                                @if($award->imageUrl)
+                                    <img src="{{ $award->imageUrl }}" data-toggle="tooltip" title="{{ $award->name }}" />
+                                @else
+                                    <p>{{ $award->name }}</p>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+                @else 
+                    <div>No awards earned.</div>
+                @endif
+            </div>
+            <div class="text-right"><a href="{{ $user->url.'/awardcase' }}">View all...</a></div>
+        </div>
+    </div>
 
 <h2>Characters</h2>
 @foreach($user->characters()->visible()->take(4)->get()->chunk(4) as $chunk)

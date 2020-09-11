@@ -245,4 +245,40 @@ return [
         'message' => 'The transfer for <a href="{character_url}">{character_name}</a> was approved by <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Transfers</a>)',
         'url' => 'characters/transfers/incoming'
     ],
+    
+    // AWARD_GRANT
+    341 => [
+        'message' => 'You have earned the following award(s): {award_name} (×{award_quantity}). Congratulations! (<a href="{url}">View Awards</a>)',
+        'url' => 'awardcase'
+    ],
+    
+    // AWARD_REMOVAL
+    342 => [
+        'message' => '{award_name} (×{award_quantity}) was removed from your Awards by <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Awards</a>)',
+        'url' => 'awardcase'
+    ],
+    
+    // AWARD_TRANSFER 
+    343 => [
+        'message' => 'You have received {award_name} (×{award_quantity}) from <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Awards</a>)',
+        'url' => 'awardcase'
+    ],
+    
+    // FORCED_AWARD_TRANSFER
+    344 => [
+        'message' => '{item_name} (×{item_quantity}) was removed from {character_name} by <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Inventory</a>)',
+        'url' => 'character/{character_slug}/inventory'
+    ],
+    
+    // CHARACTER_AWARD_GRANT
+    345 => [
+        'message' => '{character_name} has earned the following award(s): {award_name} (×{award_quantity}). Congratulations! (<a href="{url}">View Awards</a>)',
+        'url' => 'character/{character_slug}/awardcase'
+    ],
+    
+    // CHARACTER_AWARD_REMOVAL
+    346 => [
+        'message' => '{award_name} (×{award_quantity}) was removed from {character_name} by <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Awards</a>)',
+        'url' => 'character/{character_slug}/awardcase'
+    ],
 ];

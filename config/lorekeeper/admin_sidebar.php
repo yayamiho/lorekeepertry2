@@ -73,6 +73,10 @@ return [
                 'name' => 'Item Grants',
                 'url' => 'admin/grants/items'
             ],
+            [
+                'name' => 'Award Grants',
+                'url' => 'admin/grants/awards'
+            ],
         ]
     ],
     'Data' => [
@@ -109,6 +113,14 @@ return [
             [
                 'name' => 'Shops',
                 'url' => 'admin/data/shops'
+            ],
+            [
+                'name' => 'Award Categories',
+                'url' => 'admin/data/award-categories'
+            ],
+            [
+                'name' => 'Awards',
+                'url' => 'admin/data/awards'
             ],
             [
                 'name' => 'Prompt Categories',
