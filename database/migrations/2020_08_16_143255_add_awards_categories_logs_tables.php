@@ -13,14 +13,14 @@ class AddAwardsCategoriesLogsTables extends Migration
      */
     public function up()
     {
-        
+
         // Creating awards tables
 
         // All of this is based off the existing items tables. With additions from other extensions (like the data function from item entry expansion) but removed the ability for users to transfer from user to user.
         Schema::create('award_categories', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
-            
+
             $table->string('name');
             $table->string('description')->nullable()->default(null);
             $table->text('parsed_description')->nullable()->default(null);
@@ -28,7 +28,7 @@ class AddAwardsCategoriesLogsTables extends Migration
             $table->integer('character_limit')->unsigned()->default(0);
             $table->boolean('has_image')->default(0);
             $table->boolean('is_character_owned')->default(0);
-        
+
          });
 
         Schema::create('awards', function (Blueprint $table) {
@@ -36,19 +36,19 @@ class AddAwardsCategoriesLogsTables extends Migration
             $table->increments('id');
             $table->integer('award_category_id')->unsigned()->nullable()->default(null);
             $table->string('name');
-            $table->string('description')->nullable()->default(null);
+            $table->text('description')->nullable()->default(null);
             $table->text('parsed_description')->nullable()->default(null);
             $table->boolean('has_image')->default(0);
-            
+
             $table->string('data', 1024)->nullable(); // includes rarity and availability information.
             $table->string('reference_url', 200)->nullable();
             $table->string('artist_alias')->nullable();
             $table->string('artist_url')->nullable();
 
             $table->foreign('award_category_id')->references('id')->on('award_categories');
-            
+
          });
-            
+
         Schema::create('awards_log', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
@@ -67,11 +67,11 @@ class AddAwardsCategoriesLogsTables extends Migration
             $table->timestamp('updated_at')->nullable()->default(null);
 
         });
-            
+
         // Now to create character specific awards, based on the character items extension
         ///////////////////////
         /////////
-            
+
         Schema::create('character_awards', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
@@ -118,6 +118,6 @@ class AddAwardsCategoriesLogsTables extends Migration
         Schema::dropIfExists('awards_log');
         Schema::dropIfExists('character_awards');
         Schema::dropIfExists('character_awards_log');
-    
+
     }
 }
