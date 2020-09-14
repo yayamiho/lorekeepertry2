@@ -12,11 +12,9 @@ use App\Models\Item\Item;
 use App\Models\User\User;
 use App\Models\User\UserItem;
 use App\Models\Character\Character;
-use App\Models\Character\CharacterFeature;
 use App\Models\Species\Species;
 use App\Models\Species\Subtype;
 use App\Models\Rarity;
-use App\Models\Feature\Feature;
 
 class SlotService extends Service
 {
@@ -40,7 +38,6 @@ class SlotService extends Service
             'rarities' => ['0' => 'Select Rarity'] + Rarity::orderBy('sort', 'DESC')->where('id', '>', 5)->pluck('name', 'id')->toArray(),
             'specieses' => ['0' => 'Select Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'subtypes' => ['0' => 'Select Subtype'] + Subtype::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'features' => Feature::getFeaturesByCategory(),
             'isMyo' => true
         ];
     }
@@ -109,65 +106,61 @@ class SlotService extends Service
     /**
      * Acts upon the item when used from the inventory.
      *
-     * @param  \App\Models\User\UserItem  $stacks
+     * @param  \App\Models\User\UserItem  $stack
      * @param  \App\Models\User\User      $user
      * @param  array                      $data
      * @return bool
      */
-    public function act($stacks, $user, $data)
+    public function act($stack, $user, $data)
     {
         DB::beginTransaction();
-
         try {
-            foreach($stacks as $key=>$stack) {
-                // We don't want to let anyone who isn't the owner of the slot to use it,
-                // so do some validation... 
-                if($stack->user_id != $user->id) throw new \Exception("This item does not belong to you.");
+            // We don't want to let anyone who isn't the owner of the slot to use it,
+            // so do some validation... 
+            if($stack->user_id != $user->id) throw new \Exception("This item does not belong to you.");
 
-                // Next, try to delete the tag item. If successful, we can start distributing rewards.
-                if((new InventoryManager)->debitStack($stack->user, 'Slot Used', ['data' => ''], $stack, $data['quantities'][$key])) {
-                    
-                    for($q=0; $q<$data['quantities'][$key]; $q++) {
-                        //fill an array with the DB contents
-                        $characterData = $stack->item->tag('slot')->data;
-                        //set user who is opening the item
-                        $characterData['user_id'] = $user->id;
-                        //other vital data that is default
-                        $characterData['transferrable_at'] = null;
-                        $characterData['is_myo_slot'] = 1;
-                        //this uses your default MYO slot image from the CharacterManager
-                        //see wiki page for documentation on adding a default image switch
-                        $characterData['use_cropper'] = 0;
-                        $characterData['x0'] = null;
-                        $characterData['x1'] = null;
-                        $characterData['y0'] = null;
-                        $characterData['y1'] = null;
-                        $characterData['image'] = null;
-                        $characterData['thumbnail'] = null;
-                        $characterData['artist_alias'][0] = null;
-                        $characterData['artist_url'][0] = null;
-                        $characterData['designer_alias'][0] = null;
-                        $characterData['designer_url'][0] = null;
-                        $characterData['feature_id'][0] = null;
-                        $characterData['feature_data'][0] = null;
+            // Next, try to delete the tag item. If successful, we can start distributing rewards.
+            if((new InventoryManager)->debitStack($stack->user, 'Slot Used', ['data' => ''], $stack)) {
+                
+                //fill an array with the DB contents
+                $characterData = $stack->item->tag('slot')->data;
+                //set user who is opening the item
+                $characterData['user_id'] = $user->id;
+                //other vital data that is default
+                $characterData['transferrable_at'] = null;
+                $characterData['is_myo_slot'] = 1;
+                //this uses your default MYO slot image from the CharacterManager
+                //see wiki page for documentation on adding a default image switch
+                $characterData['use_cropper'] = 0;
+                $characterData['x0'] = null;
+                $characterData['x1'] = null;
+                $characterData['y0'] = null;
+                $characterData['y1'] = null;
+                $characterData['image'] = null;
+                $characterData['thumbnail'] = null;
+                $characterData['artist_alias'][0] = null;
+                $characterData['artist_url'][0] = null;
+                $characterData['designer_alias'][0] = null;
+                $characterData['designer_url'][0] = null;
+                $characterData['feature_id'][0] = null;
+                $characterData['feature_data'][0] = null;
 
-                        //DB has 'true' and 'false' as strings, so need to set them to true/null
-                        if( $stack->item->tag('slot')->data['is_sellable'] == "true") { $characterData['is_sellable'] = true; } else $characterData['is_sellable'] = null;
-                        if( $stack->item->tag('slot')->data['is_tradeable'] == "true") { $characterData['is_tradeable'] = true; } else $characterData['is_tradeable'] = null;
-                        if( $stack->item->tag('slot')->data['is_giftable'] == "true") { $characterData['is_giftable'] = true; } else $characterData['is_giftable'] = null;
-                        if( $stack->item->tag('slot')->data['is_visible'] == "true") { $characterData['is_visible'] = true; } else $characterData['is_visible'] = null;
+                //DB has 'true' and 'false' as strings, so need to set them to true/null
+                if( $stack->item->tag('slot')->data['is_sellable'] == "true") { $characterData['is_sellable'] = true; } else $characterData['is_sellable'] = null;
+                if( $stack->item->tag('slot')->data['is_tradeable'] == "true") { $characterData['is_tradeable'] = true; } else $characterData['is_tradeable'] = null;
+                if( $stack->item->tag('slot')->data['is_giftable'] == "true") { $characterData['is_giftable'] = true; } else $characterData['is_giftable'] = null;
+                if( $stack->item->tag('slot')->data['is_visible'] == "true") { $characterData['is_visible'] = true; } else $characterData['is_visible'] = null;
 
-                        // Distribute user rewards
-                        $charService = new CharacterManager;
-                        if ($character = $charService->createCharacter($characterData, $user, true)) {
-                            flash('<a href="' . $character->url . '">MYO slot</a> created successfully.')->success();
-                        }
-                        else {
-                            throw new \Exception("Failed to use slot.");
-                        }
-                    }
+                // Distribute user rewards
+                $charService = new CharacterManager;
+                if ($character = $charService->createCharacter($characterData, $user, true)) {
+                    flash('<a href="' . $character->url . '">MYO slot</a> created successfully.')->success();
+                }
+                else {
+                    throw new \Exception("Failed to use slot.");
                 }
             }
+
             return $this->commitReturn(true);
         } catch(\Exception $e) { 
             $this->setError('error', $e->getMessage());
