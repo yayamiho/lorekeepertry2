@@ -7,7 +7,7 @@
 @section('meta-desc') 
 @if(isset($award->category) && $award->category) <p><strong>Category:</strong> {{ $award->category->name }}</p> @endif
 @if(isset($award->rarity) && $award->rarity) :: <p><strong>Rarity:</strong> {{ $award->rarity }}: {{ $award->rarityName }}</p> @endif
- :: {!! $award->description !!}
+ :: {!! substr(str_replace('"','&#39;',$award->description),0,69) !!}
 @if(isset($award->uses) && $award->uses) :: <p><strong>Uses:</strong> {!! $award->uses !!}</p> @endif
 @endsection
 
