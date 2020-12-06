@@ -257,7 +257,7 @@ class AdventCalendar extends Model
     /**
      * Get the item for the current day.
      *
-     * @return int
+     * @return App\Models\Item\Item
      */
     public function item($day)
     {
