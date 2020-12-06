@@ -75,12 +75,39 @@
 {!! Form::close() !!}
 
 @if($advent->id)
+    <h3>Display Link</h3>
+    <p>For convenience, here is the advent calendar's url as well as the full HTML to display a link to the advent calendar's user-facing page. Users claim the day's prize from this page.</p>
+    <div class="alert alert-secondary">
+        {{ $advent->url }}
+    </div>
+    <div class="alert alert-secondary">
+        {{ $advent->displayLink }}
+    </div>
+@endif
+
+@if($advent->id)
     <h3>Log</h3>
     <p>
         This is the log of claimed prizes. Each claimed prize has its own row, since there can be any number of prizes per calendar.
     </p>
 
-    <!-- ADD SORTING YOU NERD -->
+    <div>
+        {!! Form::open(['method' => 'GET', 'class' => 'form-inline justify-content-end']) !!}
+            <div class="form-group mr-3 mb-3">
+                {!! Form::select('sort', [
+                    'alpha'          => 'Sort by User (A-Z)',
+                    'alpha-reverse'  => 'Sort by User (Z-A)',
+                    'day'            => 'Sort by Day (Asc)',
+                    'day-reverse'    => 'Sort by Day (Desc)',
+                    'newest'         => 'Newest First',
+                    'oldest'         => 'Oldest First'
+                ], Request::get('sort') ? : 'category', ['class' => 'form-control']) !!}
+            </div>
+            <div class="form-group mb-3">
+                {!! Form::submit('Sort', ['class' => 'btn btn-primary']) !!}
+            </div>
+        {!! Form::close() !!}
+    </div>
 
     @if(count($advent->participants))
     {!! $participants->render() !!}
@@ -89,7 +116,7 @@
         <div class="d-flex row flex-wrap col-12 pb-1 px-0 ubt-bottom">
             <div class="col-md-2 font-weight-bold">User</div>
             <div class="col-md font-weight-bold text-center">Day</div>
-            <div class="col-md font-weight-bold text-center">Claimed At</div>
+            <div class="col-md font-weight-bold text-center">Claimed</div>
         </div>
         @foreach($participants as $participant)
         <div class="d-flex row flex-wrap col-12 mt-1 pt-2 px-0 ubt-top">
@@ -97,7 +124,7 @@
                 {!! $participant->user->displayName !!}
             </div>
             <div class="col-md text-center">
-                {{ $participant->day }}
+                {{ $participant->day }} - {!! $advent->item($participant->day)->displayName !!} ×{{ $advent->itemQuantity($participant->day) }}
             </div>
             <div class="col-md text-center">
                 {!! pretty_date($participant->claimed_at) !!}

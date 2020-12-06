@@ -53,19 +53,47 @@ class AdventController extends Controller
     /**
      * Shows the edit advent calendar page.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getEditAdvent($id)
+    public function getEditAdvent(Request $request, $id)
     {
         $advent = AdventCalendar::find($id);
         if(!$advent) abort(404);
-        $participants = AdventParticipant::where('advent_id', $id)->select('advent_participants.*')->join('users', 'users.id', '=', 'advent_participants.user_id')
-        ->orderBy('users.name');
+
+        $query = AdventParticipant::where('advent_id', $advent->id);
+        $sort = $request->only(['sort']);
+        switch(isset($sort['sort']) ? $sort['sort'] : null) {
+            default:
+                $query->select('advent_participants.*')->join('users', 'users.id', '=', 'advent_participants.user_id')
+                ->orderBy('users.name');
+                break;
+            case 'alpha':
+                $query->select('advent_participants.*')->join('users', 'users.id', '=', 'advent_participants.user_id')
+                ->orderBy('users.name', 'ASC');
+                break;
+            case 'alpha-reverse':
+                $query->select('advent_participants.*')->join('users', 'users.id', '=', 'advent_participants.user_id')
+                ->orderBy('users.name', 'DESC');
+                break;
+            case 'day':
+                $query->orderBy('day', 'ASC');
+                break;
+            case 'day-reverse':
+                $query->orderBy('day', 'DESC');
+                break;
+            case 'newest':
+                $query->orderBy('claimed_at', 'DESC');
+                break;
+            case 'oldest':
+                $query->orderBy('claimed_at', 'ASC');
+                break;
+        }
 
         return view('admin.advents.create_edit_advent', [
             'advent' => $advent,
-            'participants' => $participants->paginate(20),
+            'participants' => $query->paginate(20)->appends($request->query()),
             'items' => Item::orderBy('name')->pluck('name', 'id'),
         ]);
     }

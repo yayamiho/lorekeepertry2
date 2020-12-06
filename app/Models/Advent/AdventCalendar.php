@@ -5,6 +5,9 @@ namespace App\Models\Advent;
 use Config;
 use DB;
 use Carbon\Carbon;
+
+use App\Models\Item\Item;
+
 use App\Models\Model;
 
 class AdventCalendar extends Model
@@ -243,6 +246,71 @@ class AdventCalendar extends Model
     {
         if(!$this->isActive) return null;
         return $this->start_at->startOf('day')->diffInDays(Carbon::now()->endOf('day'))+1;
+    }
+
+    /**********************************************************************************************
+
+        OTHER FUNCTIONS
+
+    **********************************************************************************************/
+
+    /**
+     * Get the item for the current day.
+     *
+     * @return int
+     */
+    public function item($day)
+    {
+        if(!$this->isActive || !isset($this->data[$day]['item'])) return null;
+        return Item::find($this->data[$day]['item']);
+    }
+
+    /**
+     * Get the item quantity for the current day.
+     *
+     * @return int
+     */
+    public function itemQuantity($day)
+    {
+        if(!$this->isActive) return null;
+        return (isset($this->data[$day]['quantity']) ? $this->data[$day]['quantity'] : 1);
+    }
+
+    /**
+     * Displays the target item and its quantity.
+     *
+     * @return string
+     */
+    public function displayItem($day)
+    {
+        $item = $this->item($day);
+        $image = ($item->imageUrl) ? '<img class="small-icon" src="'.$item->imageUrl.'"/>' : null;
+        return $image.' '.$item->displayName.' ×'.$this->itemQuantity($day);
+    }
+
+    /**
+     * Displays the target item and its quantity.
+     *
+     * @return string
+     */
+    public function displayItemLong($day)
+    {
+        $item = $this->item($day);
+        $image = ($item->imageUrl) ? '<img style="max-height:150px;" src="'.$item->imageUrl.'" data-toggle="tooltip" title="'.$item->name.'"/>' : null;
+        return $image.(isset($image) ? '<br/>' : '').' '.$item->displayName.' ×'.$this->itemQuantity($day);
+    }
+
+    /**
+     * Displays the target item.
+     *
+     * @return string
+     */
+    public function displayItemShort($day)
+    {
+        $item = $this->item($day);
+        $image = ($item->imageUrl) ? '<img style="max-height:150px;" src="'.$item->imageUrl.'" data-toggle="tooltip" title="'.$item->name.'"/>' : null;
+        if(isset($image)) return $image;
+        else return $item->displayName;
     }
 
 }

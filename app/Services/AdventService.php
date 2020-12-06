@@ -66,7 +66,7 @@ class AdventService extends Service
                     if(isset($data['item_ids'][$day])) {
                         $data['data'][$day] = [
                             'item' => $data['item_ids'][$day],
-                            'quantity' => $data['quantities'][$day]
+                            'quantity' => isset($data['quantities'][$day]) ? $data['quantities'][$day] : 1
                         ];
                     }
                 }
