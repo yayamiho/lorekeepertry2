@@ -41,6 +41,8 @@ class AdventCalendar extends Model
         'name' => 'required|unique:advent_calendars|between:3,50',
         'display_name' => 'required|between:3,40',
         'summary' => 'nullable',
+        'start_at' => 'required',
+        'end_at' => 'required'
     ];
 
     /**
@@ -52,6 +54,8 @@ class AdventCalendar extends Model
         'name' => 'required|between:3,50',
         'display_name' => 'required|between:3,40',
         'summary' => 'nullable',
+        'start_at' => 'required',
+        'end_at' => 'required'
     ];
 
     /**********************************************************************************************
