@@ -257,6 +257,7 @@ class AdventCalendar extends Model
     /**
      * Get the item for the current day.
      *
+     * @param int              $day
      * @return App\Models\Item\Item
      */
     public function item($day)
@@ -268,6 +269,7 @@ class AdventCalendar extends Model
     /**
      * Get the item quantity for the current day.
      *
+     * @param int           $day
      * @return int
      */
     public function itemQuantity($day)
@@ -279,6 +281,7 @@ class AdventCalendar extends Model
     /**
      * Displays the target item and its quantity.
      *
+     * @param int           $day
      * @return string
      */
     public function displayItem($day)
@@ -291,6 +294,7 @@ class AdventCalendar extends Model
     /**
      * Displays the target item and its quantity.
      *
+     * @param int           $day
      * @return string
      */
     public function displayItemLong($day)
