@@ -26,6 +26,7 @@ class AdventController extends Controller
     {
         $advent = AdventCalendar::find($id);
         if(!$advent) abort(404);
+        if($advent->start_at->isFuture()) abort(404);
 
         $dayLog = $advent->participants()->where('user_id', Auth::user()->id)->where('day', $advent->day)->first();
         $participantLog = $advent->participants()->where('user_id', Auth::user()->id)->orderBy('day', 'ASC')->get();

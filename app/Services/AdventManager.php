@@ -34,6 +34,7 @@ class AdventManager extends Service
         try {
             if(!$advent) throw new \Exception ("Invalid advent calendar.");
             if(!$advent->isActive) throw new \Exception ("This advent calendar isn\'t active.");
+            if(!$advent->item($advent->day)) throw new \Exception('There is no prize for today.');
             if($advent->participants()->where('user_id', $user->id)->where('day', $advent->day)->exists()) throw new \Exception('You have already claimed today\'s prize.');
 
             // Log that the user claimed this day's prize
