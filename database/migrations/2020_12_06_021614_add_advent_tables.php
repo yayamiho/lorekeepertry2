@@ -28,7 +28,7 @@ class AddAdventTables extends Migration
             $table->timestamp('end_at')->nullable()->default(null);
 
             // Data on items and quantities for each day.
-            $table->text('data');
+            $table->text('data')->nullable()->default(null);
         });
 
         // Table for advent calendar participants.

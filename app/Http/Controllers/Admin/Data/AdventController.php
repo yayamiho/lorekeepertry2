@@ -71,25 +71,25 @@ class AdventController extends Controller
     }
 
     /**
-     * Creates or edits a scavenger hunt.
+     * Creates or edits an advent calendar.
      *
      * @param  \Illuminate\Http\Request    $request
-     * @param  App\Services\PromptService  $service
+     * @param  App\Services\AdventService  $service
      * @param  int|null                    $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postCreateEditHunt(Request $request, HuntService $service, $id = null)
+    public function postCreateEditAdvent(Request $request, AdventService $service, $id = null)
     {
-        $id ? $request->validate(ScavengerHunt::$updateRules) : $request->validate(ScavengerHunt::$createRules);
+        $id ? $request->validate(AdventCalendar::$updateRules) : $request->validate(AdventCalendar::$createRules);
         $data = $request->only([
-            'name', 'display_name', 'summary', 'clue', 'locations', 'start_at', 'end_at'
+            'name', 'display_name', 'summary', 'start_at', 'end_at', 'item_ids', 'quantities'
         ]);
-        if($id && $service->updateHunt(ScavengerHunt::find($id), $data, Auth::user())) {
-            flash('Scavenger hunt updated successfully.')->success();
+        if($id && $service->updateAdvent(AdventCalendar::find($id), $data, Auth::user())) {
+            flash('Advent calendar updated successfully.')->success();
         }
-        else if (!$id && $hunt = $service->createHunt($data, Auth::user())) {
-            flash('Scavenger hunt created successfully.')->success();
-            return redirect()->to('admin/data/hunts/edit/'.$hunt->id);
+        else if (!$id && $advent = $service->createAdvent($data, Auth::user())) {
+            flash('Advent calendar created successfully.')->success();
+            return redirect()->to('admin/data/advent-calendars/edit/'.$advent->id);
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
@@ -98,144 +98,36 @@ class AdventController extends Controller
     }
 
     /**
-     * Gets the hunt deletion modal.
+     * Gets the advent calendar deletion modal.
      *
      * @param  int  $id
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getDeleteHunt($id)
+    public function getDeleteAdvent($id)
     {
-        $hunt = ScavengerHunt::find($id);
-        return view('admin.hunts._delete_hunt', [
-            'hunt' => $hunt,
+        $advent = AdventCalendar::find($id);
+        return view('admin.advents._delete_advent', [
+            'advent' => $advent,
         ]);
     }
 
     /**
-     * Deletes a prompt.
+     * Deletes an advent calendar.
      *
      * @param  \Illuminate\Http\Request    $request
-     * @param  App\Services\HuntService    $service
+     * @param  App\Services\AdventService  $service
      * @param  int                         $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postDeleteHunt(Request $request, HuntService $service, $id)
+    public function postDeleteAdvent(Request $request, AdventService $service, $id)
     {
-        if($id && $service->deleteHunt(ScavengerHunt::find($id))) {
-            flash('Scavenger hunt deleted successfully.')->success();
+        if($id && $service->deleteAdvent(AdventCalendar::find($id))) {
+            flash('Advent calendar deleted successfully.')->success();
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
         }
-        return redirect()->to('admin/data/hunts');
-    }
-
-    /**********************************************************************************************
-
-        HUNT TARGETS
-
-    **********************************************************************************************/
-
-    /**
-     * Gets the target creation page.
-     *
-     * @param  App\Services\HuntService  $service
-     * @param  int  $id
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-    public function getCreateHuntTarget(HuntService $service, $id)
-    {
-        $hunt = ScavengerHunt::find($id);
-        return view('admin.hunts.create_edit_target', [
-            'hunt' => $hunt,
-            'target' => new HuntTarget,
-            'items' => Item::orderBy('name')->pluck('name', 'id'),
-        ]);
-    }
-
-    /**
-     * Gets the target edit page.
-     *
-     * @param  App\Services\HuntService  $service
-     * @param  int  $id
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-    public function getEditHuntTarget(HuntService $service, $id)
-    {
-        $target = HuntTarget::find($id);
-        if(!$target) abort(404);
-        return view('admin.hunts.create_edit_target', [
-            'target' => $target,
-            'hunt' => ScavengerHunt::find($target->hunt_id),
-            'item' => Item::find($target->item_id),
-            'items' => Item::orderBy('name')->pluck('name', 'id'),
-        ]);
-    }
-
-    /**
-     * Creates and updates hunt targets.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  App\Services\HuntService  $service
-     * @param  int                       $id
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function postCreateEditHuntTarget(Request $request, HuntService $service, $id = null)
-    {
-        $id ? $request->validate(HuntTarget::$updateRules) : $request->validate(HuntTarget::$createRules);
-
-        $data = $request->only([
-            'item_id', 'quantity', 'hunt_id', 'description'
-        ]);
-
-        $hunt = $id ? ScavengerHunt::find(HuntTarget::find($id)->hunt_id) : ScavengerHunt::find($request->hunt_id);
-        if(!$hunt) throw new \Exception ('No valid scavenger hunt found!');
-
-        if($id && $service->updateTarget(HuntTarget::find($id), $data, Auth::user())) {
-            flash('Target updated successfully.')->success();
-        }
-        else if (!$id && $target = $service->createTarget($data, Auth::user())) {
-            flash('Target created successfully.')->success();
-            return redirect()->to('admin/data/hunts/targets/edit/'.$target->id);
-        }
-        else {
-            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
-        }
-        return redirect()->back();
-
-    }
-
-    /**
-     * Gets the target deletion modal.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-    public function getDeleteHuntTarget($id)
-    {
-        $target = HuntTarget::find($id);
-        return view('admin.hunts._delete_target', [
-            'target' => $target,
-        ]);
-    }
-
-    /**
-     * Deletes a target.
-     *
-     * @param  \Illuminate\Http\Request    $request
-     * @param  App\Services\HuntService    $service
-     * @param  int                         $id
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function postDeleteHuntTarget(Request $request, HuntService $service, $id)
-    {
-        if($id && $service->deleteTarget(HuntTarget::find($id))) {
-            flash('Target deleted successfully.')->success();
-        }
-        else {
-            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
-        }
-        return redirect()->to('admin/data/hunts');
+        return redirect()->to('admin/data/advent-calendars');
     }
 
 }

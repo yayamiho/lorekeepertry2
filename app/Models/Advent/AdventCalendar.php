@@ -40,9 +40,7 @@ class AdventCalendar extends Model
     public static $createRules = [
         'name' => 'required|unique:advent_calendars|between:3,50',
         'display_name' => 'required|between:3,40',
-        'summary' => 'nullable',
-        'start_at' => 'required',
-        'end_at' => 'required'
+        'summary' => 'nullable'
     ];
 
     /**
@@ -53,9 +51,7 @@ class AdventCalendar extends Model
     public static $updateRules = [
         'name' => 'required|between:3,50',
         'display_name' => 'required|between:3,40',
-        'summary' => 'nullable',
-        'start_at' => 'required',
-        'end_at' => 'required'
+        'summary' => 'nullable'
     ];
 
     /**********************************************************************************************
@@ -69,7 +65,7 @@ class AdventCalendar extends Model
      */
     public function participants()
     {
-        return $this->hasMany('App\Models\Advent\AdventParticipant', 'advent_id');
+        return $this->hasMany('App\Models\Advent\AdventParticipant', 'advent_id')->orderBy('day');
     }
 
     /**********************************************************************************************
@@ -210,7 +206,7 @@ class AdventCalendar extends Model
      */
     public function getIsActiveAttribute()
     {
-        if($this->start_at <= Carbon::now() && $this->end_at >= Carbon::now())
+        if($this->start_at->isPast() && $this->end_at->isFuture())
             return TRUE;
         else
             return FALSE;
@@ -226,6 +222,27 @@ class AdventCalendar extends Model
     {
         if (!$this->id) return null;
         return json_decode($this->attributes['data'], true);
+    }
+
+    /**
+     * Get the number of days the advent calendar extends.
+     *
+     * @return int
+     */
+    public function getDaysAttribute()
+    {
+        return $this->start_at->startOf('day')->diffInDays($this->end_at->endOf('day'))+1;
+    }
+
+    /**
+     * Get the current day of the advent calendar, if it is active.
+     *
+     * @return int
+     */
+    public function getDayAttribute()
+    {
+        if(!$this->isActive) return null;
+        return $this->start_at->startOf('day')->diffInDays(Carbon::now()->endOf('day'))+1;
     }
 
 }
