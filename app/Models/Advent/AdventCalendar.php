@@ -262,7 +262,7 @@ class AdventCalendar extends Model
      */
     public function item($day)
     {
-        if(!$this->isActive || !isset($this->data[$day]['item'])) return null;
+        if(!isset($this->data[$day]['item'])) return null;
         return Item::find($this->data[$day]['item']);
     }
 
@@ -274,7 +274,6 @@ class AdventCalendar extends Model
      */
     public function itemQuantity($day)
     {
-        if(!$this->isActive) return null;
         return (isset($this->data[$day]['quantity']) ? $this->data[$day]['quantity'] : 1);
     }
 
