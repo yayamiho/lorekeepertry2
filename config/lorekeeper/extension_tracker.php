@@ -1,6 +1,6 @@
 <?php
 return [
-    
+
     // FORMAT EXAMPLE.
     //
     // 'extension_tracker' => [
@@ -11,6 +11,15 @@ return [
     //     ]),
     //     'version' => '1.0.0',
     // ],
-    
+
+    'advent_calendars' => [
+        'key' => 'advent_calendars',
+        'wiki_key' => 'Advent_Calendars',
+        'creators' => json_encode([
+            'Mercury' => 'https://github.com/itinerare/',
+        ]),
+        'version' => '1.0.0',
+    ],
+
 
 ];
