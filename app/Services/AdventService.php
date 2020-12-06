@@ -60,6 +60,12 @@ class AdventService extends Service
             if(!$data['start_at']) throw new \Exception ('A start time is required.');
             if(!$data['end_at']) throw new \Exception ('An end time is required.');
 
+            // Check if there are participants that have claimed days greater than the new duration
+            if($advent->participants()->count()) {
+                $startAt = Carbon::create($data['start_at']); $endAt = Carbon::create($data['end_at']);
+                if($advent->participants()->pluck('day')->max() > ($startAt->startOf('day')->diffInDays($endAt->endOf('day'))+1)) throw new \Exception('The new duration is shorter than the number of days the advent has already run for.');
+            }
+
             // Process and encode prize information
             if(isset($data['item_ids'])) {
                 for($day = 1; $day <= $advent->days; $day++) {
