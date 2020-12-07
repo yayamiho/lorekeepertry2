@@ -73,7 +73,7 @@ class AdventParticipant extends Model
      */
     public function getItemDataAttribute()
     {
-        return 'Claimed from '.$this->advent->displayLink.' by '.$this->user->displayName.'.';
+        return 'Claimed from '.$this->advent->displayLink.' day '.$this->day.' by '.$this->user->displayName.'.';
     }
 
 }
