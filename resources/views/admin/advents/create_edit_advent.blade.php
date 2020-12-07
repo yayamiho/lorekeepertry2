@@ -66,6 +66,13 @@
             </div>
         @endfor
     </div>
+
+    <h5>Bonus Prize</h5>
+    <p>This prize, if an item is set, will be given to users who collect every prize from this advent. This is checked on the final day.</p>
+    <div class="d-flex mb-2">
+        {!! Form::select('item_ids[bonus]', $items, isset($advent->data['bonus']) ? $advent->data['bonus']['item'] : null, ['class' => 'form-control mr-2 default item-select', 'placeholder' => 'Select Item']) !!}
+        {!! Form::text('quantities[bonus]', isset($advent->data['bonus']) ? $advent->data['bonus']['quantity'] : 1, ['class' => 'form-control mr-2', 'placeholder' => 'Quantity']) !!}
+    </div>
 @endif
 
 <div class="text-right">

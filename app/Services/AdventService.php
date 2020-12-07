@@ -4,9 +4,11 @@ use App\Services\Service;
 
 use DB;
 use Config;
+use Carbon\Carbon;
 
 use App\Models\Advent\AdventCalendar;
 use App\Models\Advent\AdventParticipant;
+use App\Models\Item\Item;
 
 class AdventService extends Service
 {
@@ -68,14 +70,33 @@ class AdventService extends Service
 
             // Process and encode prize information
             if(isset($data['item_ids'])) {
+                // Check prizes for each day
                 for($day = 1; $day <= $advent->days; $day++) {
                     if(isset($data['item_ids'][$day])) {
+                        // Check that the item exists
+                        $item = Item::find($data['item_ids'][$day]);
+                        if(!$item) throw new \Exception('One or more of the items selected is invalid.');
+
                         $data['data'][$day] = [
                             'item' => $data['item_ids'][$day],
                             'quantity' => isset($data['quantities'][$day]) ? $data['quantities'][$day] : 1
                         ];
                     }
                 }
+
+                // Process bonus prize, if set
+                if(isset($data['item_ids']['bonus'])) {
+                    // Check that the item exists
+                    $item = Item::find($data['item_ids']['bonus']);
+                    if(!$item) throw new \Exception('One or more of the items selected is invalid.');
+
+                    $data['data']['bonus'] = [
+                        'item' => $data['item_ids']['bonus'],
+                        'quantity' => isset($data['quantities']['bonus']) ? $data['quantities']['bonus'] : 1
+                    ];
+                }
+
+                // Encode the prize data
                 $data['data'] = json_encode($data['data']);
             }
 

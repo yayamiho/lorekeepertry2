@@ -66,7 +66,9 @@
                     <p>You {{ $advent->isActive ? 'have ' : '' }}claimed these prizes{{ $advent->isActive ? ' thus far' : '' }}:</p>
                     <div class="d-flex">
                         @foreach($participantLog as $log)
-                            {!! $advent->displayItemShort($log->day) !!}
+                            <div class="align-self-center mx-1">
+                                {!! $advent->displayItemShort($log->day) !!}
+                            </div>
                         @endforeach
                     </div>
                 @endif

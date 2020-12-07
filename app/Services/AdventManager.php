@@ -51,6 +51,24 @@ class AdventManager extends Service
                 'notes' => 'Claimed ' . format_date($participant->claimed_at)
             ], $advent->item($advent->day), $advent->itemQuantity($advent->day))) throw new \Exception("Failed to claim item.");
 
+            // Check for bonus prize/eligibility
+            if($advent->day == $advent->days && isset($advent->data['bonus'])) {
+                // Check if the user has a record for each day of the advent
+                for($day = 1; $day <= $advent->days; $day++) {
+                    if(!$advent->participants->where('user_id', $user->id)->where('day', $day)->first()) {
+                        $allDays = false;
+                        break;
+                    }
+                    if(!isset($allDays)) $allDays = true;
+                }
+
+                // If all days
+                if(isset($allDays) && $allDays) if(!(new InventoryManager)->creditItem(null, $user, 'Advent Calendar Bonus Prize', [
+                    'data' => $participant->itemData,
+                    'notes' => 'Advent Calendar Bonus Prize'
+                ], $advent->item('bonus'), $advent->itemQuantity('bonus'))) throw new \Exception("Failed to claim item.");
+            }
+
             return $this->commitReturn($participant);
         } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
