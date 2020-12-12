@@ -85,16 +85,7 @@ class AdventCalendar extends Model
      */
     public function scopeActive($query)
     {
-        return $query->where(function($query) {
-            $query->whereNull('start_at')->orWhere('start_at', '<', Carbon::now())->orWhere(function($query) {
-                $query->where('start_at', '>=', Carbon::now());
-            });
-        })->where(function($query) {
-                $query->whereNull('end_at')->orWhere('end_at', '>', Carbon::now())->orWhere(function($query) {
-                    $query->where('end_at', '<=', Carbon::now());
-                });
-        });
-
+        return $query->where('start_at', '<=', Carbon::now())->where('end_at', '>=', Carbon::now());
     }
 
     /**
