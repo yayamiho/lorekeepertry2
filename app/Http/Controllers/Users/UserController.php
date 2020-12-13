@@ -216,7 +216,8 @@ class UserController extends Controller
             'awards' => $awards,
             'userOptions' => User::where('id', '!=', $this->user->id)->orderBy('name')->pluck('name', 'id')->toArray(),
             'user' => $this->user,
-            'logs' => $this->user->getAwardLogs()
+            'logs' => $this->user->getAwardLogs(),
+            'sublists' => Sublist::orderBy('sort', 'DESC')->get()
         ]);
     }
 
