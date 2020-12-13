@@ -12,6 +12,7 @@ use App\Models\Award\AwardTag;
 
 use App\Models\Shop\Shop;
 use App\Models\Prompt\Prompt;
+use App\Models\User\User;
 
 use App\Services\AwardService;
 
