@@ -4,7 +4,7 @@
 
 @section('meta-img') {{ $imageUrl }} @endsection
 
-@section('meta-desc') 
+@section('meta-desc')
 @if(isset($award->category) && $award->category) <p><strong>Category:</strong> {{ $award->category->name }}</p> @endif
 @if(isset($award->rarity) && $award->rarity) :: <p><strong>Rarity:</strong> {{ $award->rarity }}: {{ $award->rarityName }}</p> @endif
  :: {!! $award->description !!}
@@ -37,9 +37,9 @@
                                     <p><strong>Rarity:</strong> {{ $award->rarity }}: {{ $award->rarityName }}</p>
                                 </div>
                             @endif
-                            @if(isset($award->artist) && $award->artist)
+                            @if(isset($award->awardArtist) && $award->awardArtist)
                                 <div class="col">
-                                    <p><strong>Artist:</strong> {!! $award->artist !!}</p>
+                                    <p><strong>Artist:</strong> {!! $award->awardArtist !!}</p>
                                 </div>
                             @endif
                             <div class="col-md-5 col-md">
@@ -55,17 +55,17 @@
                             </div>
                         </div>
                         <div class="world-entry-text">
-                            @if(isset($award->reference_url) && $award->reference_url)  <p><strong>Wiki Link:</strong> <a href="{{ $award->reference_url }}">{{ $award->reference_url }}</a></p> @endif
+                            @if(isset($award->reference_url) && $award->reference_url)  <p><strong>Reference Link:</strong> <a href="{{ $award->reference_url }}">{{ $award->reference_url }}</a></p> @endif
                             {!! $description !!}
                             @if(isset($award->uses) && $award->uses || isset($award->source) && $award->source || isset($award->data['shops']) && $award->data['shops'] || isset($award->data['prompts']) && $award->data['prompts'])
-                            
+
                                 @if(isset($award->uses) && $award->uses)  <p><strong>Uses:</strong> {!! $award->uses !!}</p> @endif
                                 @if(isset($award->source) && $award->source || isset($award->data['shops']) && $award->data['shops'] || isset($award->data['prompts']) && $award->data['prompts'])
                                 <h5>Availability</h5>
                                 <div class="row">
                                     @if(isset($award->data['release']) && $award->data['release'])
                                         <div class="col">
-                                            <p><strong>Source:</strong></p> 
+                                            <p><strong>Source:</strong></p>
                                             <p>{!! $award->data['release'] !!}</p>
                                         </div>
                                     @endif

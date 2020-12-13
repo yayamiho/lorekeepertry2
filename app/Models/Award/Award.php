@@ -20,7 +20,7 @@ class Award extends Model
      */
     protected $fillable = [
         'award_category_id', 'name', 'has_image', 'description', 'parsed_description',
-        'data', 'reference_url', 'artist_alias', 'artist_url'
+        'data', 'reference_url', 'artist_alias', 'artist_url', 'artist_id'
     ];
 
     /**
@@ -29,7 +29,7 @@ class Award extends Model
      * @var string
      */
     protected $table = 'awards';
-    
+
     /**
      * Validation rules for creation.
      *
@@ -45,7 +45,7 @@ class Award extends Model
         'uses' => 'nullable|between:3,250',
         'release' => 'nullable|between:3,100'
     ];
-    
+
     /**
      * Validation rules for updating.
      *
@@ -62,7 +62,7 @@ class Award extends Model
     ];
 
     /**********************************************************************************************
-    
+
         RELATIONS
 
     **********************************************************************************************/
@@ -70,7 +70,7 @@ class Award extends Model
     /**
      * Get the category the award belongs to.
      */
-    public function category() 
+    public function category()
     {
         return $this->belongsTo('App\Models\Award\AwardCategory', 'award_category_id');
     }
@@ -78,13 +78,21 @@ class Award extends Model
     /**
      * Get the award's tags.
      */
-    public function tags() 
+    public function tags()
     {
         return $this->hasMany('App\Models\Award\AwardTag', 'award_id');
     }
 
+    /**
+     * Get the user that drew the award art.
+     */
+    public function artist()
+    {
+        return $this->belongsTo('App\Models\User\User', 'artist_id');
+    }
+
     /**********************************************************************************************
-    
+
         SCOPES
 
     **********************************************************************************************/
@@ -136,11 +144,11 @@ class Award extends Model
     }
 
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
-    
+
     /**
      * Displays the model's name, linked to its encyclopedia page.
      *
@@ -180,7 +188,7 @@ class Award extends Model
     {
         return public_path($this->imageDirectory);
     }
-    
+
     /**
      * Gets the URL of the model's image.
      *
@@ -224,21 +232,28 @@ class Award extends Model
 
     /**
      * Get the artist of the award's image.
-     * 
+     *
      * @return string
      */
-    public function getArtistAttribute() 
+    public function getAwardArtistAttribute()
     {
-        if(!$this->artist_url && !$this->artist_alias) return null;
-        if ($this->artist_url)
-        {
-            return '<a href="'.$this->artist_url.'" class="display-creator">'. ($this->artist_alias ? : $this->artist_url) .'</a>';
+        if(!$this->artist_url && !$this->artist_id) return null;
+
+        // Check to see if the artist exists on site
+        $artist = checkAlias($this->artist_url, false);
+        if(is_object($artist)) {
+            $this->artist_id = $artist->id;
+            $this->artist_url = null;
+            $this->save();
         }
-        else if($this->artist_alias)
+
+        if($this->artist_id)
         {
-            $user = User::where('alias', trim($this->artist_alias))->first();
-            if($user) return $user->displayName;
-            else return '<a href="https://www.deviantart.com/'.$this->artist_alias.'">'.$this->artist_alias.'@dA</a>';
+            return $this->artist->displayName;
+        }
+        else if ($this->artist_url)
+        {
+            return prettyProfileLink($this->artist_url);
         }
     }
 
@@ -247,7 +262,7 @@ class Award extends Model
      *
      * @return string
      */
-    public function getReferenceAttribute() 
+    public function getReferenceAttribute()
     {
         if (!$this->reference_url) return null;
         return $this->reference_url;
@@ -258,7 +273,7 @@ class Award extends Model
      *
      * @return array
      */
-    public function getDataAttribute() 
+    public function getDataAttribute()
     {
         if (!$this->id) return null;
         return json_decode($this->attributes['data'], true);
@@ -269,7 +284,7 @@ class Award extends Model
      *
      * @return string
      */
-    public function getRarityAttribute() 
+    public function getRarityAttribute()
     {
         if (!$this->data) return null;
         return $this->data['rarity'];
@@ -280,7 +295,7 @@ class Award extends Model
      *
      * @return string
      */
-    public function getUsesAttribute() 
+    public function getUsesAttribute()
     {
         if (!$this->data) return null;
         return $this->data['uses'];
@@ -291,7 +306,7 @@ class Award extends Model
      *
      * @return string
      */
-    public function getSourceAttribute() 
+    public function getSourceAttribute()
     {
         if (!$this->data) return null;
         return $this->data['release'];
@@ -302,7 +317,7 @@ class Award extends Model
      *
      * @return array
      */
-    public function getShopsAttribute() 
+    public function getShopsAttribute()
     {
         if (!$this->data) return null;
         $awardShops = $this->data['shops'];
@@ -314,7 +329,7 @@ class Award extends Model
      *
      * @return array
      */
-    public function getPromptsAttribute() 
+    public function getPromptsAttribute()
     {
         if (!$this->data) return null;
         $awardPrompts = $this->data['prompts'];
@@ -322,7 +337,7 @@ class Award extends Model
     }
 
     /**********************************************************************************************
-    
+
         OTHER FUNCTIONS
 
     **********************************************************************************************/
