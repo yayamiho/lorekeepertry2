@@ -50,6 +50,10 @@ return [
     'edit_awardcases' => [
         'name' => 'Edit Awardcases',
         'description' => 'Allow rank to create and edit awards and user awardcases.'
+    ],
+    'manage_reports' => [
+        'name' => 'Manage Reports',
+        'description' => 'Allow rank to view the reports queue.'
     ]
 
 

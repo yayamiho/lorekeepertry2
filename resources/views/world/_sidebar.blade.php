@@ -16,11 +16,6 @@
         <div class="sidebar-item"><a href="{{ url('world/currencies') }}" class="{{ set_active('world/currencies*') }}">Currencies</a></div>
     </li>
     <li class="sidebar-section">
-        <div class="sidebar-section-header">Prompts</div>
-        <div class="sidebar-item"><a href="{{ url('world/prompt-categories') }}" class="{{ set_active('world/prompt-categories*') }}">Prompt Categories</a></div>
-        <div class="sidebar-item"><a href="{{ url('world/prompts') }}" class="{{ set_active('world/prompts*') }}">All Prompts</a></div>
-    </li>
-    <li class="sidebar-section">
         <div class="sidebar-section-header">Awards</div>
         <div class="sidebar-item"><a href="{{ url('world/award-categories') }}" class="{{ set_active('world/award-categories*') }}">Award Categories</a></div>
         <div class="sidebar-item"><a href="{{ url('world/awards') }}" class="{{ set_active('world/awards*') }}">All Awards</a></div>
