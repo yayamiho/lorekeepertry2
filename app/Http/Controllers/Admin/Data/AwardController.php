@@ -226,7 +226,7 @@ class AwardController extends Controller
         $id ? $request->validate(Award::$updateRules) : $request->validate(Award::$createRules);
         $data = $request->only([
             'name', 'allow_transfer', 'award_category_id', 'description', 'image', 'remove_image', 'rarity',
-            'reference_url', 'artist_alias', 'artist_url', 'uses', 'shops', 'prompts', 'release'
+            'reference_url', 'artist_alias', 'artist_url', 'uses', 'shops', 'prompts', 'release', 'artist_id'
         ]);
         if($id && $service->updateAward(Award::find($id), $data, Auth::user())) {
             flash('Award updated successfully.')->success();

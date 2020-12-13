@@ -115,6 +115,8 @@
 @parent
 <script>
 $( document ).ready(function() {
+    $('.selectize').selectize();
+
     $('#shopsList').selectize({
             maxAwards: 10
         });
