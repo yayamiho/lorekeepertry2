@@ -6,6 +6,7 @@ use DB;
 use Config;
 use Carbon\Carbon;
 
+use Illuminate\Support\Arr;
 use App\Models\Advent\AdventCalendar;
 use App\Models\Advent\AdventParticipant;
 use App\Models\Item\Item;
@@ -36,7 +37,7 @@ class AdventService extends Service
             if(!$data['start_at']) throw new \Exception ('A start time is required.');
             if(!$data['end_at']) throw new \Exception ('An end time is required.');
 
-            $advent = AdventCalendar::create(array_only($data, ['name', 'display_name', 'summary', 'start_at', 'end_at']));
+            $advent = AdventCalendar::create(Arr::only($data, ['name', 'display_name', 'summary', 'start_at', 'end_at']));
 
             return $this->commitReturn($advent);
         } catch(\Exception $e) {
@@ -100,7 +101,7 @@ class AdventService extends Service
                 $data['data'] = json_encode($data['data']);
             }
 
-            $advent->update(array_only($data, ['name', 'display_name', 'summary', 'start_at', 'end_at', 'data']));
+            $advent->update(Arr::only($data, ['name', 'display_name', 'summary', 'start_at', 'end_at', 'data']));
 
             return $this->commitReturn($advent);
         } catch(\Exception $e) {
