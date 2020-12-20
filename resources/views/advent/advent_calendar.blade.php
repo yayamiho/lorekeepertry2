@@ -64,7 +64,7 @@
                 @if($participantLog->count())
                     <hr/>
                     <p>You {{ $advent->isActive ? 'have ' : '' }}claimed these prizes{{ $advent->isActive ? ' thus far' : '' }}:</p>
-                    <div class="d-flex">
+                    <div class="d-flex align-content-around flex-wrap mb-2">
                         @foreach($participantLog as $log)
                             <div class="align-self-center mx-1">
                                 {!! $advent->displayItemShort($log->day) !!}
