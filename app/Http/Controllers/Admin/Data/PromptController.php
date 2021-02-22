@@ -12,6 +12,7 @@ use App\Models\Item\Item;
 use App\Models\Currency\Currency;
 use App\Models\Loot\LootTable;
 use App\Models\Award\Award;
+use App\Models\Raffle\Raffle;
 
 use App\Services\PromptService;
 
@@ -39,7 +40,7 @@ class PromptController extends Controller
             'categories' => PromptCategory::orderBy('sort', 'DESC')->get()
         ]);
     }
-    
+
     /**
      * Shows the create prompt category page.
      *
@@ -51,7 +52,7 @@ class PromptController extends Controller
             'category' => new PromptCategory
         ]);
     }
-    
+
     /**
      * Shows the edit prompt category page.
      *
@@ -93,7 +94,7 @@ class PromptController extends Controller
         }
         return redirect()->back();
     }
-    
+
     /**
      * Gets the prompt category deletion modal.
      *
@@ -147,7 +148,7 @@ class PromptController extends Controller
 
 
     /**********************************************************************************************
-    
+
         PROMPTS
 
     **********************************************************************************************/
@@ -162,16 +163,16 @@ class PromptController extends Controller
     {
         $query = Prompt::query();
         $data = $request->only(['prompt_category_id', 'name']);
-        if(isset($data['prompt_category_id']) && $data['prompt_category_id'] != 'none') 
+        if(isset($data['prompt_category_id']) && $data['prompt_category_id'] != 'none')
             $query->where('prompt_category_id', $data['prompt_category_id']);
-        if(isset($data['name'])) 
+        if(isset($data['name']))
             $query->where('name', 'LIKE', '%'.$data['name'].'%');
         return view('admin.prompts.prompts', [
             'prompts' => $query->paginate(20)->appends($request->query()),
             'categories' => ['none' => 'Any Category'] + PromptCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray()
         ]);
     }
-    
+
     /**
      * Shows the create prompt page.
      *
@@ -185,10 +186,11 @@ class PromptController extends Controller
             'items' => Item::orderBy('name')->pluck('name', 'id'),
             'awards' => Award::orderBy('name')->pluck('name', 'id'),
             'currencies' => Currency::where('is_user_owned', 1)->orderBy('name')->pluck('name', 'id'),
-            'tables' => LootTable::orderBy('name')->pluck('name', 'id')
+            'tables' => LootTable::orderBy('name')->pluck('name', 'id'),
+            'raffles' => Raffle::where('rolled_at', null)->where('is_active', 1)->orderBy('name')->pluck('name', 'id'),
         ]);
     }
-    
+
     /**
      * Shows the edit prompt page.
      *
@@ -205,7 +207,8 @@ class PromptController extends Controller
             'items' => Item::orderBy('name')->pluck('name', 'id'),
             'awards' => Award::orderBy('name')->pluck('name', 'id'),
             'currencies' => Currency::where('is_user_owned', 1)->orderBy('name')->pluck('name', 'id'),
-            'tables' => LootTable::orderBy('name')->pluck('name', 'id')
+            'tables' => LootTable::orderBy('name')->pluck('name', 'id'),
+            'raffles' => Raffle::where('rolled_at', null)->where('is_active', 1)->orderBy('name')->pluck('name', 'id'),
         ]);
     }
 
@@ -221,7 +224,7 @@ class PromptController extends Controller
     {
         $id ? $request->validate(Prompt::$updateRules) : $request->validate(Prompt::$createRules);
         $data = $request->only([
-            'name', 'prompt_category_id', 'summary', 'description', 'start_at', 'end_at', 'hide_before_start', 'hide_after_end', 'is_active', 'rewardable_type', 'rewardable_id', 'quantity', 'image', 'remove_image'
+            'name', 'prompt_category_id', 'summary', 'description', 'start_at', 'end_at', 'hide_before_start', 'hide_after_end', 'is_active', 'rewardable_type', 'rewardable_id', 'quantity', 'image', 'remove_image', 'prefix', 'hide_submissions'
         ]);
         if($id && $service->updatePrompt(Prompt::find($id), $data, Auth::user())) {
             flash('Prompt updated successfully.')->success();
@@ -235,7 +238,7 @@ class PromptController extends Controller
         }
         return redirect()->back();
     }
-    
+
     /**
      * Gets the prompt deletion modal.
      *
