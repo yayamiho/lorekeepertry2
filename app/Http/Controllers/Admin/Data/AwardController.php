@@ -12,6 +12,7 @@ use App\Models\Award\AwardTag;
 
 use App\Models\Shop\Shop;
 use App\Models\Prompt\Prompt;
+use App\Models\User\User;
 
 use App\Services\AwardService;
 
@@ -29,7 +30,7 @@ class AwardController extends Controller
     */
 
     /**********************************************************************************************
-    
+
         AWARD CATEGORIES
 
     **********************************************************************************************/
@@ -45,7 +46,7 @@ class AwardController extends Controller
             'categories' => AwardCategory::orderBy('sort', 'DESC')->get()
         ]);
     }
-    
+
     /**
      * Shows the create award category page.
      *
@@ -57,7 +58,7 @@ class AwardController extends Controller
             'category' => new AwardCategory
         ]);
     }
-    
+
     /**
      * Shows the edit award category page.
      *
@@ -99,7 +100,7 @@ class AwardController extends Controller
         }
         return redirect()->back();
     }
-    
+
     /**
      * Gets the award category deletion modal.
      *
@@ -152,7 +153,7 @@ class AwardController extends Controller
     }
 
     /**********************************************************************************************
-    
+
         AWARDS
 
     **********************************************************************************************/
@@ -167,16 +168,16 @@ class AwardController extends Controller
     {
         $query = Award::query();
         $data = $request->only(['award_category_id', 'name']);
-        if(isset($data['award_category_id']) && $data['award_category_id'] != 'none') 
+        if(isset($data['award_category_id']) && $data['award_category_id'] != 'none')
             $query->where('award_category_id', $data['award_category_id']);
-        if(isset($data['name'])) 
+        if(isset($data['name']))
             $query->where('name', 'LIKE', '%'.$data['name'].'%');
         return view('admin.awards.awards', [
             'awards' => $query->paginate(20)->appends($request->query()),
             'categories' => ['none' => 'Any Category'] + AwardCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray()
         ]);
     }
-    
+
     /**
      * Shows the create award page.
      *
@@ -188,10 +189,11 @@ class AwardController extends Controller
             'award' => new Award,
             'categories' => ['none' => 'No category'] + AwardCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'shops' => Shop::where('is_active', 1)->orderBy('id')->pluck('name', 'id'),
-            'prompts' => Prompt::where('is_active', 1)->orderBy('id')->pluck('name', 'id')
+            'prompts' => Prompt::where('is_active', 1)->orderBy('id')->pluck('name', 'id'),
+            'userOptions' => User::query()->orderBy('name')->pluck('name', 'id')->toArray()
         ]);
     }
-    
+
     /**
      * Shows the edit award page.
      *
@@ -206,7 +208,8 @@ class AwardController extends Controller
             'award' => $award,
             'categories' => ['none' => 'No category'] + AwardCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'shops' => Shop::where('is_active', 1)->orderBy('id')->pluck('name', 'id'),
-            'prompts' => Prompt::where('is_active', 1)->orderBy('id')->pluck('name', 'id')
+            'prompts' => Prompt::where('is_active', 1)->orderBy('id')->pluck('name', 'id'),
+            'userOptions' => User::query()->orderBy('name')->pluck('name', 'id')->toArray()
         ]);
     }
 
@@ -223,7 +226,7 @@ class AwardController extends Controller
         $id ? $request->validate(Award::$updateRules) : $request->validate(Award::$createRules);
         $data = $request->only([
             'name', 'allow_transfer', 'award_category_id', 'description', 'image', 'remove_image', 'rarity',
-            'reference_url', 'artist_alias', 'artist_url', 'uses', 'shops', 'prompts', 'release'
+            'reference_url', 'artist_alias', 'artist_url', 'uses', 'shops', 'prompts', 'release', 'artist_id'
         ]);
         if($id && $service->updateAward(Award::find($id), $data, Auth::user())) {
             flash('Award updated successfully.')->success();
@@ -237,7 +240,7 @@ class AwardController extends Controller
         }
         return redirect()->back();
     }
-    
+
     /**
      * Gets the award deletion modal.
      *
@@ -272,7 +275,7 @@ class AwardController extends Controller
     }
 
     /**********************************************************************************************
-    
+
         AWARD TAGS
 
     **********************************************************************************************/
@@ -352,7 +355,7 @@ class AwardController extends Controller
         }
         return redirect()->back();
     }
-    
+
     /**
      * Gets the award tag deletion modal.
      *

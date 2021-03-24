@@ -148,7 +148,7 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('items/tag/{id}/{tag}', 'ItemController@postEditItemTag');
     Route::get('items/tag/{id}', 'ItemController@getAddItemTag');
     Route::post('items/tag/{id}', 'ItemController@postAddItemTag');
-    
+
     # AWARDS
     Route::get('award-categories', 'AwardController@getIndex');
     Route::get('award-categories/create', 'AwardController@getCreateAwardCategory');
@@ -309,7 +309,7 @@ Route::group(['prefix' => 'grants', 'namespace' => 'Users', 'middleware' => 'pow
 
 # AWARD GRANTS
 Route::group(['prefix' => 'grants', 'namespace' => 'Users', 'middleware' => 'power:edit_awardcases'], function() {
-    
+
     Route::get('awards', 'GrantController@getAwards');
     Route::post('awards', 'GrantController@postAwards');
 });

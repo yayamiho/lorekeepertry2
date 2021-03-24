@@ -71,12 +71,12 @@ class UserController extends Controller
     {
         $characters = $this->user->characters();
         if(!Auth::check() || !(Auth::check() && Auth::user()->hasPower('manage_characters'))) $characters->visible();
-        
+
         return view('user.profile', [
             'user' => $this->user,
             'items' => $this->user->items()->where('count', '>', 0)->orderBy('user_items.updated_at', 'DESC')->take(4)->get(),
-            'sublists' => Sublist::orderBy('sort', 'DESC')->get(),
             'awards' => $this->user->awards()->orderBy('user_awards.updated_at', 'DESC')->take(4)->get(),
+            'sublists' => Sublist::orderBy('sort', 'DESC')->get(),
             'characters' => $characters,
         ]);
     }
@@ -197,7 +197,7 @@ class UserController extends Controller
             'sublists' => Sublist::orderBy('sort', 'DESC')->get()
         ]);
     }
-    
+
     /**
      * Shows a user's award case.
      *
@@ -207,7 +207,7 @@ class UserController extends Controller
     public function getUserAwardCase($name)
     {
         $categories = AwardCategory::orderBy('sort', 'DESC')->get();
-        $awards = count($categories) ? 
+        $awards = count($categories) ?
             $this->user->awards()
                 ->where('count', '>', 0)
                 ->orderByRaw('FIELD(award_category_id,'.implode(',', $categories->pluck('id')->toArray()).')')
@@ -227,7 +227,8 @@ class UserController extends Controller
             'awards' => $awards,
             'userOptions' => User::where('id', '!=', $this->user->id)->orderBy('name')->pluck('name', 'id')->toArray(),
             'user' => $this->user,
-            'logs' => $this->user->getAwardLogs()
+            'logs' => $this->user->getAwardLogs(),
+            'sublists' => Sublist::orderBy('sort', 'DESC')->get()
         ]);
     }
 
@@ -281,7 +282,7 @@ class UserController extends Controller
             'sublists' => Sublist::orderBy('sort', 'DESC')->get()
         ]);
     }
-    
+
     /**
      * Shows a user's award logs.
      *

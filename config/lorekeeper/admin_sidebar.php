@@ -136,7 +136,7 @@ return [
                 'name' => 'Galleries',
                 'url' => 'admin/data/galleries'
             ],
-            [                
+            [
                 'name' => 'Award Categories',
                 'url' => 'admin/data/award-categories'
             ],

@@ -9,7 +9,10 @@
 
 <p>This is a list of awards in the game. Awards cannot be transferred (unlike items) but can be deleted. Awards can be granted via prompts, claims, or admin grants. Note that by default, users can receive more than one award. (In the case that award systems vary between ARPGS) So be sure to check a user's awards before granting if you want specific awards to be exclusive.</p>
 
-<div class="text-right mb-3"><a class="btn btn-primary" href="{{ url('admin/data/awards/create') }}"><i class="fas fa-plus"></i> Create New Award</a></div>
+<div class="text-right mb-3">
+    <a class="btn btn-primary" href="{{ url('admin/data/award-categories') }}"><i class="fas fa-folder"></i> Award Categories</a>
+    <a class="btn btn-primary" href="{{ url('admin/data/awards/create') }}"><i class="fas fa-plus"></i> Create New Award</a>
+</div>
 
 <div>
     {!! Form::open(['method' => 'GET', 'class' => 'form-inline justify-content-end']) !!}
@@ -30,29 +33,21 @@
 @else
     {!! $awards->render() !!}
 
-    <table class="table table-sm category-table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Category</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($awards as $award)
-                <tr class="sort-award" data-id="{{ $award->id }}">
-                    <td><a href="{{ $award->idUrl }}">{{ $award->name }}</a></td>
-                    <td>{{ $award->category ? $award->category->name : '' }}</td>
-                    <td class="text-right">
-                        <a href="{{ url('admin/data/awards/edit/'.$award->id) }}" class="btn btn-primary">Edit</a>
-                    </td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
-
-
-
+    <div class="row ml-md-2 mb-4">
+        <div class="d-flex row flex-wrap col-12 pb-1 px-0 ubt-bottom">
+          <div class="col-5 col-md-6 font-weight-bold">Name</div>
+          <div class="col-5 col-md-5 font-weight-bold">Category</div>
+        </div>
+        @foreach($awards as $award)
+        <div class="d-flex row flex-wrap col-12 mt-1 pt-2 px-0 ubt-top">
+          <div class="col-5 col-md-6"> {{ $award->name }} </div>
+          <div class="col-4 col-md-5"> {{ $award->category ? $award->category->name : '' }} </div>
+          <div class="col-3 col-md-1 text-right">
+            <a href="{{ url('admin/data/awards/edit/'.$award->id) }}"  class="btn btn-primary py-0 px-2">Edit</a>
+          </div>
+        </div>
+        @endforeach
+      </div>
 
     {!! $awards->render() !!}
 @endif

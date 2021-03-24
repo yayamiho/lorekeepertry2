@@ -54,15 +54,15 @@
             {!! Form::text('reference_url', $award->reference_url, ['class' => 'form-control']) !!}
         </div>
     </div>
-    <div class="col">
-    {!! Form::label('Award Artist (Optional)') !!} {!! add_help('Provide the artist\'s dA alias or, failing that, a link. If both are provided, the alias will be used as the display name for the link.') !!}
+    <div class="col-md">
+    {!! Form::label('Award Artist (Optional)') !!} {!! add_help('Provide the artist\'s username if they are on site or, failing that, a link.') !!}
         <div class="row">
-            <div class="col">
+            <div class="col-md">
                 <div class="form-group">
-                    {!! Form::text('artist_alias', $award && $award->artist_alias ? $award->artist_alias : '', ['class' => 'form-control mr-2', 'placeholder' => 'Artist Alias']) !!}
+                    {!! Form::select('artist_id', $userOptions, $award && $award->artist_id ? $award->artist_id : null, ['class'=> 'form-control mr-2 selectize', 'placeholder' => 'Select a User']) !!}
                 </div>
             </div>
-            <div class="col">
+            <div class="col-md">
                 <div class="form-group">
                     {!! Form::text('artist_url', $award && $award->artist_url ? $award->artist_url : '', ['class' => 'form-control mr-2', 'placeholder' => 'Artist URL']) !!}
                 </div>
@@ -106,7 +106,7 @@
             @include('world._award_entry', ['imageUrl' => $award->imageUrl, 'name' => $award->displayName, 'description' => $award->parsed_description, 'searchUrl' => $award->searchUrl])
         </div>
     </div>
-   
+
 @endif
 
 @endsection
@@ -114,7 +114,9 @@
 @section('scripts')
 @parent
 <script>
-$( document ).ready(function() {    
+$( document ).ready(function() {
+    $('.selectize').selectize();
+
     $('#shopsList').selectize({
             maxAwards: 10
         });
@@ -122,12 +124,12 @@ $( document ).ready(function() {
     $('#promptsList').selectize({
         maxAwards: 10
     });
-    
+
     $('.delete-award-button').on('click', function(e) {
         e.preventDefault();
         loadModal("{{ url('admin/data/awards/delete') }}/{{ $award->id }}", 'Delete Award');
     });
 });
-    
+
 </script>
 @endsection

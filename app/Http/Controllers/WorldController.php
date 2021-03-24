@@ -125,7 +125,7 @@ class WorldController extends Controller
             'categories' => $query->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
         ]);
     }
-    
+
         /**
      * Shows the award categories page.
      *
@@ -137,11 +137,11 @@ class WorldController extends Controller
         $query = AwardCategory::query();
         $name = $request->get('name');
         if($name) $query->where('name', 'LIKE', '%'.$name.'%');
-        return view('world.award_categories', [  
+        return view('world.award_categories', [
             'categories' => $query->orderBy('sort', 'DESC')->paginate(20)->appends($request->query()),
         ]);
     }
-    
+
     /**
      * Shows the trait categories page.
      *
@@ -321,7 +321,7 @@ class WorldController extends Controller
             'shops' => Shop::whereIn('id', ShopStock::where('item_id', $item->id)->pluck('shop_id')->unique()->toArray())->orderBy('sort', 'DESC')->get()
         ]);
     }
-        
+
      /**
      * Shows the awards page.
      *
@@ -332,12 +332,12 @@ class WorldController extends Controller
     {
         $query = Award::with('category');
         $data = $request->only(['award_category_id', 'name', 'sort']);
-        if(isset($data['award_category_id']) && $data['award_category_id'] != 'none') 
+        if(isset($data['award_category_id']) && $data['award_category_id'] != 'none')
             $query->where('award_category_id', $data['award_category_id']);
-        if(isset($data['name'])) 
+        if(isset($data['name']))
             $query->where('name', 'LIKE', '%'.$data['name'].'%');
 
-        if(isset($data['sort'])) 
+        if(isset($data['sort']))
         {
             switch($data['sort']) {
                 case 'alpha':
@@ -356,7 +356,7 @@ class WorldController extends Controller
                     $query->sortOldest();
                     break;
             }
-        } 
+        }
         else $query->sortCategory();
 
         return view('world.awards', [
@@ -366,7 +366,7 @@ class WorldController extends Controller
         ]);
     }
 
-    
+
     /**
      * Shows an individual award's page.
      *
@@ -381,8 +381,8 @@ class WorldController extends Controller
 
         return view('world.award_page', [
             'award' => $award,
-            'imageUrl' => $award->imageUrl, 
-            'name' => $award->displayName, 
+            'imageUrl' => $award->imageUrl,
+            'name' => $award->displayName,
             'description' => $award->parsed_description,
             'categories' => $categories->keyBy('id'),
             'shops' => Shop::orderBy('sort', 'DESC')->get()
