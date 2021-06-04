@@ -44,8 +44,6 @@ class BoxService extends Service
      */
     public function getTagData($tag)
     {
-
-        dd("getTagData");
         $rewards = [];
         if($tag->data) {
             $assets = parseAssetData($tag->data);
