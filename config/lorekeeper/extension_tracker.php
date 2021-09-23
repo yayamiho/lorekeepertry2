@@ -13,8 +13,8 @@ return [
     // ],
 
     'choice_box_tag' => [
-        'key' => 'choice_box_tag',
-        'wiki_key' => 'choice_box_tag',
+        'key' => 'Choice_Box_Tag',
+        'wiki_key' => 'Choice_Box_Tag',
         'creators' => json_encode([
             'Mercury' => 'https://github.com/itinerare/',
         ]),
