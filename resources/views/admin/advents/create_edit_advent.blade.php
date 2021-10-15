@@ -131,7 +131,7 @@
                 {!! $participant->user->displayName !!}
             </div>
             <div class="col-md text-center">
-                {{ $participant->day }} - {!! $advent->item($participant->day)->displayName !!} ×{{ $advent->itemQuantity($participant->day) }}
+                {{ $participant->day }} - {!! ($advent->item($participant->day)) ? $advent->item($participant->day)->displayName : 'Deleted Asset' !!} ×{{ $advent->itemQuantity($participant->day) }}
             </div>
             <div class="col-md text-center">
                 {!! pretty_date($participant->claimed_at) !!}

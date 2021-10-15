@@ -98,7 +98,8 @@ class AdventService extends Service
                 }
 
                 // Encode the prize data
-                $data['data'] = json_encode($data['data']);
+                if (isset($data['data'])) $data['data'] = json_encode($data['data']);
+				else $data['data'] = null;
             }
 
             $advent->update(Arr::only($data, ['name', 'display_name', 'summary', 'start_at', 'end_at', 'data']));
