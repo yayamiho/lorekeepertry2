@@ -12,6 +12,10 @@
 <div class="text-center">
     <img src="{{ asset('images/donation_shop.png') }}" style="max-width:100%" />
     <p>{!! $text->parsed_text !!}</p>
+
+    @if(Auth::check() && Auth::user()->donationShopCooldown)
+        You can collect an item {!! pretty_date(Auth::user()->donationShopCooldown) !!}!
+    @endif
 </div>
 
 @foreach($items as $categoryId=>$categoryItems)
