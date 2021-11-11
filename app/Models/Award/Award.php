@@ -117,8 +117,8 @@ class Award extends Model
      */
     public function scopeSortCategory($query)
     {
-        $ids = AwardCategory::orderBy('sort', 'DESC')->pluck('id')->toArray();
-        return count($ids) ? $query->orderByRaw(DB::raw('FIELD(award_category_id, '.implode(',', $ids).')')) : $query;
+        if(AwardCategory::all()->count()) return $query->orderBy(AwardCategory::select('sort')->whereColumn('awards.award_category_id', 'award_categories.id'), 'DESC');
+        return $query;
     }
 
     /**
