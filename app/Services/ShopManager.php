@@ -186,4 +186,35 @@ class ShopManager extends Service
         }
         return $this->rollbackReturn(false);
     }
+
+    /**
+     * Clears out expired donations from the shop, if relevant.
+     *
+     * @return bool
+     */
+    public function cleanDonations()
+    {
+        $count = UserItemDonation::expired()->count();
+        if($count) {
+            DB::beginTransaction();
+
+            try {
+                // Fetch the logs for all expired items.
+                // This is necessary because the quantity is needed
+                $expiredLogs = ItemLog::where('log_type', 'Donated by User')->where('created_at', '<', Carbon::now()->subMonths(Config::get('lorekeeper.settings.donation_shop.expiry')));
+
+                // Process through expired items and remove the expired quantitie(s)
+                foreach(UserItemDonation::expired()->get() as $expired) {
+                    $quantityExpired = $expiredLogs->where('stack_id', $expired->stack_id)->sum('quantity');
+                    $expired->update(['stock', ($expired->stock -= $quantityExpired > 0 ? $expired->stock -= $quantityExpired : 0)]);
+                    unset($quantityExpired);
+                }
+
+                return $this->commitReturn(true);
+            } catch(\Exception $e) {
+                $this->setError('error', $e->getMessage());
+            }
+            return $this->rollbackReturn(false);
+        }
+    }
 }

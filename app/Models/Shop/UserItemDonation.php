@@ -2,7 +2,10 @@
 
 namespace App\Models\Shop;
 
+use App\Models\Item\ItemLog;
 use App\Models\Model;
+use Carbon\Carbon;
+use Config;
 
 class UserItemDonation extends Model
 {
@@ -60,6 +63,22 @@ class UserItemDonation extends Model
     public function scopeAvailable($query)
     {
         return $query->where('stock', '>', 0);
+    }
+
+    /**
+     * Scope a query to only include "expired" donated items.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeExpired($query)
+    {
+        if(Config::get('lorekeeper.settings.donation_shop.expiry')) {
+            $expiredLogs = ItemLog::where('log_type', 'Donated by User')->where('created_at', '<', Carbon::now()->subMonths(Config::get('lorekeeper.settings.donation_shop.expiry')));
+
+            return $query->where('stock', '>', 0)->whereIn('stack_id', $expiredLogs->pluck('stack_id')->toArray());
+        }
+        else return collect([]);
     }
 
     /**********************************************************************************************
