@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Services\ShopManager;
 
-class CheckNews extends Command
+class CleanDonations extends Command
 {
     /**
      * The name and signature of the console command.
