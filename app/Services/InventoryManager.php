@@ -381,7 +381,7 @@ class InventoryManager extends Service
                 if($stack->user_id != $user->id && !$user->hasPower('edit_inventories')) throw new \Exception("You do not own one of the selected items.");
                 if($stack->count < $quantity) throw new \Exception("Quantity to donate exceeds item count.");
                 if(!$stack->item->canDonate) throw new \Exception ("This item cannot be donated.");
-                if((!$stack->item->allow_transfer || isset($stack->data['disallow_transfer'])) && !$sender->hasPower('edit_inventories')) throw new \Exception("One of the selected items cannot be transferred.");
+                if((!$stack->item->allow_transfer || isset($stack->data['disallow_transfer'])) && !$user->hasPower('edit_inventories')) throw new \Exception("One of the selected items cannot be transferred.");
 
                 // Create or add to donated stock
                 $stock = UserItemDonation::where('stack_id', $stack->id)->where('item_id', $stack->item->id)->first();
@@ -400,7 +400,7 @@ class InventoryManager extends Service
                 if($this->debitStack($stack->user, ($stack->user_id == $user->id ? 'Donated by User' : 'Donated by Staff'), ['data' => ($stack->user_id != $user->id ? 'Donated by '.$user->displayName : '')], $stack, $quantity))
                 {
                     if($stack->user_id != $user->id)
-                        Notifications::create('ITEM_REMOVAL', $oldUser, [
+                        Notifications::create('ITEM_REMOVAL', $stack->user, [
                             'item_name' => $stack->item->name,
                             'item_quantity' => $quantity,
                             'sender_url' => $user->url,
