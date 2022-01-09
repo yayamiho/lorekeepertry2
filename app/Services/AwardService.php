@@ -317,7 +317,6 @@ class AwardService extends Service
             if(DB::table('character_awards')->where([['award_id', '=', $award->id], ['count', '>', 0]])->exists()) throw new \Exception("At least one character currently owns this award. Please remove the award(s) before deleting it.");
             if(DB::table('loots')->where('rewardable_type', 'Award')->where('rewardable_id', $award->id)->exists()) throw new \Exception("A loot table currently distributes this award as a potential reward. Please remove the award before deleting it.");
             if(DB::table('prompt_rewards')->where('rewardable_type', 'Award')->where('rewardable_id', $award->id)->exists()) throw new \Exception("A prompt currently distributes this award as a reward. Please remove the award before deleting it.");
-            if(DB::table('shop_stock')->where('award_id', $award->id)->exists()) throw new \Exception("A shop currently stocks this award. Please remove the award before deleting it.");
             
             DB::table('awards_log')->where('award_id', $award->id)->delete();
             DB::table('user_awards')->where('award_id', $award->id)->delete();
