@@ -18,7 +18,7 @@ class AwardCaseManager extends Service
 {
     /*
     |--------------------------------------------------------------------------
-    | Award Case Manager
+    | Awardcase Manager
     |--------------------------------------------------------------------------
     |
     | Handles modification of user-owned awards.
@@ -74,7 +74,7 @@ class AwardCaseManager extends Service
                 }
             }
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -112,7 +112,7 @@ class AwardCaseManager extends Service
                 if(!$i->category->is_character_owned) throw new \Exception("One of these awards cannot be owned by characters.");
             }
             if(!count($awards)) throw new \Exception("No valid awards found.");
-            
+
             foreach($awards as $award) {
                 $this->creditAward($staff, $character, 'Staff Grant', array_only($data, ['data', 'disallow_transfer', 'notes']), $award, $keyed_quantities[$award->id]);
                 if($character->is_visible && $character->user_id) {
@@ -126,9 +126,9 @@ class AwardCaseManager extends Service
                     ]);
                 }
             }
-            
+
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -150,35 +150,40 @@ class AwardCaseManager extends Service
         try {
             foreach($stacks as $key=>$stack) {
                 $quantity = $quantities[$key];
+
+                if(!$stack) throw new \Exception("Invalid or no stack selected.");
                 if(!$recipient) throw new \Exception("Invalid recipient selected.");
                 if(!$sender) throw new \Exception("Invalid sender selected.");
+
                 if($recipient->logType == 'Character' && $sender->logType == 'Character') throw new \Exception("Cannot transfer awards between characters.");
-                if($recipient->logType == 'Character' && !$sender->hasPower('edit_awardcases') && !$recipient->is_visible) throw new \Exception("Invalid character selected.");
+                if($recipient->logType == 'Character' && !$sender->hasPower('edit_inventories') && !$recipient->is_visible) throw new \Exception("Invalid character selected.");
                 if(!$stacks) throw new \Exception("Invalid stack selected.");
                 if($sender->logType == 'Character' && $quantity <= 0 && $stack->count > 0) $quantity = $stack->count;
                 if($quantity <= 0) throw new \Exception("Invalid quantity entered.");
-                
+
+                if(($recipient->logType == 'Character' && !$sender->hasPower('edit_inventories') && !Auth::user() == $recipient->user) || ($recipient->logType == 'User' && !Auth::user()->hasPower('edit_inventories') && !Auth::user() == $sender->user)) throw new \Exception("Cannot transfer awards to/from a character you don't own.");
+
                 if($recipient->logType == 'Character' && !$stack->award->category->is_character_owned) throw new \Exception("One of the selected awards cannot be owned by characters.");
-                if((!$stack->award->allow_transfer || isset($stack->data['disallow_transfer'])) && !Auth::user()->hasPower('edit_awardcases')) throw new \Exception("One of the selected awards cannot be transferred.");
+                if((!$stack->award->allow_transfer || isset($stack->data['disallow_transfer'])) && !Auth::user()->hasPower('edit_inventories')) throw new \Exception("One of the selected awards cannot be transferred.");
                 if($stack->count < $quantity) throw new \Exception("Quantity to transfer exceeds award count.");
 
                 //Check that hold count isn't being exceeded
                 if($stack->award->category->character_limit > 0) $limit = $stack->award->category->character_limit;
                 if($recipient->logType == 'Character' && isset($limit)) {
-                    $limitedAwards = Award::where('award_category_id', $stack->award->category->id);
-                    $ownedLimitedAwards = CharacterAward::with('award')->whereIn('award_id', $limitedAwards->pluck('id'))->whereNull('deleted_at')->where('count', '>', '0')->where('character_id', $recipient->id)->get();
-                    $newOwnedLimit = $ownedLimitedAwards->pluck('count')->sum() + $quantity;
+                    $limitedItems = Item::where('award_category_id', $stack->award->category->id);
+                    $ownedLimitedItems = CharacterItem::with('award')->whereIn('award_id', $limitedItems->pluck('id'))->whereNull('deleted_at')->where('count', '>', '0')->where('character_id', $recipient->id)->get();
+                    $newOwnedLimit = $ownedLimitedItems->pluck('count')->sum() + $quantity;
                 }
 
-                if($recipient->logType == 'Character' && isset($limit) && ($ownedLimitedAwards->pluck('count')->sum() >= $limit || $newOwnedLimit > $limit)) throw new \Exception("One of the selected awards exceeds the limit characters can own for its category.");
+                if($recipient->logType == 'Character' && isset($limit) && ($ownedLimitedItems->pluck('count')->sum() >= $limit || $newOwnedLimit > $limit)) throw new \Exception("One of the selected awards exceeds the limit characters can own for its category.");
 
-                $this->creditAward($sender, $recipient, $sender->logType == 'User' ? 'User → Character Transfer' : 'Character → User Transfer', $stack->data, $stack->award, $quantity);
+                $this->creditItem($sender, $recipient, $sender->logType == 'User' ? 'User → Character Transfer' : 'Character → User Transfer', $stack->data, $stack->award, $quantity);
 
                 $stack->count -= $quantity;
                 $stack->save();
             }
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -211,7 +216,7 @@ class AwardCaseManager extends Service
                 if($stack->count < $quantity) throw new \Exception("Quantity to transfer exceeds award count.");
 
                 $oldUser = $stack->user;
-                if($this->moveStack($stack->user, $recipient, ($stack->user_id == $sender->id ? 'User Transfer' : 'Staff Transfer'), ['data' => ($stack->user_id != $sender->id ? 'Transferred by '.$sender->displayName : '')], $stack, $quantity)) 
+                if($this->moveStack($stack->user, $recipient, ($stack->user_id == $sender->id ? 'User Transfer' : 'Staff Transfer'), ['data' => ($stack->user_id != $sender->id ? 'Transferred by '.$sender->displayName : '')], $stack, $quantity))
                 {
                     Notifications::create('AWARD_TRANSFER', $recipient, [
                         'award_name' => $stack->award->name,
@@ -219,7 +224,7 @@ class AwardCaseManager extends Service
                         'sender_url' => $sender->url,
                         'sender_name' => $sender->name
                     ]);
-                    if($stack->user_id != $sender->id) 
+                    if($stack->user_id != $sender->id)
                         Notifications::create('FORCED_AWARD_TRANSFER', $oldUser, [
                             'award_name' => $stack->award->name,
                             'award_quantity' => $quantity,
@@ -229,7 +234,7 @@ class AwardCaseManager extends Service
                 }
             }
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -252,16 +257,16 @@ class AwardCaseManager extends Service
                 foreach($stacks as $key=>$stack) {
                     $user = Auth::user();
                     $quantity = $quantities[$key];
-                    if(!$owner->hasAlias) throw new \Exception("Your deviantART account must be verified before you can perform this action.");
+                    if(!$owner->hasAlias) throw new \Exception("Your alias account must be verified before you can perform this action.");
                     if(!$stack) throw new \Exception("An invalid award was selected.");
                     if($stack->user_id != $owner->id && !$user->hasPower('edit_awardcases')) throw new \Exception("You do not own one of the selected awards.");
                     if($stack->count < $quantity) throw new \Exception("Quantity to delete exceeds award count.");
-                    
+
                     $oldUser = $stack->user;
 
-                    if($this->debitStack($stack->user, ($stack->user_id == $user->id ? 'User Deleted' : 'Staff Deleted'), ['data' => ($stack->user_id != $user->id ? 'Deleted by '.$user->displayName : '')], $stack, $quantity)) 
+                    if($this->debitStack($stack->user, ($stack->user_id == $user->id ? 'User Deleted' : 'Staff Deleted'), ['data' => ($stack->user_id != $user->id ? 'Deleted by '.$user->displayName : '')], $stack, $quantity))
                     {
-                        if($stack->user_id != $user->id) 
+                        if($stack->user_id != $user->id)
                             Notifications::create('AWARD_REMOVAL', $oldUser, [
                                 'award_name' => $stack->award->name,
                                 'award_quantity' => $quantity,
@@ -280,7 +285,7 @@ class AwardCaseManager extends Service
                     if($stack->character->user_id != $user->id && !$user->hasPower('edit_awardcases')) throw new \Exception("You do not own one of the selected awards.");
                     if($stack->count < $quantity) throw new \Exception("Quantity to delete exceeds award count.");
 
-                    if($this->debitStack($stack->character, ($stack->character->user_id == $user->id ? 'User Deleted' : 'Staff Deleted'), ['data' => ($stack->character->user_id != $user->id ? 'Deleted by '.$user->displayName : '')], $stack, $quantity)) 
+                    if($this->debitStack($stack->character, ($stack->character->user_id == $user->id ? 'User Deleted' : 'Staff Deleted'), ['data' => ($stack->character->user_id != $user->id ? 'Deleted by '.$user->displayName : '')], $stack, $quantity))
                     {
                         if($stack->character->user_id != $user->id && $stack->character->is_visible && $stack->character->user_id)
                             Notifications::create('CHARACTER_AWARD_REMOVAL', $stack->character->user, [
@@ -295,7 +300,7 @@ class AwardCaseManager extends Service
                 }
             }
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -306,7 +311,7 @@ class AwardCaseManager extends Service
      *
      * @param  \App\Models\User\User|\App\Models\Character\Character  $sender
      * @param  \App\Models\User\User|\App\Models\Character\Character  $recipient
-     * @param  string                                                 $type 
+     * @param  string                                                 $type
      * @param  array                                                  $data
      * @param  \App\Models\Award\Award                                  $award
      * @param  int                                                    $quantity
@@ -325,7 +330,7 @@ class AwardCaseManager extends Service
                     ['award_id', '=', $award->id],
                     ['data', '=', $encoded_data]
                 ])->first();
-                
+
                 if(!$recipient_stack)
                     $recipient_stack = UserAward::create(['user_id' => $recipient->id, 'award_id' => $award->id, 'data' => $encoded_data]);
                 $recipient_stack->count += $quantity;
@@ -337,7 +342,7 @@ class AwardCaseManager extends Service
                     ['award_id', '=', $award->id],
                     ['data', '=', $encoded_data]
                 ])->first();
-                
+
                 if(!$recipient_stack)
                     $recipient_stack = CharacterAward::create(['character_id' => $recipient->id, 'award_id' => $award->id, 'data' => $encoded_data]);
                 $recipient_stack->count += $quantity;
@@ -346,7 +351,7 @@ class AwardCaseManager extends Service
             if($type && !$this->createLog($sender ? $sender->id : null, $sender ? $sender->logType : null, $recipient ? $recipient->id : null, $recipient ? $recipient->logType : null, null, $type, $data['data'], $award->id, $quantity)) throw new \Exception("Failed to create log.");
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -357,7 +362,7 @@ class AwardCaseManager extends Service
      *
      * @param  \App\Models\User\User|\App\Models\Character\Character          $sender
      * @param  \App\Models\User\User|\App\Models\Character\Character          $recipient
-     * @param  string                                                         $type 
+     * @param  string                                                         $type
      * @param  array                                                          $data
      * @param  \App\Models\User\UserAward|\App\Models\Character\CharacterAward  $award
      * @return bool
@@ -375,7 +380,7 @@ class AwardCaseManager extends Service
 
             if(!$recipient_stack)
                 $recipient_stack = UserAward::create(['user_id' => $recipient->id, 'award_id' => $stack->award_id, 'data' => json_encode($stack->data)]);
-                
+
             $stack->count -= $quantity;
             $recipient_stack->count += $quantity;
             $stack->save();
@@ -384,7 +389,7 @@ class AwardCaseManager extends Service
             if($type && !$this->createLog($sender ? $sender->id : null, $sender ? $sender->logType : null, $recipient->id, $recipient ? $recipient->logType : null, $stack->id, $type, $data['data'], $stack->award_id, $quantity)) throw new \Exception("Failed to create log.");
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -394,7 +399,7 @@ class AwardCaseManager extends Service
      * Debits an award from a user or character.
      *
      * @param  \App\Models\User\User|\App\Models\Character\Character  $owner
-     * @param  string                                                 $type 
+     * @param  string                                                 $type
      * @param  array                                                  $data
      * @param  \App\Models\Award\UserAward                              $stack
      * @return bool
@@ -407,31 +412,31 @@ class AwardCaseManager extends Service
             $stack->count -= $quantity;
             $stack->save();
 
-            if($type && !$this->createLog($owner ? $owner->id : null, $owner ? $owner->logType : null, null, null, $stack->id, $type, $data['data'], $stack->award->id, $quantity)) throw new \Exception("Failed to create log."); 
+            if($type && !$this->createLog($owner ? $owner->id : null, $owner ? $owner->logType : null, null, null, $stack->id, $type, $data['data'], $stack->award->id, $quantity)) throw new \Exception("Failed to create log.");
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
     }
 
     /**
-     * Creates an award case log.
+     * Creates an awardcase log.
      *
      * @param  int     $senderId
      * @param  string  $senderType
      * @param  int     $recipientId
      * @param  string  $recipientType
      * @param  int     $stackId
-     * @param  string  $type 
+     * @param  string  $type
      * @param  string  $data
      * @param  int     $quantity
      * @return  int
      */
     public function createLog($senderId, $senderType, $recipientId, $recipientType, $stackId, $type, $data, $awardId, $quantity)
     {
-        
+
         return DB::table('awards_log')->insert(
             [
                 'sender_id' => $senderId,

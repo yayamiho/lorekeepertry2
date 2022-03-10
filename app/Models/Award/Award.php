@@ -20,7 +20,8 @@ class Award extends Model
      */
     protected $fillable = [
         'award_category_id', 'name', 'has_image', 'description', 'parsed_description',
-        'data', 'reference_url', 'artist_alias', 'artist_url', 'artist_id'
+        'data', 'reference_url', 'artist_alias', 'artist_url', 'artist_id', 'is_released',
+        'allow_transfer',
     ];
 
     /**
@@ -73,14 +74,6 @@ class Award extends Model
     public function category()
     {
         return $this->belongsTo('App\Models\Award\AwardCategory', 'award_category_id');
-    }
-
-    /**
-     * Get the award's tags.
-     */
-    public function tags()
-    {
-        return $this->hasMany('App\Models\Award\AwardTag', 'award_id');
     }
 
     /**
@@ -142,6 +135,18 @@ class Award extends Model
     {
         return $query->orderBy('id');
     }
+
+    /**
+     * Scope a query to show only released or "released" (at least one user-owned stack has ever existed) items.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeReleased($query)
+    {
+        return $query->whereIn('id', UserItem::pluck('item_id')->toArray())->orWhere('is_released', 1);
+    }
+
 
     /**********************************************************************************************
 
@@ -342,23 +347,4 @@ class Award extends Model
 
     **********************************************************************************************/
 
-    /**
-     * Checks if the award has a particular tag.
-     *
-     * @return bool
-     */
-    public function hasTag($tag)
-    {
-        return $this->tags()->where('tag', $tag)->where('is_active', 1)->exists();
-    }
-
-    /**
-     * Gets a particular tag attached to the award.
-     *
-     * @return \App\Models\Award\AwardTag
-     */
-    public function tag($tag)
-    {
-        return $this->tags()->where('tag', $tag)->where('is_active', 1)->first();
-    }
 }

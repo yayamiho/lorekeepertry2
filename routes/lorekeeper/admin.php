@@ -168,13 +168,6 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('awards/edit/{id?}', 'AwardController@postCreateEditAward');
     Route::post('awards/delete/{id}', 'AwardController@postDeleteAward');
 
-    Route::get('awards/delete-tag/{id}/{tag}', 'AwardController@getDeleteAwardTag');
-    Route::post('awards/delete-tag/{id}/{tag}', 'AwardController@postDeleteAwardTag');
-    Route::get('awards/tag/{id}/{tag}', 'AwardController@getEditAwardTag');
-    Route::post('awards/tag/{id}/{tag}', 'AwardController@postEditAwardTag');
-    Route::get('awards/tag/{id}', 'AwardController@getAddAwardTag');
-    Route::post('awards/tag/{id}', 'AwardController@postAddAwardTag');
-
     # SHOPS
     Route::get('shops', 'ShopController@getIndex');
     Route::get('shops/create', 'ShopController@getCreateShop');

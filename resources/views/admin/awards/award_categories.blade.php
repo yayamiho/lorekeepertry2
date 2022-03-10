@@ -7,13 +7,13 @@
 
 <h1>Award Categories</h1>
 
-<p>This is a list of award categories that will be used to sort awards in the award case. Creating award categories is entirely optional, but recommended if you have a lot of awards in the game.</p> 
-<p>The sorting order reflects the order in which the award categories will be displayed in the award case, as well as on the world pages.</p>
+<p>This is a list of award categories that will be used to sort awards in the awardcase. Creating award categories is entirely optional, but recommended if you have a lot of awards in the game.</p>
+<p>The sorting order reflects the order in which the award categories will be displayed in the awardcase, as well as on the world pages.</p>
 
 <div class="text-right mb-3"><a class="btn btn-primary" href="{{ url('admin/data/award-categories/create') }}"><i class="fas fa-plus"></i> Create New Award Category</a></div>
 @if(!count($categories))
     <p>No award categories found.</p>
-@else 
+@else
     <table class="table table-sm category-table">
         <tbody id="sortable" class="sortable">
             @foreach($categories as $category)

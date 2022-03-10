@@ -1,6 +1,6 @@
 @extends('home.layout')
 
-@section('home-title') AwardCase @endsection
+@section('home-title') Awardcase @endsection
 
 @section('home-content')
 {!! breadcrumbs(['Awards' => 'Awards']) !!}

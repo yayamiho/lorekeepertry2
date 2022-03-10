@@ -1,9 +1,9 @@
 @extends('user.layout')
 
-@section('profile-title') {{ $user->name }}'s Award Case @endsection
+@section('profile-title') {{ $user->name }}'s Awardcase @endsection
 
 @section('profile-content')
-{!! breadcrumbs(['Users' => 'users', $user->name => $user->url, 'Award Case' => $user->url . '/awardcase']) !!}
+{!! breadcrumbs(['Users' => 'users', $user->name => $user->url, 'Awardcase' => $user->url . '/awardcase']) !!}
 
 <h1>
     Awards

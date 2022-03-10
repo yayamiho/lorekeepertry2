@@ -8,7 +8,6 @@ use Auth;
 
 use App\Models\Award\AwardCategory;
 use App\Models\Award\Award;
-use App\Models\Award\AwardTag;
 
 use App\Models\Shop\Shop;
 use App\Models\Prompt\Prompt;
@@ -86,7 +85,7 @@ class AwardController extends Controller
     {
         $id ? $request->validate(AwardCategory::$updateRules) : $request->validate(AwardCategory::$createRules);
         $data = $request->only([
-            'name', 'description', 'image', 'remove_image', 'is_character_owned', 'character_limit'
+            'name', 'description', 'image', 'remove_image', 'is_character_owned', 'character_limit',
         ]);
         if($id && $service->updateAwardCategory(AwardCategory::find($id), $data, Auth::user())) {
             flash('Award Category updated successfully.')->success();
@@ -226,7 +225,7 @@ class AwardController extends Controller
         $id ? $request->validate(Award::$updateRules) : $request->validate(Award::$createRules);
         $data = $request->only([
             'name', 'allow_transfer', 'award_category_id', 'description', 'image', 'remove_image', 'rarity',
-            'reference_url', 'artist_alias', 'artist_url', 'uses', 'shops', 'prompts', 'release', 'artist_id'
+            'reference_url', 'artist_alias', 'artist_url', 'uses', 'prompts', 'release', 'artist_id', 'is_released',
         ]);
         if($id && $service->updateAward(Award::find($id), $data, Auth::user())) {
             flash('Award updated successfully.')->success();
@@ -274,123 +273,4 @@ class AwardController extends Controller
         return redirect()->to('admin/data/awards');
     }
 
-    /**********************************************************************************************
-
-        AWARD TAGS
-
-    **********************************************************************************************/
-
-    /**
-     * Gets the tag addition page.
-     *
-     * @param  App\Services\AwardService  $service
-     * @param  int  $id
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-    public function getAddAwardTag(AwardService $service, $id)
-    {
-        $award = Award::find($id);
-        return view('admin.awards.add_tag', [
-            'award' => $award,
-            'tags' => array_diff($service->getAwardTags(), $award->tags()->pluck('tag')->toArray())
-        ]);
-    }
-
-    /**
-     * Adds a tag to an award.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  App\Services\AwardService  $service
-     * @param  int                       $id
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function postAddAwardTag(Request $request, AwardService $service, $id)
-    {
-        $award = Award::find($id);
-        $tag = $request->get('tag');
-        if($tag = $service->addAwardTag($award, $tag)) {
-            flash('Tag added successfully.')->success();
-            return redirect()->to($tag->adminUrl);
-        }
-        else {
-            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
-        }
-        return redirect()->back();
-    }
-
-    /**
-     * Gets the tag editing page.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-    public function getEditAwardTag(AwardService $service, $id, $tag)
-    {
-        $award = Award::find($id);
-        $tag = $award->tags()->where('tag', $tag)->first();
-        if(!$award || !$tag) abort(404);
-        return view('admin.awards.edit_tag', [
-            'award' => $award,
-            'tag' => $tag
-        ] + $tag->getEditData());
-    }
-
-    /**
-     * Edits tag data for an award.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  App\Services\AwardService  $service
-     * @param  int                       $id
-     * @param  string                    $tag
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function postEditAwardTag(Request $request, AwardService $service, $id, $tag)
-    {
-        $award = Award::find($id);
-        if($service->editAwardTag($award, $tag, $request->all())) {
-            flash('Tag edited successfully.')->success();
-        }
-        else {
-            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
-        }
-        return redirect()->back();
-    }
-
-    /**
-     * Gets the award tag deletion modal.
-     *
-     * @param  int  $id
-     * @param  string                    $tag
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-    public function getDeleteAwardTag($id, $tag)
-    {
-        $award = Award::find($id);
-        $tag = $award->tags()->where('tag', $tag)->first();
-        return view('admin.awards._delete_award_tag', [
-            'award' => $award,
-            'tag' => $tag
-        ]);
-    }
-
-    /**
-     * Deletes a tag from an award.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  App\Services\AwardService  $service
-     * @param  int                       $id
-     * @param  string                    $tag
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function postDeleteAwardTag(Request $request, AwardService $service, $id, $tag)
-    {
-        $award = Award::find($id);
-        if($service->deleteAwardTag($award, $tag)) {
-            flash('Tag deleted successfully.')->success();
-        }
-        else {
-            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
-        }
-        return redirect()->to('admin/data/awards/edit/'.$award->id);
-    }
 }

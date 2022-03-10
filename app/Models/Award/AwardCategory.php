@@ -22,7 +22,7 @@ class AwardCategory extends Model
      * @var string
      */
     protected $table = 'award_categories';
-    
+
     /**
      * Validation rules for creation.
      *
@@ -33,7 +33,7 @@ class AwardCategory extends Model
         'description' => 'nullable',
         'image' => 'mimes:png',
     ];
-    
+
     /**
      * Validation rules for updating.
      *
@@ -46,7 +46,7 @@ class AwardCategory extends Model
     ];
 
     /**********************************************************************************************
-    
+
         ACCESSORS
 
     **********************************************************************************************/
@@ -90,7 +90,7 @@ class AwardCategory extends Model
     {
         return public_path($this->imageDirectory);
     }
-    
+
     /**
      * Gets the URL of the model's image.
      *

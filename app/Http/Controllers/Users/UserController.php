@@ -91,7 +91,7 @@ class UserController extends Controller
     {
         $aliases = $this->user->aliases();
         if(!Auth::check() || !(Auth::check() && Auth::user()->hasPower('edit_user_info'))) $aliases->visible();
-        
+
         return view('user.aliases', [
             'user' => $this->user,
             'aliases' => $aliases->orderBy('is_primary_alias', 'DESC')->orderBy('site')->get(),
@@ -216,7 +216,7 @@ class UserController extends Controller
     }
 
     /**
-     * Shows a user's award case.
+     * Shows a user's awardcase.
      *
      * @param  string  $name
      * @return \Illuminate\Contracts\Support\Renderable
