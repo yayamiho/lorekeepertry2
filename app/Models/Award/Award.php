@@ -20,8 +20,8 @@ class Award extends Model
      */
     protected $fillable = [
         'award_category_id', 'name', 'has_image', 'description', 'parsed_description',
-        'data', 'reference_url', 'artist_alias', 'artist_url', 'artist_id', 'is_released',
-        'allow_transfer',
+        'data', 'is_featured', 'is_user_owned', 'is_character_owned', 'sort_user', 'sort_character',
+        'user_limit', 'character_limit', 'is_released', 'allow_transfer', 'extension',
     ];
 
     /**
@@ -32,6 +32,15 @@ class Award extends Model
     protected $table = 'awards';
 
     /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'credits' => 'array'
+    ];
+
+    /**
      * Validation rules for creation.
      *
      * @var array
@@ -40,9 +49,8 @@ class Award extends Model
         'award_category_id' => 'nullable',
         'name' => 'required|unique:awards|between:3,100',
         'description' => 'nullable',
-        'image' => 'mimes:png',
+        'image' => 'mimes:png,jpeg,jpg,gif',
         'rarity' => 'nullable',
-        'reference_url' => 'nullable|between:3,200',
         'uses' => 'nullable|between:3,250',
         'release' => 'nullable|between:3,100'
     ];
@@ -56,8 +64,7 @@ class Award extends Model
         'award_category_id' => 'nullable',
         'name' => 'required|between:3,100',
         'description' => 'nullable',
-        'image' => 'mimes:png',
-        'reference_url' => 'nullable|between:3,200',
+        'image' => 'mimes:png,jpeg,jpg,gif',
         'uses' => 'nullable|between:3,250',
         'release' => 'nullable|between:3,100'
     ];
@@ -76,13 +83,6 @@ class Award extends Model
         return $this->belongsTo('App\Models\Award\AwardCategory', 'award_category_id');
     }
 
-    /**
-     * Get the user that drew the award art.
-     */
-    public function artist()
-    {
-        return $this->belongsTo('App\Models\User\User', 'artist_id');
-    }
 
     /**********************************************************************************************
 
@@ -235,44 +235,32 @@ class Award extends Model
         return 'awards';
     }
 
-    /**
-     * Get the artist of the award's image.
-     *
-     * @return string
-     */
-    public function getAwardArtistAttribute()
-    {
-        if(!$this->artist_url && !$this->artist_id) return null;
+    // /**
+    //  * Get the artist of the award's image.
+    //  *
+    //  * @return string
+    //  */
+    // public function getAwardArtistAttribute()
+    // {
+    //     if(!$this->artist_url && !$this->artist_id) return null;
 
-        // Check to see if the artist exists on site
-        $artist = checkAlias($this->artist_url, false);
-        if(is_object($artist)) {
-            $this->artist_id = $artist->id;
-            $this->artist_url = null;
-            $this->save();
-        }
+    //     // Check to see if the artist exists on site
+    //     $artist = checkAlias($this->artist_url, false);
+    //     if(is_object($artist)) {
+    //         $this->artist_id = $artist->id;
+    //         $this->artist_url = null;
+    //         $this->save();
+    //     }
 
-        if($this->artist_id)
-        {
-            return $this->artist->displayName;
-        }
-        else if ($this->artist_url)
-        {
-            return prettyProfileLink($this->artist_url);
-        }
-    }
-
-    /**
-     * Get the reference url attribute.
-     *
-     * @return string
-     */
-    public function getReferenceAttribute()
-    {
-        if (!$this->reference_url) return null;
-        return $this->reference_url;
-    }
-
+    //     if($this->artist_id)
+    //     {
+    //         return $this->artist->displayName;
+    //     }
+    //     else if ($this->artist_url)
+    //     {
+    //         return prettyProfileLink($this->artist_url);
+    //     }
+    // }
     /**
      * Get the data attribute as an associative array.
      *
@@ -282,6 +270,10 @@ class Award extends Model
     {
         if (!$this->id) return null;
         return json_decode($this->attributes['data'], true);
+    }
+
+    public function getCreditsAttribute(){
+        return $this->data['credits'];
     }
 
     /**
@@ -315,18 +307,6 @@ class Award extends Model
     {
         if (!$this->data) return null;
         return $this->data['release'];
-    }
-
-    /**
-     * Get the shops attribute as an associative array.
-     *
-     * @return array
-     */
-    public function getShopsAttribute()
-    {
-        if (!$this->data) return null;
-        $awardShops = $this->data['shops'];
-        return Shop::whereIn('id', $awardShops)->get();
     }
 
     /**

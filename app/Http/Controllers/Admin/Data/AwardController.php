@@ -84,8 +84,9 @@ class AwardController extends Controller
     public function postCreateEditAwardCategory(Request $request, AwardService $service, $id = null)
     {
         $id ? $request->validate(AwardCategory::$updateRules) : $request->validate(AwardCategory::$createRules);
+        // TODO: Clear character references in updateAwardCategory and createAwardCategory
         $data = $request->only([
-            'name', 'description', 'image', 'remove_image', 'is_character_owned', 'character_limit',
+            'name', 'description', 'image', 'remove_image'
         ]);
         if($id && $service->updateAwardCategory(AwardCategory::find($id), $data, Auth::user())) {
             flash('Award Category updated successfully.')->success();
@@ -187,7 +188,6 @@ class AwardController extends Controller
         return view('admin.awards.create_edit_award', [
             'award' => new Award,
             'categories' => ['none' => 'No category'] + AwardCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'shops' => Shop::where('is_active', 1)->orderBy('id')->pluck('name', 'id'),
             'prompts' => Prompt::where('is_active', 1)->orderBy('id')->pluck('name', 'id'),
             'userOptions' => User::query()->orderBy('name')->pluck('name', 'id')->toArray()
         ]);
@@ -206,7 +206,6 @@ class AwardController extends Controller
         return view('admin.awards.create_edit_award', [
             'award' => $award,
             'categories' => ['none' => 'No category'] + AwardCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'shops' => Shop::where('is_active', 1)->orderBy('id')->pluck('name', 'id'),
             'prompts' => Prompt::where('is_active', 1)->orderBy('id')->pluck('name', 'id'),
             'userOptions' => User::query()->orderBy('name')->pluck('name', 'id')->toArray()
         ]);
@@ -223,9 +222,11 @@ class AwardController extends Controller
     public function postCreateEditAward(Request $request, AwardService $service, $id = null)
     {
         $id ? $request->validate(Award::$updateRules) : $request->validate(Award::$createRules);
+        // TODO: Process all new character/user holding booleans plus all new Credits information
+        // TODO: Add "extension" to image processing - see WE for example
         $data = $request->only([
             'name', 'allow_transfer', 'award_category_id', 'description', 'image', 'remove_image', 'rarity',
-            'reference_url', 'artist_alias', 'artist_url', 'uses', 'prompts', 'release', 'artist_id', 'is_released',
+            'uses', 'prompts', 'release', 'artist_id', 'is_released',
         ]);
         if($id && $service->updateAward(Award::find($id), $data, Auth::user())) {
             flash('Award updated successfully.')->success();

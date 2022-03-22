@@ -2,25 +2,14 @@
     <div class="text-center">Invalid stack selected.</div>
 @else
     <div class="text-center">
-        <div class="mb-1"><a href="{{ $award->url }}"><img src="{{ $award->imageUrl }}" /></a></div>
-        <div @if(count($award->tags)) class="mb-1" @endif><a href="{{ $award->idUrl }}">{{ $award->name }}</a></div>
-        @if(count($award->tags))
-            <div>
-                @foreach($award->tags as $tag)
-                    @if($tag->is_active)
-                        {!! $tag->displayTag !!}
-                    @endif
-                @endforeach
-            </div>
+        @if($award->has_image)
+            <div class="mb-1"><a href="{{ $award->url }}"><img src="{{ $award->imageUrl }}" alt="{{ $award->name }}"/></a></div>
         @endif
     </div>
 
     <h5>Award Variations</h5>
-    @if($user && $user->hasPower('edit_awardcases'))
-        <p class="alert alert-warning my-2">Note: Your rank allows you to transfer account-bound awards to another user.</p>
-    @endif
-    
-    {!! Form::open(['url' => 'awardcase/edit']) !!}
+
+    {!! Form::open(['url' => 'inventory/edit']) !!}
     <div class="card" style="border: 0px">
         <table class="table table-sm">
             <thead class="thead">
@@ -65,29 +54,50 @@
             </tbody>
         </table>
     </div>
-    
-    @if($user && !$readOnly && ($stack->first()->user_id == $user->id || $user->hasPower('edit_awardcases')))
-        <div class="card mt-3">
-            <ul class="list-group list-group-flush">
-                @if(count($award->tags))
-                    @foreach($award->tags as $tag)
-                        @if(View::exists('awardcase._'.$tag->tag))
-                            @include('awardcase._'.$tag->tag, ['stack' => $stack, 'tag' => $tag])
-                        @endif
-                    @endforeach
-                @endif
-                
 
-                <li class="list-group-item">
-                    <a class="card-title h5 collapse-title" data-toggle="collapse" href="#deleteForm">@if($stack->first()->user_id != $user->id) [ADMIN] @endif Delete Award</a>
-                    <div id="deleteForm" class="collapse">
-                        <p>This action is not reversible. Are you sure you want to delete this award?</p>
-                        <div class="text-right">
-                            {!! Form::button('Delete', ['class' => 'btn btn-danger', 'name' => 'action', 'value' => 'delete', 'type' => 'submit']) !!}
-                        </div>
+    @if($user && !$readOnly && ($stack->first()->user_id == $user->id || $user->hasPower('edit_awardcases')))
+        <div class="card mt-3 p-3">
+
+            @if(isset($award->category) && $award->category->is_character_owned)
+                <a class="card-title h5 collapse-title" data-toggle="collapse" href="#characterTransferForm">@if($stack->first()->user_id != $user->id) [ADMIN] @endif Transfer Award to Character</a>
+                <div id="characterTransferForm" class="collapse">
+                    <p>This will transfer this stack or stacks to this character's inventory.</p>
+                    <div class="form-group">
+                        {!! Form::select('character_id', $characterOptions, null, ['class' => 'form-control mr-2 default character-select', 'placeholder' => 'Select Character']) !!}
                     </div>
-                </li>
-            </ul>
+                    <div class="text-right">
+                        {!! Form::button('Transfer', ['class' => 'btn btn-primary', 'name' => 'action', 'value' => 'characterTransfer', 'type' => 'submit']) !!}
+                    </div>
+                </div>
+            @endif
+            @if(config('lorekeeper.extensions.awards.allow_transfers', '0') || ($user && $user->hasPower('edit_awardcases')))
+                @if($user && $user->hasPower('edit_awardcases'))
+                    <p class="alert alert-warning my-2">Note: Your rank allows you to transfer account-bound awards to another user.</p>
+                @endif
+                <h5 class="card-title collapse-title">
+                    <a class="h5 awardcase-collapse-toggle collapse-toggle collapsed" href="#transferForm" data-toggle="collapse">@if($stack->first()->user_id != $user->id) [ADMIN] @endif Transfer Award</a></h3>
+                </h5>
+                <div id="transferForm" class="collapse">
+                    <div class="form-group">
+                        {!! Form::label('user_id', 'Recipient') !!} {!! add_help('You can only transfer awards to verified users.') !!}
+                        {!! Form::select('user_id', $userOptions, null, ['class'=>'form-control']) !!}
+                    </div>
+                    <div class="text-right">
+                        {!! Form::button('Transfer', ['class' => 'btn btn-primary', 'name' => 'action', 'value' => 'transfer', 'type' => 'submit']) !!}
+                    </div>
+                </div>
+            @endif
+
+            <h5 class="card-title collapse-title">
+                <a class="h5 awardcase-collapse-toggle collapse-toggle collapsed" href="#deleteForm" data-toggle="collapse">@if($stack->first()->user_id != $user->id) [ADMIN] @endif Delete Award</a></h3>
+            </h5>
+            <div id="deleteForm" class="collapse">
+                <p>This action is not reversible. Are you sure you want to delete this award?</p>
+                <div class="text-right">
+                    {!! Form::button('Delete', ['class' => 'btn btn-danger', 'name' => 'action', 'value' => 'delete', 'type' => 'submit']) !!}
+                </div>
+            </div>
+
         </div>
     @endif
     {!! Form::close() !!}
@@ -99,6 +109,7 @@
     if(code == 13)
         return false;
     });
+    $('.default.character-select').selectize();
     function toggleChecks($toggle) {
         $.each($('.award-check'), function(index, checkbox) {
             $toggle.checked ? checkbox.setAttribute('checked', 'checked') : checkbox.removeAttribute('checked');

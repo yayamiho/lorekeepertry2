@@ -20,17 +20,6 @@
                     <p><strong>Artist:</strong> {!! $award->awardArtist !!}</p>
                 </div>
             @endif
-            <div class="col-md-6 col-md">
-                <div class="row">
-                    @foreach($award->tags as $tag)
-                        @if($tag->is_active)
-                        <div class="col">
-                            {!! $tag->displayTag !!}
-                        </div>
-                        @endif
-                    @endforeach
-                </div>
-            </div>
         </div>
         <div class="world-entry-text">
             @if(isset($award->reference) && $award->reference)  <p><strong>Reference Link:</strong> <a href="{{ $award->reference }}">{{ $award->reference }}</a></p> @endif

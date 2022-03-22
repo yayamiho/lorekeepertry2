@@ -13,10 +13,40 @@ class AddCharactersToAwardTables extends Migration
      */
     public function up()
     {
+        // This simply moves all existing award credits to the data column. Why bother with a command when you can do it in the migration!
+        foreach(App\Models\Award\Award::all() as $award){
+            $data = $award->data;
+            $data['credits'] = [];
+            if(isset($award->reference_url)) $data['credits'][]     = [ 'name' => 'Reference',  'url' => $award->reference_url, 'id' => null,               'role' => null ];
+            if(isset($award->artist_id)) $data['credits'][]         = [ 'name' => null,         'url' => null,                  'id' => $award->artist_id,  'role' => null ];
+            if(isset($award->artist_url)) $data['credits'][]        = [ 'name' => 'Artist',     'url' => $award->artist_url,    'id' => null,               'role' => null ];
+            $award->update(['data' => $data]);
+        }
+
         Schema::table('awards', function (Blueprint $table) {
+            $table->boolean('is_featured')->default(0);                                     // Whether this is separated from the rest to be featured on a character or user. See extension config for count.
+            $table->boolean('is_user_owned')->after('data')->default(1);                    // Whether this award is owned by a user. Defaulted to 1 for ease of version upgrade.
+            $table->boolean('is_character_owned')->after('is_user_owned')->default(0);      // Whether this award is owned by a character.
+            $table->integer('sort_user')->unsigned()->default(0);                           // Larger shows up first
+            $table->integer('sort_character')->unsigned()->default(0);                      // Larger shows up first
+            $table->integer('user_limit')->unsigned()->default(0);                          // Max of this award a user may have at a time without being manually added.
+            $table->integer('character_limit')->unsigned()->default(0);                     // Max of this award a character may have at a time without being manually added.            $table->dropColumn('extension');
+            $table->string('extension', 5)->after('has_image')->nullable()->default('png'); // Allows for gif, etc, award images
+
             // Add Release code a la Mercury
             $table->boolean('is_released')->default(1);
             $table->boolean('allow_transfer')->default(1);
+            // Removing Artist/References to make way for them to be in the data column.
+            $table->dropColumn('reference_url');
+            $table->dropColumn('artist_url');
+            $table->dropColumn('artist_alias'); // This was never actually in the form and therefore was never actually used.
+            $table->dropColumn('artist_id');
+        });
+
+
+        Schema::table('award_categories', function (Blueprint $table) {
+            $table->dropColumn('is_character_owned');                       // This is now covered by awards individually
+            $table->dropColumn('character_limit');                          // This is now covered by awards individually
         });
 
         // If someone wants to take on the idea of award tags on their own, go ahead. I'm not doing it anytime soon. - Uri :)
@@ -32,9 +62,26 @@ class AddCharactersToAwardTables extends Migration
     public function down()
     {
         Schema::table('awards', function (Blueprint $table) {
-            // Add Release code a la Mercury
+            $table->dropColumn('is_featured');
+            $table->dropColumn('is_user_owned');
+            $table->dropColumn('is_character_owned');
+            $table->dropColumn('sort_user');
+            $table->dropColumn('sort_character');
+            $table->dropColumn('user_limit');
+            $table->dropColumn('character_limit');
             $table->dropColumn('is_released');
+            $table->dropColumn('extension');
             $table->dropColumn('allow_transfer');
+            // Return credit columns. Doesn't bother moving them from data column to these to account for changes.
+            $table->string('reference_url', 200)->nullable();
+            $table->string('artist_alias')->nullable();
+            $table->string('artist_url')->nullable();
+            $table->integer('artist_id')->unsigned()->nullable();
+        });
+
+        Schema::table('award_categories', function (Blueprint $table) {
+            $table->boolean('is_character_owned')->default(0);
+            $table->integer('character_limit')->unsigned()->default(0);
         });
 
         Schema::create('award_tags', function (Blueprint $table) {
