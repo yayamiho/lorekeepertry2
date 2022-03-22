@@ -8,11 +8,12 @@ use Auth;
 use Config;
 use Notifications;
 
-use App\Models\User\User;
 use App\Models\Award\Award;
 use App\Models\Award\AwardCategory;
-use App\Models\User\UserAward;
+use App\Models\Character\Character;
 use App\Models\Character\CharacterAward;
+use App\Models\User\User;
+use App\Models\User\UserAward;
 
 class AwardCaseManager extends Service
 {
@@ -37,93 +38,60 @@ class AwardCaseManager extends Service
         DB::beginTransaction();
 
         try {
-            foreach($data['quantities'] as $q) {
-                if($q <= 0) throw new \Exception("All quantities must be at least 1.");
+            $users = null; $characters = null;
+            // Process targets. Actually uses ids but using naming method of users to keep things simple.
+            if(isset($data['names'])) {
+                $users = User::find($data['names']);
+                if(count($users) != count($data['names'])) throw new \Exception("An invalid user was selected.");
+            }
+            if(isset($data['character_names'])) {
+                $characters = Character::find($data['character_names']);
+                if(count($characters) != count($data['character_names'])) throw new \Exception("An invalid character was selected.");
             }
 
-            // Process names
-            $users = User::find($data['names']);
-            if(count($users) != count($data['names'])) throw new \Exception("An invalid user was selected.");
+            foreach([$users, $characters] as $targets){
+                if(!$targets) continue;
+                $type = $targets->first()->logType;
+                $ids = (($type == "User") ? $data['award_ids'] : $data['character_award_ids']);
+                $quantities = (($type == "User") ? $data['quantities'] : $data['character_quantities']);
 
-            $keyed_quantities = [];
-            array_walk($data['award_ids'], function($id, $key) use(&$keyed_quantities, $data) {
-                if($id != null && !in_array($id, array_keys($keyed_quantities), TRUE)) {
-                    $keyed_quantities[$id] = $data['quantities'][$key];
-                }
-            });
-
-            // Process award
-            $awards = Award::find($data['award_ids']);
-            if(!count($awards)) throw new \Exception("No valid awards found.");
-
-            foreach($users as $user) {
-                foreach($awards as $award) {
-                    if($this->creditAward($staff, $user, 'Staff Grant', array_only($data, ['data', 'disallow_transfer', 'notes']), $award, $keyed_quantities[$award->id]))
-                    {
-                        Notifications::create('AWARD_GRANT', $user, [
-                            'award_name' => $award->name,
-                            'award_quantity' => $keyed_quantities[$award->id],
-                            'sender_url' => $staff->url,
-                            'sender_name' => $staff->name
-                        ]);
+                $keyed_quantities = [];
+                array_walk($ids, function($id, $key) use(&$keyed_quantities, $quantities) {
+                    if($id != null && !in_array($id, array_keys($keyed_quantities), TRUE)) {
+                        $keyed_quantities[$id] = $quantities[$key];
                     }
-                    else
-                    {
-                        throw new \Exception("Failed to credit awards to ".$user->name.".");
+                });
+
+                // Process award
+                $awards = Award::find((($type == "User") ? $data['award_ids'] : $data['character_award_ids']));
+                if(!count($awards)) throw new \Exception("No valid awards found.");
+
+                foreach($targets as $target){
+                    foreach($awards as $award) {
+                        if($this->creditAward($staff, $target, 'Staff Grant', array_only($data, ['data', 'disallow_transfer', 'notes']), $award, $keyed_quantities[$award->id])) {
+                            if($type == "User"){
+                                Notifications::create('AWARD_GRANT', $target, [
+                                    'award_name' => $award->name,
+                                    'award_quantity' => $keyed_quantities[$award->id],
+                                    'sender_url' => $staff->url,
+                                    'sender_name' => $staff->name
+                                ]);
+                            } else {
+                                Notifications::create('CHARACTER_AWARD_GRANT', $target->user, [
+                                    'award_name' => $award->name,
+                                    'award_quantity' => $keyed_quantities[$award->id],
+                                    'sender_url' => $staff->url,
+                                    'sender_name' => $staff->name,
+                                    'character_name' => $target->fullName,
+                                    'character_slug' => $target->slug,
+                                ]);
+                            }
+                        }
+                        else
+                        {
+                            throw new \Exception("Failed to credit awards to ".$user->name.".");
+                        }
                     }
-                }
-            }
-            return $this->commitReturn(true);
-        } catch(\Exception $e) {
-            $this->setError('error', $e->getMessage());
-        }
-        return $this->rollbackReturn(false);
-    }
-
-    /**
-     * Grants an award to a character.
-     *
-     * @param  array                            $data
-     * @param  \App\Models\Character\Character  $character
-     * @param  \App\Models\User\User            $staff
-     * @return bool
-     */
-    public function grantCharacterAwards($data, $character, $staff)
-    {
-        DB::beginTransaction();
-
-        try {
-            if(!$character) throw new \Exception("Invalid character selected.");
-
-            foreach($data['quantities'] as $q) {
-                if($q <= 0) throw new \Exception("All quantities must be at least 1.");
-            }
-
-            $keyed_quantities = [];
-            array_walk($data['award_ids'], function($id, $key) use(&$keyed_quantities, $data) {
-                if($id != null && !in_array($id, array_keys($keyed_quantities), TRUE)) {
-                    $keyed_quantities[$id] = $data['quantities'][$key];
-                }
-            });
-
-            // Process award(s)
-            $awards = Award::find($data['award_ids']);
-            foreach($awards as $i) {
-                if(!$i->category->is_character_owned) throw new \Exception("One of these awards cannot be owned by characters.");
-            }
-            if(!count($awards)) throw new \Exception("No valid awards found.");
-
-            foreach($awards as $award) {
-                $this->creditAward($staff, $character, 'Staff Grant', array_only($data, ['data', 'disallow_transfer', 'notes']), $award, $keyed_quantities[$award->id]);
-                if($character->is_visible && $character->user_id) {
-                    Notifications::create('CHARACTER_AWARD_GRANT', $character->user, [
-                        'award_name' => $award->name,
-                        'award_quantity' => $keyed_quantities[$award->id],
-                        'sender_url' => $staff->url,
-                        'sender_name' => $staff->name,
-                        'character_name' => $character->fullName,
-                        'character_slug' => $character->slug,
-                    ]);
                 }
             }
 
@@ -331,8 +299,7 @@ class AwardCaseManager extends Service
                     ['data', '=', $encoded_data]
                 ])->first();
 
-                if(!$recipient_stack)
-                    $recipient_stack = UserAward::create(['user_id' => $recipient->id, 'award_id' => $award->id, 'data' => $encoded_data]);
+                if(!$recipient_stack) $recipient_stack = UserAward::create(['user_id' => $recipient->id, 'award_id' => $award->id, 'data' => $encoded_data]);
                 $recipient_stack->count += $quantity;
                 $recipient_stack->save();
             }
@@ -343,8 +310,7 @@ class AwardCaseManager extends Service
                     ['data', '=', $encoded_data]
                 ])->first();
 
-                if(!$recipient_stack)
-                    $recipient_stack = CharacterAward::create(['character_id' => $recipient->id, 'award_id' => $award->id, 'data' => $encoded_data]);
+                if(!$recipient_stack) $recipient_stack = CharacterAward::create(['character_id' => $recipient->id, 'award_id' => $award->id, 'data' => $encoded_data]);
                 $recipient_stack->count += $quantity;
                 $recipient_stack->save();
             }

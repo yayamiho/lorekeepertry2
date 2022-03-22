@@ -7,7 +7,7 @@
 
 <h1>Awards</h1>
 
-<p>This is a list of awards in the game. Awards cannot be transferred (unlike items) but can be deleted. Awards can be granted via prompts, claims, or admin grants. Note that by default, users can receive more than one award. (In the case that award systems vary between ARPGS) So be sure to check a user's awards before granting if you want specific awards to be exclusive.</p>
+<p>This is a list of awards in the game. Awards can be granted via prompts, claims, or admin grants. Awards can also be set to be held by characters, users, or both.</p>
 
 <div class="text-right mb-3">
     <a class="btn btn-primary" href="{{ url('admin/data/award-categories') }}"><i class="fas fa-folder"></i> Award Categories</a>

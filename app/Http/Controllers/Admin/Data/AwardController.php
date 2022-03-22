@@ -224,9 +224,12 @@ class AwardController extends Controller
         $id ? $request->validate(Award::$updateRules) : $request->validate(Award::$createRules);
         // TODO: Process all new character/user holding booleans plus all new Credits information
         // TODO: Add "extension" to image processing - see WE for example
+
         $data = $request->only([
-            'name', 'allow_transfer', 'award_category_id', 'description', 'image', 'remove_image', 'rarity',
-            'uses', 'prompts', 'release', 'artist_id', 'is_released',
+            'name', 'award_category_id', 'rarity', 'is_released', 'allow_transfer',
+            'is_user_owned', 'is_character_owned', 'user_limit', 'character_limit', 'is_featured',
+            'description', 'image', 'remove_image', 'uses', 'prompts', 'release',
+            'credit-name', 'credit-url', 'credit-id', 'credit-role',
         ]);
         if($id && $service->updateAward(Award::find($id), $data, Auth::user())) {
             flash('Award updated successfully.')->success();

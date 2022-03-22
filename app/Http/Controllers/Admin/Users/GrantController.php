@@ -89,7 +89,7 @@ class GrantController extends Controller
         }
         return redirect()->back();
     }
-    
+
     /**
      * Show the award grant page.
      *
@@ -98,8 +98,10 @@ class GrantController extends Controller
     public function getAwards()
     {
         return view('admin.grants.awards', [
-            'users' => User::orderBy('id')->pluck('name', 'id'),
-            'awards' => Award::orderBy('name')->pluck('name', 'id')
+            'userOptions'           => User::orderBy('id')->pluck('name', 'id'),
+            'userAwardOptions'      => Award::orderBy('name')->where('is_user_owned',1)->pluck('name', 'id'),
+            'characterOptions'      => Character::myo(0)->orderBy('name')->get()->pluck('fullName', 'id'),
+            'characterAwardOptions' => Award::orderBy('name')->where('is_character_owned',1)->pluck('name', 'id')
         ]);
     }
 
@@ -112,7 +114,10 @@ class GrantController extends Controller
      */
     public function postAwards(Request $request, AwardCaseManager $service)
     {
-        $data = $request->only(['names', 'award_ids', 'quantities', 'data', 'disallow_transfer', 'notes']);
+        $data = $request->only([
+            'names', 'award_ids', 'quantities', 'data', 'disallow_transfer', 'notes',
+            'character_names', 'character_award_ids', 'character_quantities',
+        ]);
         if($service->grantAwards($data, Auth::user())) {
             flash('Awards granted successfully.')->success();
         }
@@ -121,7 +126,7 @@ class GrantController extends Controller
         }
         return redirect()->back();
     }
-    
+
     /*
      * Show the item search page.
      *

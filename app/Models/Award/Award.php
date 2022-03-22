@@ -20,8 +20,8 @@ class Award extends Model
      */
     protected $fillable = [
         'award_category_id', 'name', 'has_image', 'description', 'parsed_description',
-        'data', 'is_featured', 'is_user_owned', 'is_character_owned', 'sort_user', 'sort_character',
-        'user_limit', 'character_limit', 'is_released', 'allow_transfer', 'extension',
+        'data', 'is_released', 'is_featured', 'is_user_owned', 'is_character_owned',
+        'user_limit', 'character_limit', 'allow_transfer', 'extension',
     ];
 
     /**
@@ -144,7 +144,10 @@ class Award extends Model
      */
     public function scopeReleased($query)
     {
-        return $query->whereIn('id', UserItem::pluck('item_id')->toArray())->orWhere('is_released', 1);
+        $users = UserAward::pluck('award_id')->toArray();
+        $characters = CharacterAward::pluck('award_id')->toArray();
+        $array = array_merge($users, $characters);
+        return $query->whereIn('id', $array)->orWhere('is_released', 1);
     }
 
 
@@ -181,7 +184,7 @@ class Award extends Model
      */
     public function getImageFileNameAttribute()
     {
-        return $this->id . '-image.png';
+        return $this->id . '-image.' . $this->extension;
     }
 
     /**

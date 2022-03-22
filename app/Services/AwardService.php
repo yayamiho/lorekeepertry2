@@ -212,11 +212,16 @@ class AwardService extends Service
                     'rarity' => isset($data['rarity']) && $data['rarity'] ? $data['rarity'] : null,
                     'uses' => isset($data['uses']) && $data['uses'] ? $data['uses'] : null,
                     'release' => isset($data['release']) && $data['release'] ? $data['release'] : null,
-                    'prompts' => isset($data['prompts']) && $data['prompts'] ? $data['prompts'] : null
-                    ]) // rarity, availability info (original source, drop locations)
+                    'prompts' => isset($data['prompts']) && $data['prompts'] ? $data['prompts'] : null,
+                    'credits' => isset($data['credits']) && $data['credits'] ? $data['credits'] : null,
+                    ]) // rarity, availability info (original source, drop locations), credits
             ]);
 
-            if ($image) $this->handleImage($image, $award->imagePath, $award->imageFileName);
+            if ($image) {
+                $award->extension = $image->getClientOriginalExtension();
+                $award->update();
+                $this->handleImage($image, $award->imagePath, $award->imageFileName, null);
+            }
 
             return $this->commitReturn($award);
         } catch(\Exception $e) {
@@ -244,13 +249,23 @@ class AwardService extends Service
             if(Award::where('name', $data['name'])->where('id', '!=', $award->id)->exists()) throw new \Exception("The name has already been taken.");
             if((isset($data['award_category_id']) && $data['award_category_id']) && !AwardCategory::where('id', $data['award_category_id'])->exists()) throw new \Exception("The selected award category is invalid.");
 
-            $data = $this->populateData($data);
+            $data = $this->populateData($data, $award);
 
             $image = null;
-            if(isset($data['image']) && $data['image']) {
-                $data['has_image'] = 1;
+
+            if (isset($data['image']) && $data['image']) {
+                if (isset($award->extension)) {
+                    $old = $award->imageFileName;
+                } else {
+                    $old = null;
+                }
                 $image = $data['image'];
                 unset($data['image']);
+            }
+            if ($image) {
+                $award->extension = $image->getClientOriginalExtension();
+                $award->update();
+                $this->handleImage($image, $award->imagePath, $award->imageFileName, $old);
             }
 
             $award->update($data);
@@ -260,11 +275,10 @@ class AwardService extends Service
                     'rarity' => isset($data['rarity']) && $data['rarity'] ? $data['rarity'] : null,
                     'uses' => isset($data['uses']) && $data['uses'] ? $data['uses'] : null,
                     'release' => isset($data['release']) && $data['release'] ? $data['release'] : null,
-                    'prompts' => isset($data['prompts']) && $data['prompts'] ? $data['prompts'] : null
+                    'prompts' => isset($data['prompts']) && $data['prompts'] ? $data['prompts'] : null,
+                    'credits' => isset($data['credits']) && $data['credits'] ? $data['credits'] : null,
                     ]) // rarity, availability info (original source, drop locations)
             ]);
-
-            if ($award) $this->handleImage($image, $award->imagePath, $award->imageFileName);
 
             return $this->commitReturn($award);
         } catch(\Exception $e) {
@@ -288,12 +302,32 @@ class AwardService extends Service
 
         $data['allow_transfer'] = ((isset($data['allow_transfer']) && $data['allow_transfer']) ? 1 : 0);
         $data['is_released'] = ((isset($data['is_released']) && $data['is_released']) ? 1 : 0);
+        $data['is_featured'] = ((isset($data['is_featured']) && $data['is_featured']) ? 1 : 0);
+        $data['is_character_owned'] = ((isset($data['is_character_owned']) && $data['is_character_owned']) ? 1 : 0);
+        $data['is_user_owned'] = ((isset($data['is_user_owned']) && $data['is_user_owned']) ? 1 : 0);
+
+        $data['credits'] = [];
+
+        foreach($data['credit-name'] as $key => $name) {
+            $data['credits'][] = [
+                'name'  => $name,
+                'url'   => $data['credit-url'][$key],
+                'id'    => (int)$data['credit-id'][$key],
+                'role'  => $data['credit-role'][$key],
+            ];
+        }
+
+        unset($data['credit-name']);
+        unset($data['credit-url']);
+        unset($data['credit-id']);
+        unset($data['credit-role']);
 
         if(isset($data['remove_image']))
         {
             if($award && $award->has_image && $data['remove_image'])
             {
                 $data['has_image'] = 0;
+                $data['extension'] = null;
                 $this->deleteImage($award->imagePath, $award->imageFileName);
             }
             unset($data['remove_image']);

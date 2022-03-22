@@ -75,10 +75,12 @@ Route::get('/sublist/{key}', 'BrowseController@getSublist');
 Route::group(['prefix' => 'character', 'namespace' => 'Characters'], function() {
     Route::get('{slug}', 'CharacterController@getCharacter');
     Route::get('{slug}/profile', 'CharacterController@getCharacterProfile');
+    Route::get('{slug}/awards', 'CharacterController@getCharacterAwards');
     Route::get('{slug}/bank', 'CharacterController@getCharacterBank');
     Route::get('{slug}/inventory', 'CharacterController@getCharacterInventory');
     Route::get('{slug}/images', 'CharacterController@getCharacterImages');
 
+    Route::get('{slug}/award-logs', 'CharacterController@getCharacterAwardLogs');
     Route::get('{slug}/currency-logs', 'CharacterController@getCharacterCurrencyLogs');
     Route::get('{slug}/item-logs', 'CharacterController@getCharacterItemLogs');
     Route::get('{slug}/ownership', 'CharacterController@getCharacterOwnershipLogs');

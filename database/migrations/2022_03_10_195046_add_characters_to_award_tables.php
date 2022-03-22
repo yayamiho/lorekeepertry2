@@ -27,8 +27,6 @@ class AddCharactersToAwardTables extends Migration
             $table->boolean('is_featured')->default(0);                                     // Whether this is separated from the rest to be featured on a character or user. See extension config for count.
             $table->boolean('is_user_owned')->after('data')->default(1);                    // Whether this award is owned by a user. Defaulted to 1 for ease of version upgrade.
             $table->boolean('is_character_owned')->after('is_user_owned')->default(0);      // Whether this award is owned by a character.
-            $table->integer('sort_user')->unsigned()->default(0);                           // Larger shows up first
-            $table->integer('sort_character')->unsigned()->default(0);                      // Larger shows up first
             $table->integer('user_limit')->unsigned()->default(0);                          // Max of this award a user may have at a time without being manually added.
             $table->integer('character_limit')->unsigned()->default(0);                     // Max of this award a character may have at a time without being manually added.            $table->dropColumn('extension');
             $table->string('extension', 5)->after('has_image')->nullable()->default('png'); // Allows for gif, etc, award images
