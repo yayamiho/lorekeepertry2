@@ -59,7 +59,6 @@ return [
     'awards' => [
         'user_featured'             => 1,   // Number of awards displayed prominently on the user profile
         'character_featured'        => 1,   // Number of awards displayed prominently on the character page
-        'allow_transfers'           => 1,   // 1 hides the "transfer award" button from non-staff. 0 shows it to the owner.
     ],
 
 ];

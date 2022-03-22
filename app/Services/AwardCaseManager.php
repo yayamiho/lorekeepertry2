@@ -3,6 +3,7 @@
 use Carbon\Carbon;
 use App\Services\Service;
 
+use Arr;
 use DB;
 use Auth;
 use Config;
@@ -103,6 +104,59 @@ class AwardCaseManager extends Service
     }
 
     /**
+     * Grants an award to a character.
+     *
+     * @param  array                            $data
+     * @param  \App\Models\Character\Character  $character
+     * @param  \App\Models\User\User            $staff
+     * @return bool
+     */
+    public function grantCharacterAwards($data, $character, $staff)
+    {
+        DB::beginTransaction();
+
+        try {
+            if(!$character) throw new \Exception("Invalid character selected.");
+
+            foreach($data['quantities'] as $q) {
+                if($q <= 0) throw new \Exception("All quantities must be at least 1.");
+            }
+
+            $keyed_quantities = [];
+            array_walk($data['award_ids'], function($id, $key) use(&$keyed_quantities, $data) {
+                if($id != null && !in_array($id, array_keys($keyed_quantities), TRUE)) {
+                    $keyed_quantities[$id] = $data['quantities'][$key];
+                }
+            });
+
+            // Process award(s)
+            $awards = Award::find($data['award_ids']);
+            foreach($awards as $i) {
+                if(!$i->is_character_owned) throw new \Exception("One of these awards cannot be owned by characters.");
+            }
+            if(!count($awards)) throw new \Exception("No valid awards found.");
+
+            foreach($awards as $award) {
+                $this->creditAward($staff, $character, 'Staff Grant', Arr::only($data, ['data', 'disallow_transfer', 'notes']), $award, $keyed_quantities[$award->id]);
+                if($character->is_visible && $character->user_id) {
+                    Notifications::create('CHARACTER_AWARD_GRANT', $character->user, [
+                        'award_name' => $award->name,
+                        'award_quantity' => $keyed_quantities[$award->id],
+                        'sender_url' => $staff->url,
+                        'sender_name' => $staff->name,
+                        'character_name' => $character->fullName,
+                        'character_slug' => $character->slug,
+                    ]);
+                }
+            }
+
+            return $this->commitReturn(true);
+        } catch(\Exception $e) {
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+    /**
      * Transfers awards between a user and character.
      *
      * @param  \App\Models\User\User|\App\Models\Character\Character          $sender
@@ -131,21 +185,20 @@ class AwardCaseManager extends Service
 
                 if(($recipient->logType == 'Character' && !$sender->hasPower('edit_inventories') && !Auth::user() == $recipient->user) || ($recipient->logType == 'User' && !Auth::user()->hasPower('edit_inventories') && !Auth::user() == $sender->user)) throw new \Exception("Cannot transfer awards to/from a character you don't own.");
 
-                if($recipient->logType == 'Character' && !$stack->award->category->is_character_owned) throw new \Exception("One of the selected awards cannot be owned by characters.");
+                if($recipient->logType == 'Character' && !$stack->award->is_character_owned) throw new \Exception("One of the selected awards cannot be owned by characters.");
                 if((!$stack->award->allow_transfer || isset($stack->data['disallow_transfer'])) && !Auth::user()->hasPower('edit_inventories')) throw new \Exception("One of the selected awards cannot be transferred.");
                 if($stack->count < $quantity) throw new \Exception("Quantity to transfer exceeds award count.");
 
                 //Check that hold count isn't being exceeded
-                if($stack->award->category->character_limit > 0) $limit = $stack->award->category->character_limit;
+                if($stack->award->character_limit > 0) $limit = $stack->award->character_limit;
                 if($recipient->logType == 'Character' && isset($limit)) {
-                    $limitedItems = Item::where('award_category_id', $stack->award->category->id);
-                    $ownedLimitedItems = CharacterItem::with('award')->whereIn('award_id', $limitedItems->pluck('id'))->whereNull('deleted_at')->where('count', '>', '0')->where('character_id', $recipient->id)->get();
-                    $newOwnedLimit = $ownedLimitedItems->pluck('count')->sum() + $quantity;
+                    $ownedLimitedAwards = CharacterAward::with('award')->where('award_id', $stack->award->id)->whereNull('deleted_at')->where('count', '>', '0')->where('character_id', $recipient->id)->get();
+                    $newOwnedLimit = $ownedLimitedAwards->pluck('count')->sum() + $quantity;
                 }
 
-                if($recipient->logType == 'Character' && isset($limit) && ($ownedLimitedItems->pluck('count')->sum() >= $limit || $newOwnedLimit > $limit)) throw new \Exception("One of the selected awards exceeds the limit characters can own for its category.");
+                if($recipient->logType == 'Character' && isset($limit) && ($ownedLimitedAwards->pluck('count')->sum() >= $limit || $newOwnedLimit > $limit)) throw new \Exception("One of the selected awards exceeds the limit characters can own for its category.");
 
-                $this->creditItem($sender, $recipient, $sender->logType == 'User' ? 'User → Character Transfer' : 'Character → User Transfer', $stack->data, $stack->award, $quantity);
+                $this->creditAward($sender, $recipient, $sender->logType == 'User' ? 'User → Character Transfer' : 'Character → User Transfer', $stack->data, $stack->award, $quantity);
 
                 $stack->count -= $quantity;
                 $stack->save();
@@ -175,12 +228,12 @@ class AwardCaseManager extends Service
                 $quantity = $quantities[$key];
                 if(!$sender->hasAlias) throw new \Exception("Your deviantART account must be verified before you can perform this action.");
                 if(!$stack) throw new \Exception("An invalid award was selected.");
-                if($stack->user_id != $sender->id && !$sender->hasPower('edit_awardcases')) throw new \Exception("You do not own one of the selected awards.");
+                if($stack->user_id != $sender->id && !$sender->hasPower('edit_inventories')) throw new \Exception("You do not own one of the selected awards.");
                 if($stack->user_id == $recipient->id) throw new \Exception("Cannot send awards to the award's owner.");
                 if(!$recipient) throw new \Exception("Invalid recipient selected.");
                 if(!$recipient->hasAlias) throw new \Exception("Cannot transfer awards to a non-verified member.");
                 if($recipient->is_banned) throw new \Exception("Cannot transfer awards to a banned member.");
-                if((!$stack->award->allow_transfer || isset($stack->data['disallow_transfer'])) && !$sender->hasPower('edit_awardcases')) throw new \Exception("One of the selected awards cannot be transferred.");
+                if((!$stack->award->allow_transfer || isset($stack->data['disallow_transfer'])) && !$sender->hasPower('edit_inventories')) throw new \Exception("One of the selected awards cannot be transferred.");
                 if($stack->count < $quantity) throw new \Exception("Quantity to transfer exceeds award count.");
 
                 $oldUser = $stack->user;
@@ -227,7 +280,7 @@ class AwardCaseManager extends Service
                     $quantity = $quantities[$key];
                     if(!$owner->hasAlias) throw new \Exception("Your alias account must be verified before you can perform this action.");
                     if(!$stack) throw new \Exception("An invalid award was selected.");
-                    if($stack->user_id != $owner->id && !$user->hasPower('edit_awardcases')) throw new \Exception("You do not own one of the selected awards.");
+                    if($stack->user_id != $owner->id && !$user->hasPower('edit_inventories')) throw new \Exception("You do not own one of the selected awards.");
                     if($stack->count < $quantity) throw new \Exception("Quantity to delete exceeds award count.");
 
                     $oldUser = $stack->user;
@@ -250,7 +303,7 @@ class AwardCaseManager extends Service
                     $user = Auth::user();
                     if(!$user->hasAlias) throw new \Exception("Your deviantART account must be verified before you can perform this action.");
                     if(!$stack) throw new \Exception("An invalid award was selected.");
-                    if($stack->character->user_id != $user->id && !$user->hasPower('edit_awardcases')) throw new \Exception("You do not own one of the selected awards.");
+                    if($stack->character->user_id != $user->id && !$user->hasPower('edit_inventories')) throw new \Exception("You do not own one of the selected awards.");
                     if($stack->count < $quantity) throw new \Exception("Quantity to delete exceeds award count.");
 
                     if($this->debitStack($stack->character, ($stack->character->user_id == $user->id ? 'User Deleted' : 'Staff Deleted'), ['data' => ($stack->character->user_id != $user->id ? 'Deleted by '.$user->displayName : '')], $stack, $quantity))

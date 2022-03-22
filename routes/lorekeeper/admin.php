@@ -301,10 +301,6 @@ Route::group(['prefix' => 'grants', 'namespace' => 'Users', 'middleware' => 'pow
     Route::post('items', 'GrantController@postItems');
 
     Route::get('item-search', 'GrantController@getItemSearch');
-});
-
-# AWARD GRANTS
-Route::group(['prefix' => 'grants', 'namespace' => 'Users', 'middleware' => 'power:edit_awardcases'], function() {
 
     Route::get('awards', 'GrantController@getAwards');
     Route::post('awards', 'GrantController@postAwards');
@@ -335,6 +331,7 @@ Route::group(['prefix' => 'masterlist', 'namespace' => 'Characters', 'middleware
 Route::group(['prefix' => 'character', 'namespace' => 'Characters', 'middleware' => 'power:edit_inventories'], function() {
     Route::post('{slug}/grant', 'GrantController@postCharacterCurrency');
     Route::post('{slug}/grant-items', 'GrantController@postCharacterItems');
+    Route::post('{slug}/grant-awards', 'GrantController@postCharacterAwards');
 });
 Route::group(['prefix' => 'character', 'namespace' => 'Characters', 'middleware' => 'power:manage_characters'], function() {
 

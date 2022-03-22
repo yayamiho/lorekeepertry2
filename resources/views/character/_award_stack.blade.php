@@ -3,13 +3,10 @@
 @else
     <div class="text-center">
         <div class="mb-1"><a href="{{ $award->url }}"><img src="{{ $award->imageUrl }}" alt="{{ $award->name }}"/></a></div>
-        <div @if(count($award->tags)) class="mb-1" @endif><a href="{{ $award->url }}">{{ $award->name }}</a></div>
+        <a href="{{ $award->url }}">{{ $award->name }}</a>
     </div>
 
-    <h5>Award Variations</h5>
-    @if($user && $user->hasPower('edit_inventories'))
-        <p class="alert alert-warning my-2">Note: Your rank allows you to transfer character-bound awards.</p>
-    @endif
+    <h5>Owned Stacks</h5>
 
     {!! Form::open(['url' => 'character/'.$character->slug.'/awardcase/edit']) !!}
     <div class="card" style="border: 0px">
@@ -19,9 +16,6 @@
                     @if($user && !$readOnly &&
                     ($owner_id == $user->id || $has_power == TRUE))
                         <th class="col-1"><input id="toggle-checks" type="checkbox" onclick="toggleChecks(this)"></th>
-                    @endif
-                    @if($award->category->can_name)
-                        <th class="col-2">Name</th>
                     @endif
                     <th class="col">Source</th>
                     <th class="col">Notes</th>
@@ -35,16 +29,27 @@
                         @if($user && !$readOnly && ($owner_id == $user->id || $has_power == TRUE))
                             <td class="col-1">{!! Form::checkbox('ids[]', $awardRow->id, false, ['class' => 'award-check', 'onclick' => 'updateQuantities(this)']) !!}</td>
                         @endif
-                        @if($award->category->can_name)
-                            <td class="col-2">{!! htmlentities($awardRow->stack_name) ? : 'N/A' !!}</td>
-                        @endif
                         <td class="col">{!! array_key_exists('data', $awardRow->data) ? ($awardRow->data['data'] ? $awardRow->data['data'] : 'N/A') : 'N/A' !!}</td>
                         <td class="col">{!! array_key_exists('notes', $awardRow->data) ? ($awardRow->data['notes'] ? $awardRow->data['notes'] : 'N/A') : 'N/A' !!}</td>
                         @if($user && !$readOnly && ($owner_id == $user->id || $has_power == TRUE))
                             @if($awardRow->availableQuantity)
-                                <td class="col-2">{!! Form::selectRange('', 1, $awardRow->availableQuantity, 1, ['class' => 'quantity-select', 'type' => 'number', 'style' => 'min-width:40px;']) !!} /{{ $awardRow->availableQuantity }}</td>
+                                <td class="col-2">
+                                    <div class="input-group">
+                                        {!! Form::selectRange('', 1, $awardRow->availableQuantity, 1, ['class' => 'quantity-select input-group-prepend', 'type' => 'number', 'style' => 'min-width:40px;']) !!}
+                                        <div class="input-group-append">
+                                            <div class="input-group-text">/ {{ $awardRow->availableQuantity }}</div>
+                                        </div>
+                                    </div>
+                                </td>
                             @else
-                                <td class="col-2">{!! Form::selectRange('', 0, 0, 0, ['class' => 'quantity-select', 'type' => 'number', 'style' => 'min-width:40px;', 'disabled']) !!} /{{ $awardRow->availableQuantity }}</td>
+                                <td class="col-2">
+                                    <div class="input-group">
+                                        {!! Form::selectRange('', 0, 0, 0, ['class' => 'quantity-select input-group-prepend', 'type' => 'number', 'style' => 'min-width:40px;', 'disabled']) !!}
+                                        <div class="input-group-append">
+                                            <div class="input-group-text">/ {{ $awardRow->availableQuantity }}</div>
+                                        </div>
+                                    </div>
+                                </td>
                             @endif
                         @else
                             <td class="col-3">{!! $awardRow->count !!}</td>
@@ -62,30 +67,27 @@
 
     @if($user && !$readOnly &&
         ($owner_id == $user->id || $has_power == TRUE))
-        <div class="card mt-3">
-            <ul class="list-group list-group-flush">
-                @if($owner_id != null)
-                <li class="list-group-award">
-                    <a class="card-title h5 collapse-title" data-toggle="collapse" href="#transferForm">@if($owner_id != $user->id) [ADMIN] @endif Transfer Award</a>
-                    <div id="transferForm" class="collapse">
-                        <p>This will transfer this award back to @if($owner_id != $user->id) this user's @else your @endif awardcase.</p>
-                        <div class="text-right">
-                            {!! Form::button('Transfer', ['class' => 'btn btn-primary', 'name' => 'action', 'value' => 'take', 'type' => 'submit']) !!}
-                        </div>
-                </div>
-                </li>
-                @endif
-                <li class="list-group-award">
-                    <a class="card-title h5 collapse-title" data-toggle="collapse" href="#deleteForm">@if($owner_id != $user->id) [ADMIN] @endif Delete Award</a>
-                    <div id="deleteForm" class="collapse">
-                        <p>This action is not reversible. Are you sure you want to delete this award?</p>
-                        <div class="text-right">
-                            {!! Form::button('Delete', ['class' => 'btn btn-danger', 'name' => 'action', 'value' => 'delete', 'type' => 'submit']) !!}
-                        </div>
+        <div class="card mt-3"><div class="card-body">
+            @if($owner_id != null && ($award->is_transferrable || $user->hasPower('edit_inventories')) && $award->is_user_owned)
+                <div><a class="card-title h5 btn btn-sm btn-outline-primary" data-toggle="collapse" href="#transferForm">@if($owner_id != $user->id) [ADMIN] @endif Transfer Award</a></div>
+                <div id="transferForm" class="collapse">
+                    @if($user && $user->hasPower('edit_inventories'))
+                        <p class="alert alert-warning my-2">Note: Your rank allows you to transfer character-bound awards.</p>
+                    @endif
+                    <p>This will transfer this award back to @if($owner_id != $user->id) this user's @else your @endif awardcase.</p>
+                    <div class="text-right">
+                        {!! Form::button('Transfer', ['class' => 'btn btn-primary', 'name' => 'action', 'value' => 'take', 'type' => 'submit']) !!}
                     </div>
-                </li>
-            </ul>
-        </div>
+                </div>
+            @endif
+            <div><a class="card-title h5 btn btn-sm btn-outline-primary" data-toggle="collapse" href="#deleteForm">@if($owner_id != $user->id) [ADMIN] @endif Delete Award</a></div>
+            <div id="deleteForm" class="collapse">
+                <p>This action is not reversible. Are you sure you want to delete this award?</p>
+                <div class="text-right">
+                    {!! Form::button('Delete', ['class' => 'btn btn-danger', 'name' => 'action', 'value' => 'delete', 'type' => 'submit']) !!}
+                </div>
+            </div>
+        </div></div>
     @endif
     {!! Form::close() !!}
 @endif

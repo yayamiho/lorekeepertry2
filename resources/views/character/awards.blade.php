@@ -68,21 +68,21 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                <p>Note that granting awards does not check against any category hold limits for characters.</p>
+                <p>Note that granting awards does not check against any hold limits for characters.</p>
                 <div class="form-group">
                 {!! Form::open(['url' => 'admin/character/'.$character->slug.'/grant-awards']) !!}
 
-                    {!! Form::label('Item(s)') !!} {!! add_help('Must have at least 1 award and Quantity must be at least 1.') !!}
+                    {!! Form::label('Award(s)') !!} {!! add_help('Must have at least 1 award and Quantity must be at least 1.') !!}
                     <div id="awardList">
                         <div class="d-flex mb-2">
-                            {!! Form::select('award_ids[]', $awardOptions, null, ['class' => 'form-control mr-2 default award-select', 'placeholder' => 'Select Item']) !!}
+                            {!! Form::select('award_ids[]', $awardOptions, null, ['class' => 'form-control mr-2 default award-select', 'placeholder' => 'Select Award']) !!}
                             {!! Form::text('quantities[]', 1, ['class' => 'form-control mr-2', 'placeholder' => 'Quantity']) !!}
                             <a href="#" class="remove-award btn btn-danger mb-2 disabled">×</a>
                         </div>
                     </div>
-                    <div><a href="#" class="btn btn-primary" id="add-award">Add Item</a></div>
+                    <div><a href="#" class="btn btn-primary" id="add-award">Add Award</a></div>
                     <div class="award-row hide mb-2">
-                        {!! Form::select('award_ids[]', $awardOptions, null, ['class' => 'form-control mr-2 award-select', 'placeholder' => 'Select Item']) !!}
+                        {!! Form::select('award_ids[]', $awardOptions, null, ['class' => 'form-control mr-2 award-select', 'placeholder' => 'Select Award']) !!}
                         {!! Form::text('quantities[]', 1, ['class' => 'form-control mr-2', 'placeholder' => 'Quantity']) !!}
                         <a href="#" class="remove-award btn btn-danger mb-2">×</a>
                     </div>
@@ -133,13 +133,13 @@ $( document ).ready(function() {
     $('.default.award-select').selectize();
         $('#add-award').on('click', function(e) {
             e.preventDefault();
-            addItemRow();
+            addAwardRow();
         });
         $('.remove-award').on('click', function(e) {
             e.preventDefault();
-            removeItemRow($(this));
+            removeAwardRow($(this));
         })
-        function addItemRow() {
+        function addAwardRow() {
             var $rows = $("#awardList > div")
             if($rows.length === 1) {
                 $rows.find('.remove-award').removeClass('disabled')
@@ -150,11 +150,11 @@ $( document ).ready(function() {
             $clone.addClass('d-flex');
             $clone.find('.remove-award').on('click', function(e) {
                 e.preventDefault();
-                removeItemRow($(this));
+                removeAwardRow($(this));
             })
             $clone.find('.award-select').selectize();
         }
-        function removeItemRow($trigger) {
+        function removeAwardRow($trigger) {
             $trigger.parent().remove();
             var $rows = $("#awardList > div")
             if($rows.length === 1) {

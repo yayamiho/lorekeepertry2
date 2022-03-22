@@ -240,7 +240,7 @@ class CharacterController extends Controller
     public function getCharacterAwards($slug)
     {
         $categories = AwardCategory::orderBy('sort', 'DESC')->get();
-        $awardOptions = Award::where('is_character_owned', '1')->whereIn('award_category_id', $categories->pluck('id'));
+        $awardOptions = Award::where('is_character_owned', '1');
 
         $awards = count($categories) ?
             $this->character->awards()
@@ -263,7 +263,6 @@ class CharacterController extends Controller
             'logs' => $this->character->getAwardLogs(),
             ] + (Auth::check() && (Auth::user()->hasPower('edit_inventories') || Auth::user()->id == $this->character->user_id) ? [
                 'awardOptions' => $awardOptions->pluck('name', 'id'),
-                'userAwards' => UserAward::with('award')->whereIn('award_id', $awardOptions->pluck('id'))->whereNull('deleted_at')->where('count', '>', '0')->where('user_id', Auth::user()->id)->get()->filter(function($userAward){return $userAward->isTransferrable == true;})->sortBy('award.name'),
                 'page' => 'character'
             ] : []));
     }

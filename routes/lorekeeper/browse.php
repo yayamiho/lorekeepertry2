@@ -17,6 +17,7 @@
 Route::get('items/{id}', 'Users\InventoryController@getStack');
 Route::get('awards/{id}', 'Users\AwardCaseController@getStack');
 Route::get('items/character/{id}', 'Users\InventoryController@getCharacterStack');
+Route::get('awards/character/{id}', 'Users\AwardCaseController@getCharacterStack');
 
 /**************************************************************************************************
     News
