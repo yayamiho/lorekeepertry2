@@ -133,11 +133,11 @@ class AwardCaseController extends Controller
                 case 'transfer':
                     return $this->postTransfer($request, $service);
                     break;
+                case 'characterTransfer':
+                    return $this->postTransferToCharacter($request, $service);
+                    break;
                 case 'delete':
                     return $this->postDelete($request, $service);
-                    break;
-                case 'act':
-                    return $this->postAct($request);
                     break;
             }
         }
@@ -154,6 +154,24 @@ class AwardCaseController extends Controller
     private function postTransfer(Request $request, AwardCaseManager $service)
     {
         if($service->transferStack(Auth::user(), User::visible()->where('id', $request->get('user_id'))->first(), UserAward::find($request->get('ids')), $request->get('quantities'))) {
+            flash('Award transferred successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+
+    /**
+     * Transfers inventory items to another user.
+     *
+     * @param  \Illuminate\Http\Request       $request
+     * @param  App\Services\InventoryManager  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    private function postTransferToCharacter(Request $request, AwardCaseManager $service)
+    {
+        if($service->transferCharacterStack(Auth::user(), Character::visible()->where('id', $request->get('character_id'))->first(), UserAward::find($request->get('ids')), $request->get('quantities'))) {
             flash('Award transferred successfully.')->success();
         }
         else {

@@ -1,61 +1,50 @@
-<div class="row world-entry">
+<div class="row world-entry align-items-center">
     @if($imageUrl)
-        <div class="col-md-3 world-entry-image"><a href="{{ $imageUrl }}" data-lightbox="entry" data-title="{{ $name }}"><img src="{{ $imageUrl }}" class="world-entry-image" /></a></div>
+        <div class="col-md-3 world-entry-image"><a href="{{ $imageUrl }}" data-lightbox="entry" data-title="{{ $name }}"><img src="{{ $imageUrl }}" class="world-entry-image img-fluid" /></a></div>
     @endif
     <div class="{{ $imageUrl ? 'col-md-9' : 'col-12' }}">
-        <h3>{!! $name !!} @if(isset($idUrl) && $idUrl) <a href="{{ $idUrl }}" class="world-entry-search text-muted"><i class="fas fa-search"></i></a>  @endif</h3>
-        <div class="row">
-            @if(isset($award->category) && $award->category)
-                <div class="col">
-                    <p><strong>Category:</strong> {!! $award->category->name !!}</p>
-                </div>
-            @endif
-            @if(isset($award->rarity) && $award->rarity)
-                <div class="col">
-                    <p><strong>Rarity:</strong> {!! $award->rarity !!}</p>
-                </div>
-            @endif
-            @if(isset($award->awardArtist) && $award->awardArtist)
-                <div class="col">
-                    <p><strong>Artist:</strong> {!! $award->awardArtist !!}</p>
-                </div>
-            @endif
-        </div>
-        <div class="world-entry-text">
-            @if(isset($award->reference) && $award->reference)  <p><strong>Reference Link:</strong> <a href="{{ $award->reference }}">{{ $award->reference }}</a></p> @endif
-            {!! $description !!}
-            @if(isset($award->uses) && $award->uses || isset($award->source) && $award->source || isset($award->data['shops']) && $award->data['shops'] || isset($award->data['prompts']) && $award->data['prompts'])
-            <div class="text-right"><a data-toggle="collapse" href="#award-{{ $award->id }}" class="text-primary"><strong>Show details...</strong></a></div>
-            <div class="collapse" id="award-{{ $award->id }}">
-                @if(isset($award->uses) && $award->uses)  <p><strong>Uses:</strong> {{ $award->uses }}</p> @endif
-                @if(isset($award->source) && $award->source || isset($award->data['shops']) && $award->data['shops'] || isset($award->data['prompts']) && $award->data['prompts'])
-                <h5>Availability</h5>
-                <div class="row">
-                    @if(isset($award->source) && $award->source)
-                        <div class="col">
-                            <p><strong>Source:</strong></p>
-                            <p>{!! $award->source !!}</p>
-                        </div>
-                    @endif
-                    @if(isset($award->data['shops']) && $award->data['shops'])
-                        <div class="col">
-                            <p><strong>Purchaseable At:</strong></p>
-                                <div class="row">
-                                    @foreach($award->shops as $shop) <div class="col"><a href="{{ $shop->url }}">{{ $shop->name }}</a></div> @endforeach
-                                </div>
-                        </div>
-                    @endif
-                    @if(isset($award->data['prompts']) && $award->data['prompts'])
-                        <div class="col">
-                            <p><strong>Drops From:</strong></p>
-                                <div class="row">
-                                    @foreach($award->prompts as $prompt) <div class="col"><a href="{{ $prompt->url }}">{{ $prompt->name }}</a></div> @endforeach
-                                </div>
-                        </div>
-                    @endif
-                </div>
+        <div class="card mb-2">
+            <div class="card-header d-flex flex-wrap no-gutters">
+                <h1 class="col-12">{!! $name !!}
+                    <div class="float-md-right small">
+                        @if($award->is_character_owned)<i class="fas fa-paw mx-2 small" data-toggle="tooltip" title="This award can be held by characters."></i>@endif
+                        @if($award->is_user_owned)<i class="fas fa-user mx-2 small" data-toggle="tooltip" title="This award can be held by users."></i>@endif
+                    </div>
+                </h1>
+                @if(isset($award->category) && $award->category)
+                    <div class="col">
+                        <strong>Category:</strong> {{ $award->category->name }}
+                    </div>
+                @endif
+                @if(isset($award->rarity) && $award->rarity)
+                    <div class="col">
+                        <strong>Rarity:</strong> {{ $award->rarity }}
+                    </div>
                 @endif
             </div>
+            <div class="card-body">
+                {!! $description !!}
+            </div>
+            @if(isset($award->source) && $award->source || isset($award->data['prompts']) && $award->data['prompts'])
+                <div class="card-header h5">Availability</div>
+                <div class="card-body">
+                    @if(isset($award->data['release']) && $award->data['release'])
+                        <div><strong>Source:</strong> {!! $award->data['release'] !!}</div>
+                    @endif
+                    @if(isset($award->data['prompts']) && $award->data['prompts'])
+                        <div class="no-gutters d-flex flex-wrap justify-content-center">
+                            @foreach($award->prompts as $prompt)<a href="{{ $prompt->url }}" class="btn btn-outline-primary btn-sm mx-1">{{ $prompt->name }}</a> @endforeach
+                        </div>
+                    @endif
+                </div>
+            @endif
+            @if(isset($award->credits) && $award->credits)
+                <div class="card-header h5">Credits</div>
+                <div class="card-body d-flex flex-wrap justify-content-center">
+                    @foreach($award->prettyCredits as $credit)
+                        <span class="btn btn-outline-primary btn-sm mx-1">{!! $credit !!}</span>
+                    @endforeach
+                </div>
             @endif
         </div>
     </div>

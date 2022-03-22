@@ -12,90 +12,61 @@
 @endsection
 
 @section('content')
+@if(Auth::check() && Auth::user()->hasPower('edit_data'))
+    <a data-toggle="tooltip" title="[ADMIN] Edit Award" href="{{ url('admin/data/awards/edit/').'/'.$award->id }}" class="mb-2 float-right"><i class="fas fa-crown"></i></a>
+@endif
 {!! breadcrumbs(['World' => 'world', 'Awards' => 'world/awards', $award->name => $award->idUrl]) !!}
 
-<div class="row">
-    <div class="col-sm">
-    </div>
-    <div class="col-lg-6 col-lg-10">
-        <div class="card mb-3">
-            <div class="card-body">
-                <div class="row world-entry">
-                    @if($imageUrl)
-                        <div class="col-md-3 world-entry-image"><a href="{{ $imageUrl }}" data-lightbox="entry" data-title="{{ $name }}"><img src="{{ $imageUrl }}" class="world-entry-image" /></a></div>
-                    @endif
-                    <div class="{{ $imageUrl ? 'col-md-9' : 'col-12' }}">
-                        <h1>{!! $name !!}</h1>
-                        <div class="row">
-                            @if(isset($award->category) && $award->category)
-                                <div class="col">
-                                    <p><strong>Category:</strong> {{ $award->category->name }}</p>
-                                </div>
-                            @endif
-                            @if(isset($award->rarity) && $award->rarity)
-                                <div class="col">
-                                    <p><strong>Rarity:</strong> {{ $award->rarity }}: {{ $award->rarityName }}</p>
-                                </div>
-                            @endif
-                            @if(isset($award->awardArtist) && $award->awardArtist)
-                                <div class="col">
-                                    <p><strong>Artist:</strong> {!! $award->awardArtist !!}</p>
-                                </div>
-                            @endif
-                            <div class="col-md-5 col-md">
-                                <div class="row">
-                                    @foreach($award->tags as $tag)
-                                        @if($tag->is_active)
-                                        <div class="col">
-                                            {!! $tag->displayTag !!}
-                                        </div>
-                                        @endif
-                                    @endforeach
-                                </div>
-                            </div>
-                        </div>
-                        <div class="world-entry-text">
-                            @if(isset($award->reference_url) && $award->reference_url)  <p><strong>Reference Link:</strong> <a href="{{ $award->reference_url }}">{{ $award->reference_url }}</a></p> @endif
-                            {!! $description !!}
-                            @if(isset($award->uses) && $award->uses || isset($award->source) && $award->source || isset($award->data['shops']) && $award->data['shops'] || isset($award->data['prompts']) && $award->data['prompts'])
-
-                                @if(isset($award->uses) && $award->uses)  <p><strong>Uses:</strong> {!! $award->uses !!}</p> @endif
-                                @if(isset($award->source) && $award->source || isset($award->data['shops']) && $award->data['shops'] || isset($award->data['prompts']) && $award->data['prompts'])
-                                <h5>Availability</h5>
-                                <div class="row">
-                                    @if(isset($award->data['release']) && $award->data['release'])
-                                        <div class="col">
-                                            <p><strong>Source:</strong></p>
-                                            <p>{!! $award->data['release'] !!}</p>
-                                        </div>
-                                    @endif
-                                    @if(isset($award->data['shops']) && $award->data['shops'])
-                                        <div class="col">
-                                            <p><strong>Purchaseable At:</strong></p>
-                                                <div class="row">
-                                                    @foreach($award->shops as $shop) <span class="badge" style="font-size:95%; background-color: #fefcf6; margin:5px;"><a href="{{ $shop->url }}">{{ $shop->name }}</a></span>
-                                                    @endforeach
-                                                </div>
-                                        </div>
-                                    @endif
-                                    @if(isset($award->data['prompts']) && $award->data['prompts'])
-                                        <div class="col">
-                                            <p><strong>Drops From:</strong></p>
-                                                <div class="row">
-                                                    @foreach($award->prompts as $prompt) <span class="badge" style="font-size:95%; background-color: #fefcf6; margin:5px;"><a href="{{ $prompt->url }}">{{ $prompt->name }}</a></span> @endforeach
-                                                </div>
-                                        </div>
-                                    @endif
-                                </div>
-                                @endif
-                            @endif
-                        </div>
+<div class="row world-entry align-items-center">
+    @if($imageUrl)
+        <div class="col-md-3 world-entry-image"><a href="{{ $imageUrl }}" data-lightbox="entry" data-title="{{ $name }}"><img src="{{ $imageUrl }}" class="world-entry-image img-fluid" /></a></div>
+    @endif
+    <div class="{{ $imageUrl ? 'col-md-9' : 'col-12' }}">
+        <div class="card mb-2">
+            <div class="card-header d-flex flex-wrap no-gutters">
+                <h1 class="col-12">{!! $name !!}
+                    <div class="float-md-right small">
+                        @if($award->is_character_owned)<i class="fas fa-paw mx-2 small" data-toggle="tooltip" title="This award can be held by characters."></i>@endif
+                        @if($award->is_user_owned)<i class="fas fa-user mx-2 small" data-toggle="tooltip" title="This award can be held by users."></i>@endif
                     </div>
-                </div>
+                </h1>
+                @if(isset($award->category) && $award->category)
+                    <div class="col">
+                        <strong>Category:</strong> {{ $award->category->name }}
+                    </div>
+                @endif
+                @if(isset($award->rarity) && $award->rarity)
+                    <div class="col">
+                        <strong>Rarity:</strong> {{ $award->rarity }}
+                    </div>
+                @endif
             </div>
+            <div class="card-body">
+                {!! $description !!}
+            </div>
+            @if(isset($award->source) && $award->source || isset($award->data['prompts']) && $award->data['prompts'])
+                <div class="card-header h5">Availability</div>
+                <div class="card-body">
+                    @if(isset($award->data['release']) && $award->data['release'])
+                        <div><strong>Source:</strong> {!! $award->data['release'] !!}</div>
+                    @endif
+                    @if(isset($award->data['prompts']) && $award->data['prompts'])
+                        <div class="no-gutters d-flex flex-wrap justify-content-center">
+                            @foreach($award->prompts as $prompt)<a href="{{ $prompt->url }}" class="btn btn-outline-primary btn-sm mx-1">{{ $prompt->name }}</a> @endforeach
+                        </div>
+                    @endif
+                </div>
+            @endif
+            @if(isset($award->credits) && $award->credits)
+                <div class="card-header h5">Credits</div>
+                <div class="card-body d-flex flex-wrap justify-content-center">
+                    @foreach($award->prettyCredits as $credit)
+                        <span class="btn btn-outline-primary btn-sm mx-1">{!! $credit !!}</span>
+                    @endforeach
+                </div>
+            @endif
         </div>
     </div>
-    <div class="col-sm">
-    </div>
 </div>
+
 @endsection

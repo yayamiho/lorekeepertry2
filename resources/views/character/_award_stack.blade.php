@@ -3,9 +3,9 @@
 @else
     <div class="text-center">
         @if($award->has_image)
-            <div class="mb-1"><a href="{{ $award->url }}"><img src="{{ $award->imageUrl }}" alt="{{ $award->name }}"/></a></div>
+            <div class="mb-1"><a href="{{ $award->idUrl }}"><img src="{{ $award->imageUrl }}" alt="{{ $award->name }}"/></a></div>
         @endif
-        <a href="{{ $award->url }}">{{ $award->name }}</a>
+        <a href="{{ $award->idUrl }}">{{ $award->name }}</a>
     </div>
 
     @if($award->is_featured)

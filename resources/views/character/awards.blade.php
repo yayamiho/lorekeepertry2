@@ -32,7 +32,7 @@
                                 <a href="#" class="awards-stack {{ $stack->first()->is_featured ? 'alert alert-success' : '' }}"><img src="{{ $stack->first()->imageUrl }}" alt="{{ $stack->first()->name }}"/></a>
                             </div>
                             <div>
-                                <a href="#" class="awards-stack awards-stack-name">{{ $stack->first()->name }} x{{ $stack->sum('pivot.count') }}</a>
+                                <a href="#" class="awards-stack awards-stack-name">{{ $stack->first()->name }}@if($stack->first()->user_limit != 1) x{{ $stack->sum('pivot.count') }}@endif</a>
                             </div>
                         </div>
                     @endforeach
@@ -47,7 +47,7 @@
   <div class="d-flex row flex-wrap col-12 mt-1 pt-1 px-0 ubt-bottom">
     <div class="col-6 col-md-2 font-weight-bold">Sender</div>
     <div class="col-6 col-md-2 font-weight-bold">Recipient</div>
-    <div class="col-6 col-md-2 font-weight-bold">Character</div>
+    <div class="col-6 col-md-2 font-weight-bold">Award</div>
     <div class="col-6 col-md-4 font-weight-bold">Log</div>
     <div class="col-6 col-md-2 font-weight-bold">Date</div>
   </div>

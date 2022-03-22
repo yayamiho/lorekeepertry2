@@ -6,10 +6,11 @@ use Config;
 use DB;
 use App\Models\Model;
 use App\Models\Award\AwardCategory;
-
-use App\Models\User\User;
+use App\Models\Character\CharacterAward;
 use App\Models\Shop\Shop;
 use App\Models\Prompt\Prompt;
+use App\Models\User\User;
+use App\Models\User\UserAward;
 
 class Award extends Model
 {
@@ -164,7 +165,7 @@ class Award extends Model
      */
     public function getDisplayNameAttribute()
     {
-        return '<a href="'.$this->url.'" class="display-award">'.$this->name.'</a>';
+        return '<a href="'.$this->idUrl.'" class="display-award">'.$this->name.'</a>';
     }
 
     /**
@@ -238,32 +239,6 @@ class Award extends Model
         return 'awards';
     }
 
-    // /**
-    //  * Get the artist of the award's image.
-    //  *
-    //  * @return string
-    //  */
-    // public function getAwardArtistAttribute()
-    // {
-    //     if(!$this->artist_url && !$this->artist_id) return null;
-
-    //     // Check to see if the artist exists on site
-    //     $artist = checkAlias($this->artist_url, false);
-    //     if(is_object($artist)) {
-    //         $this->artist_id = $artist->id;
-    //         $this->artist_url = null;
-    //         $this->save();
-    //     }
-
-    //     if($this->artist_id)
-    //     {
-    //         return $this->artist->displayName;
-    //     }
-    //     else if ($this->artist_url)
-    //     {
-    //         return prettyProfileLink($this->artist_url);
-    //     }
-    // }
     /**
      * Get the data attribute as an associative array.
      *
@@ -278,6 +253,19 @@ class Award extends Model
     public function getCreditsAttribute(){
         return $this->data['credits'];
     }
+    public function getPrettyCreditsAttribute(){
+
+        $creds = [];
+        $credits = [];
+
+        foreach($this->credits as $credit){
+            $text = isset($credit['name']) ? $credit['name'] :  (isset($credit['id']) ? User::find($credit['id'])->name : (isset($credit['url']) ? $credit['url'] : 'artist'));
+            $link = isset($credit['url']) ? $credit['url'] :  (isset($credit['id']) ? User::find($credit['id'])->url : '#');
+            $role = isset($credit['role']) ? '<small>('.$credit['role'].')</small>' : null;
+            $credits[] = '<a href="'.$link.'" target="_blank">'.$text.'</a> '. $role;
+        }
+        return $credits;
+    }
 
     /**
      * Get the rarity attribute.
@@ -288,17 +276,6 @@ class Award extends Model
     {
         if (!$this->data) return null;
         return $this->data['rarity'];
-    }
-
-    /**
-     * Get the uses attribute.
-     *
-     * @return string
-     */
-    public function getUsesAttribute()
-    {
-        if (!$this->data) return null;
-        return $this->data['uses'];
     }
 
     /**

@@ -210,7 +210,6 @@ class AwardService extends Service
             $award->update([
                 'data' => json_encode([
                     'rarity' => isset($data['rarity']) && $data['rarity'] ? $data['rarity'] : null,
-                    'uses' => isset($data['uses']) && $data['uses'] ? $data['uses'] : null,
                     'release' => isset($data['release']) && $data['release'] ? $data['release'] : null,
                     'prompts' => isset($data['prompts']) && $data['prompts'] ? $data['prompts'] : null,
                     'credits' => isset($data['credits']) && $data['credits'] ? $data['credits'] : null,
@@ -273,7 +272,6 @@ class AwardService extends Service
             $award->update([
                 'data' => json_encode([
                     'rarity' => isset($data['rarity']) && $data['rarity'] ? $data['rarity'] : null,
-                    'uses' => isset($data['uses']) && $data['uses'] ? $data['uses'] : null,
                     'release' => isset($data['release']) && $data['release'] ? $data['release'] : null,
                     'prompts' => isset($data['prompts']) && $data['prompts'] ? $data['prompts'] : null,
                     'credits' => isset($data['credits']) && $data['credits'] ? $data['credits'] : null,
@@ -307,15 +305,15 @@ class AwardService extends Service
         $data['is_user_owned'] = ((isset($data['is_user_owned']) && $data['is_user_owned']) ? 1 : 0);
 
         $data['credits'] = [];
-
-        foreach($data['credit-name'] as $key => $name) {
-            $data['credits'][] = [
-                'name'  => $name,
-                'url'   => $data['credit-url'][$key],
-                'id'    => (int)$data['credit-id'][$key],
-                'role'  => $data['credit-role'][$key],
-            ];
-        }
+        if(isset($data['credit-name']))
+            foreach($data['credit-name'] as $key => $name) {
+                $data['credits'][] = [
+                    'name'  => $name,
+                    'url'   => $data['credit-url'][$key],
+                    'id'    => (int)$data['credit-id'][$key],
+                    'role'  => $data['credit-role'][$key],
+                ];
+            }
 
         unset($data['credit-name']);
         unset($data['credit-url']);

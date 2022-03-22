@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Config;
+use Auth;
 
 use App\Models\Currency\Currency;
 use App\Models\Rarity;
@@ -21,6 +22,7 @@ use App\Models\Prompt\Prompt;
 use App\Models\Shop\Shop;
 use App\Models\Shop\ShopStock;
 use App\Models\User\User;
+use App\Models\User\UserAward;
 
 class WorldController extends Controller
 {
@@ -331,11 +333,26 @@ class WorldController extends Controller
     public function getAwards(Request $request)
     {
         $query = Award::with('category');
-        $data = $request->only(['award_category_id', 'name', 'sort']);
+        $data = $request->only(['award_category_id', 'name', 'sort', 'ownership']);
         if(isset($data['award_category_id']) && $data['award_category_id'] != 'none')
             $query->where('award_category_id', $data['award_category_id']);
         if(isset($data['name']))
             $query->where('name', 'LIKE', '%'.$data['name'].'%');
+
+        if(isset($data['ownership']))
+        {
+            switch($data['ownership']) {
+                case 'all':
+                    $query->where('is_character_owned',1)->where('is_user_owned',1);
+                    break;
+                case 'character':
+                    $query->where('is_character_owned',1)->where('is_user_owned',0);
+                    break;
+                case 'user':
+                    $query->where('is_character_owned',0)->where('is_user_owned',1);
+                    break;
+            }
+        }
 
         if(isset($data['sort']))
         {
@@ -357,7 +374,9 @@ class WorldController extends Controller
                     break;
             }
         }
-        else $query->sortCategory();
+        else $query->sortAlphabetical();
+
+        if(!Auth::check() || !Auth::user()->isStaff) $query->released();
 
         return view('world.awards', [
             'awards' => $query->paginate(20)->appends($request->query()),
@@ -376,8 +395,14 @@ class WorldController extends Controller
     public function getAward($id)
     {
         $categories = AwardCategory::orderBy('sort', 'DESC')->get();
-        $award = Award::where('id', $id)->first();
+        $award = Award::where('id', $id);
+        $released = $award->released()->count();
+        if((!Auth::check() || !Auth::user()->isStaff)) $award = $award->released();
+        $award = $award->first();
         if(!$award) abort(404);
+
+        if(!$released) flash('This award is not yet released.')->error();
+
 
         return view('world.award_page', [
             'award' => $award,

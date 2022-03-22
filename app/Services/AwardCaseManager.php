@@ -196,7 +196,7 @@ class AwardCaseManager extends Service
                     $newOwnedLimit = $ownedLimitedAwards->pluck('count')->sum() + $quantity;
                 }
 
-                if($recipient->logType == 'Character' && isset($limit) && ($ownedLimitedAwards->pluck('count')->sum() >= $limit || $newOwnedLimit > $limit)) throw new \Exception("One of the selected awards exceeds the limit characters can own for its category.");
+                if($recipient->logType == 'Character' && isset($limit) && ($ownedLimitedAwards->pluck('count')->sum() >= $limit || $newOwnedLimit > $limit)) throw new \Exception("This exceeds the limit a character can own.");
 
                 $this->creditAward($sender, $recipient, $sender->logType == 'User' ? 'User → Character Transfer' : 'Character → User Transfer', $stack->data, $stack->award, $quantity);
 
@@ -226,15 +226,21 @@ class AwardCaseManager extends Service
         try {
             foreach($stacks as $key=>$stack) {
                 $quantity = $quantities[$key];
-                if(!$sender->hasAlias) throw new \Exception("Your deviantART account must be verified before you can perform this action.");
-                if(!$stack) throw new \Exception("An invalid award was selected.");
-                if($stack->user_id != $sender->id && !$sender->hasPower('edit_inventories')) throw new \Exception("You do not own one of the selected awards.");
-                if($stack->user_id == $recipient->id) throw new \Exception("Cannot send awards to the award's owner.");
-                if(!$recipient) throw new \Exception("Invalid recipient selected.");
-                if(!$recipient->hasAlias) throw new \Exception("Cannot transfer awards to a non-verified member.");
-                if($recipient->is_banned) throw new \Exception("Cannot transfer awards to a banned member.");
-                if((!$stack->award->allow_transfer || isset($stack->data['disallow_transfer'])) && !$sender->hasPower('edit_inventories')) throw new \Exception("One of the selected awards cannot be transferred.");
-                if($stack->count < $quantity) throw new \Exception("Quantity to transfer exceeds award count.");
+                if(!$sender->hasAlias) throw new \Exception("Transfer failed: Your alias must be verified before you can perform this action.");
+                if(!$stack) throw new \Exception("Transfer failed: An invalid award was selected.");
+                if(!$recipient) throw new \Exception("Transfer failed: Invalid recipient selected.");
+                if($stack->user_id != $sender->id && !$sender->hasPower('edit_inventories')) throw new \Exception("Transfer failed: You do not own one of the selected awards.");
+                if($stack->user_id == $recipient->id) throw new \Exception("Transfer failed: Cannot send awards to the award's owner.");
+                if(!$recipient->hasAlias) throw new \Exception("Transfer failed: Cannot transfer awards to a non-verified member.");
+                if($recipient->is_banned) throw new \Exception("Transfer failed: Cannot transfer awards to a banned member.");
+                if((!$stack->award->allow_transfer || isset($stack->data['disallow_transfer'])) && !$sender->hasPower('edit_inventories')) throw new \Exception("Transfer failed: One of the selected awards cannot be transferred.");
+                if($stack->count < $quantity) throw new \Exception("Transfer failed: Quantity to transfer exceeds award count.");
+
+                // Check to ensure it doesn't go over the limit.
+                $count = 0;
+                $recipientAwards = $recipient->awards->where('id',$stack->award_id);
+                if($recipientAwards) foreach($recipientAwards as $award) $count += $award->pivot->count;
+                if($award->user_limit && (($count + $quantity) > $award->user_limit)) throw new \Exception("Transfer failed: This would take the recipient over their limit for this award.");
 
                 $oldUser = $stack->user;
                 if($this->moveStack($stack->user, $recipient, ($stack->user_id == $sender->id ? 'User Transfer' : 'Staff Transfer'), ['data' => ($stack->user_id != $sender->id ? 'Transferred by '.$sender->displayName : '')], $stack, $quantity))

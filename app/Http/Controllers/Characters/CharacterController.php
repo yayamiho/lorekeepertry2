@@ -341,10 +341,9 @@ class CharacterController extends Controller
      * @param  string                         $slug
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postAwardCaseEdit(Request $request, AwardCaseManager $service, $slug)
+    public function postAwardEdit(Request $request, AwardCaseManager $service, $slug)
     {
         // TODO: THIS
-        dd('wait');
         if(!Auth::check()) abort(404);
         switch($request->get('action')) {
             default:
@@ -366,7 +365,7 @@ class CharacterController extends Controller
                 return $this->postDeleteAward($request, $service);
                 break;
             case 'take':
-                return $this->postItemTransfer($request, $service);
+                return $this->postAwardTransfer($request, $service);
                 break;
         }
 
@@ -384,6 +383,24 @@ class CharacterController extends Controller
     {
         if($service->transferCharacterStack($this->character, $this->character->user, CharacterItem::find($request->get('ids')), $request->get('quantities'))) {
             flash('Item transferred successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+
+    /**
+     * Transfers inventory awards back to a user.
+     *
+     * @param  \Illuminate\Http\Request       $request
+     * @param  App\Services\InventoryManager  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    private function postAwardTransfer(Request $request, AwardCaseManager $service)
+    {
+        if($service->transferCharacterStack($this->character, $this->character->user, CharacterAward::find($request->get('ids')), $request->get('quantities'))) {
+            flash('Award transferred successfully.')->success();
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
@@ -420,6 +437,23 @@ class CharacterController extends Controller
     {
         if($service->deleteStack($this->character, CharacterItem::find($request->get('ids')), $request->get('quantities'))) {
             flash('Item deleted successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+    /**
+     * Deletes an award stack.
+     *
+     * @param  \Illuminate\Http\Request       $request
+     * @param  App\Services\CharacterManager  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    private function postDeleteAward(Request $request, AwardCaseManager $service)
+    {
+        if($service->deleteStack($this->character, CharacterAward::find($request->get('ids')), $request->get('quantities'))) {
+            flash('Award deleted successfully.')->success();
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();

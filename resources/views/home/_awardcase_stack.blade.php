@@ -3,9 +3,9 @@
 @else
     <div class="text-center">
         @if($award->has_image)
-            <div class="mb-1"><a href="{{ $award->url }}"><img src="{{ $award->imageUrl }}" alt="{{ $award->name }}"/></a></div>
+            <div class="mb-1"><a href="{{ $award->idUrl }}"><img src="{{ $award->imageUrl }}" alt="{{ $award->name }}"/></a></div>
         @endif
-        <a href="{{ $award->url }}">{{ $award->name }}</a>
+        <a href="{{ $award->idUrl }}">{{ $award->name }}</a>
     </div>
 
     @if($award->is_featured)
@@ -16,7 +16,7 @@
 
     <h5>Owned Stacks</h5>
 
-    {!! Form::open(['url' => 'inventory/edit']) !!}
+    {!! Form::open(['url' => 'awardcase/edit']) !!}
     <div class="card" style="border: 0px">
         <table class="table table-sm">
             <thead class="thead">
@@ -92,7 +92,7 @@
                     </div>
                 </div>
             @endif
-            @if($award->is_transferrable || ($user && $user->hasPower('edit_inventories')))
+            @if($award->allow_transfer || ($user && $user->hasPower('edit_inventories')))
                 <h5 class="card-title">
                     <a class="h5 collapse-toggle collapsed" href="#transferForm" data-toggle="collapse">@if($stack->first()->user_id != $user->id) [ADMIN] @endif Transfer Award</a></h3>
                 </h5>

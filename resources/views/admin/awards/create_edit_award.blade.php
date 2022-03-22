@@ -20,7 +20,7 @@
             <div class="col-md-6 no-gutters">
                 <div class="form-group d-flex align-items-center">
                     {!! Form::label('name', 'Name', ['class' => 'col-3 mr-2 mb-0 font-weight-bold']) !!}
-                    {!! Form::text('name', $award->name, ['class' => 'form-control']) !!}
+                    {!! Form::text('name', $award->id ? $award->name : Request::get('name'), ['class' => 'form-control']) !!}
                 </div>
                 <div class="form-group d-flex align-items-center">
                         {!! Form::label('award_category_id', 'Category (Optional)', ['class' => 'col-3 mr-2 mb-0 font-weight-bold']) !!}
@@ -80,7 +80,7 @@
                 {!! Form::checkbox('is_user_owned', 1, $award->id ? $award->is_user_owned : 1, ['class' => 'form-check-input hold-toggle', 'data-toggle' => 'toggle']) !!}
                 {!! Form::label('is_user_owned', 'User Held', ['class' => 'form-check-label font-weight-bold ml-3']) !!}
                 {!! add_help('If this is enabled, users will be able to hold this award. The limit is how many can be held at a time. 0 means no limit, if set to 1 then quantity will be treated as a boolean.') !!}
-                <div class="limit d-inline-flex align-items-center ml-3 {{ $award->is_user_owned ? '' : 'hide' }}">
+                <div class="limit d-inline-flex align-items-center ml-3 {{ !$award->id || $award->is_user_owned ? '' : 'hide' }}">
                     {!! Form::label('user_limit', 'Limit', ['class' => 'font-weight-bold mr-3 mb-0']) !!}
                     {!! Form::number('user_limit', $award->id ? $award->user_limit : 0, ['class' => 'form-control']) !!}
                 </div>
@@ -123,7 +123,7 @@
     </div>
     <div class="card-body">
         <div class="row no-gutters form-group" id="creditList" style="clear:both;">
-            @if($award->id)@foreach($award->credits as $id => $credit)
+            @if($award->id && isset($award->credits))@foreach($award->credits as $id => $credit)
                 <div class="col-md-3 align-items-center mb-2">
                     <a href="#" class="remove-credit-button btn btn-danger btn-sm mr-2"><i class="fas fa-trash"></i></a>
                     <a href="{{ isset($credit['url']) ? $credit['url'] :  (isset($credit['id']) ? url('/user').'/'.$userOptions[$credit['id']] : 'unknown') }}" target="_blank">
