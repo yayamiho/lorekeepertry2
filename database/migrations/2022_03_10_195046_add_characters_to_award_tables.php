@@ -34,6 +34,7 @@ class AddCharactersToAwardTables extends Migration
             // Add Release code a la Mercury
             $table->boolean('is_released')->default(1);
             $table->boolean('allow_transfer')->default(1);
+
             // Removing Artist/References to make way for them to be in the data column.
             $table->dropColumn('reference_url');
             $table->dropColumn('artist_url');
@@ -49,6 +50,7 @@ class AddCharactersToAwardTables extends Migration
 
         // If someone wants to take on the idea of award tags on their own, go ahead. I'm not doing it anytime soon. - Uri :)
         Schema::dropIfExists('award_tags');
+        Schema::dropIfExists('character_awards_log');
 
     }
 
@@ -63,8 +65,6 @@ class AddCharactersToAwardTables extends Migration
             $table->dropColumn('is_featured');
             $table->dropColumn('is_user_owned');
             $table->dropColumn('is_character_owned');
-            $table->dropColumn('sort_user');
-            $table->dropColumn('sort_character');
             $table->dropColumn('user_limit');
             $table->dropColumn('character_limit');
             $table->dropColumn('is_released');
@@ -91,6 +91,22 @@ class AddCharactersToAwardTables extends Migration
 
             $table->text('data')->nullable()->default(null);
             $table->boolean('is_active')->default(0);
+        });
+
+        Schema::create('character_awards_log', function(Blueprint $table) {
+            $table->engine = 'InnoDB';
+            $table->increments('id');
+            $table->integer('award_id')->unsigned();
+            $table->integer('count')->unsigned()->default(1);
+            $table->integer('stack_id')->unsigned()->nullable();
+
+            $table->integer('sender_id')->unsigned()->nullable();
+            $table->integer('recipient_id')->unsigned()->nullable();
+            $table->string('log'); // Actual log text
+            $table->string('log_type'); // Indicates what type of transaction the item was used in
+            $table->string('data', 1024)->nullable(); // Includes information like staff notes, etc.
+
+            $table->timestamps();
         });
 
     }
