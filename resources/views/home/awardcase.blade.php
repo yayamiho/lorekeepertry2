@@ -21,7 +21,7 @@
                     @foreach($chunk as $awardId=>$stack)
                         <div class="col-sm-3 col-6 text-center awardcase-award" data-id="{{ $stack->first()->pivot->id }}" data-name="{{ $user->name }}'s {{ $stack->first()->name }}">
                             <div class="mb-1">
-                                <a href="#" class="awardcase-stack"><img src="{{ $stack->first()->imageUrl }}" /></a>
+                                <a href="#" class="awardcase-stack {{ $stack->first()->is_featured ? 'alert alert-success' : '' }}"><img src="{{ $stack->first()->imageUrl }}" /></a>
                             </div>
                             <div>
                                 <a href="#" class="awardcase-stack awardcase-stack-name">{{ $stack->first()->name }} x{{ $stack->sum('pivot.count') }}</a>

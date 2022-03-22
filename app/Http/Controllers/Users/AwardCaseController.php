@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use DB;
 use Auth;
 use App\Models\User\User;
+use App\Models\Character\Character;
 use App\Models\User\UserAward;
 use App\Models\Award\Award;
 use App\Models\Award\AwardCategory;
@@ -76,6 +77,7 @@ class AwardCaseController extends Controller
             'award' => $award,
             'user' => Auth::user(),
             'userOptions' => ['' => 'Select User'] + User::visible()->where('id', '!=', $first_instance ? $first_instance->user_id : 0)->orderBy('name')->get()->pluck('verified_name', 'id')->toArray(),
+            'characterOptions' => ['' => 'Select Character'] + Character::visible()->myo(0)->where('user_id', optional(Auth::user())->id)->orderBy('sort','DESC')->get()->pluck('fullName','id')->toArray(),
             'readOnly' => $readOnly
         ]);
     }

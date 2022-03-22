@@ -7,6 +7,8 @@
 @section('profile-content')
 {!! breadcrumbs(['Users' => 'users', $user->name => $user->url]) !!}
 
+@include('widgets._awardcase_feature', ['target' => $user, 'count' => Config::get('lorekeeper.extensions.awards.user_featured'), 'float' => false])
+
 @if($user->is_banned)
     <div class="alert alert-danger">This user has been banned.</div>
 @endif
@@ -19,6 +21,8 @@
         <span class="badge badge-success float-right" data-toggle="tooltip" title="This user has not owned any characters from this world before.">FTO</span>
     @endif
 </h1>
+
+
 <div class="mb-4">
     <div class="row">
         <div class="row col-md-6">
@@ -49,6 +53,7 @@
         </div>
     </div>
 @endif
+
 
 <div class="card-deck mb-4 profile-assets" style="clear:both;">
     <div class="card profile-currencies profile-assets-card">
@@ -102,7 +107,7 @@
                             </div>
                         @endforeach
                     </div>
-                @else 
+                @else
                     <div>No awards earned.</div>
                 @endif
             </div>

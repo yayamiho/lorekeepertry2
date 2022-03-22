@@ -26,7 +26,7 @@ return [
     'species_trait_index' => 0,
 
     // Character Status Badges - Juni
-    'character_status_badges' => 0,
+    'character_status_badges' => 1,
 
     // Character TH Profile Link - Juni
     'character_TH_profile_link' => 0,
@@ -57,8 +57,8 @@ return [
 
     // Awards - Uri
     'awards' => [
-        'user_featured'             => 1,   // Number of awards displayed prominently on the user profile
-        'character_featured'        => 1,   // Number of awards displayed prominently on the character page
+        'user_featured'             => 3,   // Number of awards displayed prominently on the user profile
+        'character_featured'        => 2,   // Number of awards displayed prominently on the character page
     ],
 
 ];

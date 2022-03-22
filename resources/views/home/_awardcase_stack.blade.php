@@ -5,7 +5,14 @@
         @if($award->has_image)
             <div class="mb-1"><a href="{{ $award->url }}"><img src="{{ $award->imageUrl }}" alt="{{ $award->name }}"/></a></div>
         @endif
+        <a href="{{ $award->url }}">{{ $award->name }}</a>
     </div>
+
+    @if($award->is_featured)
+        <div class="alert alert-success mt-2">
+            This award is featured!
+        </div>
+    @endif
 
     <h5>Owned Stacks</h5>
 
@@ -71,12 +78,14 @@
     @if($user && !$readOnly && ($stack->first()->user_id == $user->id || $user->hasPower('edit_inventories')))
         <div class="card mt-3 p-3">
 
-            @if(isset($award->category) && $award->category->is_character_owned)
-                <a class="card-title h5 collapse-title" data-toggle="collapse" href="#characterTransferForm">@if($stack->first()->user_id != $user->id) [ADMIN] @endif Transfer Award to Character</a>
+            @if($award->is_character_owned)
+                <h5 class="card-title">
+                    <a class="h5 collapse-toggle collapsed" href="#characterTransferForm" data-toggle="collapse">@if($stack->first()->user_id != $user->id) [ADMIN] @endif Transfer Award to Character</a></h3>
+                </h5>
                 <div id="characterTransferForm" class="collapse">
                     <p>This will transfer this stack or stacks to this character's inventory.</p>
                     <div class="form-group">
-                        {!! Form::select('character_id', $characterOptions, null, ['class' => 'form-control mr-2 default character-select', 'placeholder' => 'Select Character']) !!}
+                        {!! Form::select('character_id', $characterOptions, null, ['class' => 'form-control mr-2 default character-select']) !!}
                     </div>
                     <div class="text-right">
                         {!! Form::button('Transfer', ['class' => 'btn btn-primary', 'name' => 'action', 'value' => 'characterTransfer', 'type' => 'submit']) !!}

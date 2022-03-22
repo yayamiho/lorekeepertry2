@@ -76,6 +76,11 @@
                     <div class="col-md-2">{!! Form::label('notes', 'Notes (Optional)') !!} {!! add_help('Additional notes for the award. This will appear in the award\'s description, but not in the logs.') !!}</div>
                     {!! Form::text('notes', null, ['class' => 'col-md-10 form-control px-2', 'maxlength' => 400]) !!}
                 </div>
+                <div class="form-group">
+                    {!! Form::checkbox('disallow_transfer', 1, 0, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
+                    {!! Form::label('disallow_transfer', 'Account-bound', ['class' => 'form-check-label ml-3']) !!}
+                    {!! add_help('If this is on, the recipient(s) will not be able to transfer this award to other users. Awards that disallow transfers by default will still not be transferrable.') !!}
+                </div>
             </div>
         </div>
     </div>

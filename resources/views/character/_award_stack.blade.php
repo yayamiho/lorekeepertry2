@@ -2,9 +2,17 @@
     <div class="text-center">Invalid stack selected.</div>
 @else
     <div class="text-center">
-        <div class="mb-1"><a href="{{ $award->url }}"><img src="{{ $award->imageUrl }}" alt="{{ $award->name }}"/></a></div>
+        @if($award->has_image)
+            <div class="mb-1"><a href="{{ $award->url }}"><img src="{{ $award->imageUrl }}" alt="{{ $award->name }}"/></a></div>
+        @endif
         <a href="{{ $award->url }}">{{ $award->name }}</a>
     </div>
+
+    @if($award->is_featured)
+        <div class="alert alert-success mt-2">
+            This award is featured!
+        </div>
+    @endif
 
     <h5>Owned Stacks</h5>
 

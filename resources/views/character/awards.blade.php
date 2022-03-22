@@ -29,7 +29,7 @@
                     @foreach($chunk as $awardId=>$stack)
                         <div class="col-sm-3 col-6 text-center awards-award" data-id="{{ $stack->first()->pivot->id }}" data-name="{{ $character->name ? $character->name : $character->slug }}'s {{ $stack->first()->name }}">
                             <div class="mb-1">
-                                <a href="#" class="awards-stack"><img src="{{ $stack->first()->imageUrl }}" alt="{{ $stack->first()->name }}"/></a>
+                                <a href="#" class="awards-stack {{ $stack->first()->is_featured ? 'alert alert-success' : '' }}"><img src="{{ $stack->first()->imageUrl }}" alt="{{ $stack->first()->name }}"/></a>
                             </div>
                             <div>
                                 <a href="#" class="awards-stack awards-stack-name">{{ $stack->first()->name }} x{{ $stack->sum('pivot.count') }}</a>
