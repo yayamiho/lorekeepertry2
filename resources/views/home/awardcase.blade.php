@@ -24,7 +24,8 @@
                                 <a href="#" class="awardcase-stack {{ $stack->first()->is_featured ? 'alert alert-success' : '' }}"><img src="{{ $stack->first()->imageUrl }}" /></a>
                             </div>
                             <div>
-                                <a href="#" class="awardcase-stack awardcase-stack-name">{{ $stack->first()->name }}@if($stack->first()->user_limit != 1) x{{ $stack->sum('pivot.count') }}@endif</a>
+                                <a href="#" class="awardcase-stack awardcase-stack-name">{{ $stack->first()->name }}
+                                </a>
                             </div>
                         </div>
                     @endforeach
