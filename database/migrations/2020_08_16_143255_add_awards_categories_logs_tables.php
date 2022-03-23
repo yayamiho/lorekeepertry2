@@ -113,11 +113,10 @@ class AddAwardsCategoriesLogsTables extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('awards');
-        Schema::dropIfExists('award_categories');
+        Schema::dropIfExists('character_awards_log');
         Schema::dropIfExists('awards_log');
         Schema::dropIfExists('character_awards');
-        Schema::dropIfExists('character_awards_log');
-
+        Schema::dropIfExists('awards');
+        Schema::dropIfExists('award_categories');
     }
 }
