@@ -97,10 +97,10 @@
 <script>
     $(document).ready(function() {
         $('#usernameList').selectize({
-            maxAwards: 10
+            maxItems: 10
         });
         $('#characterList').selectize({
-            maxAwards: 10
+            maxItems: 10
         });
         $('.default.award-select').selectize();
         $('.add-award').on('click', function(e) {
