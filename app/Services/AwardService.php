@@ -7,7 +7,6 @@ use Config;
 
 use App\Models\Award\AwardCategory;
 use App\Models\Award\Award;
-use App\Models\Award\AwardTag;
 
 class AwardService extends Service
 {
@@ -354,7 +353,6 @@ class AwardService extends Service
             DB::table('awards_log')->where('award_id', $award->id)->delete();
             DB::table('user_awards')->where('award_id', $award->id)->delete();
             DB::table('character_awards')->where('award_id', $award->id)->delete();
-            $award->tags()->delete();
             if($award->has_image) $this->deleteImage($award->imagePath, $award->imageFileName);
             $award->delete();
 
