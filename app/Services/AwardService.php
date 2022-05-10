@@ -206,6 +206,17 @@ class AwardService extends Service
 
             $award = Award::create($data);
 
+            // Make the image directory if it doesn't exist
+            if(!file_exists($award->imagePath))
+            {
+                // Create the directory.
+                if (!mkdir($award->imagePath, 0755, true)) {
+                    $this->setError('error', 'Failed to create image directory.');
+                    return false;
+                }
+                chmod($award->imagePath, 0755);
+            }
+
             $award->update([
                 'data' => json_encode([
                     'rarity' => isset($data['rarity']) && $data['rarity'] ? $data['rarity'] : null,
@@ -214,6 +225,7 @@ class AwardService extends Service
                     'credits' => isset($data['credits']) && $data['credits'] ? $data['credits'] : null,
                     ]) // rarity, availability info (original source, drop locations), credits
             ]);
+
 
             if ($image) {
                 $award->extension = $image->getClientOriginalExtension();
@@ -252,7 +264,7 @@ class AwardService extends Service
             $image = null;
 
             if (isset($data['image']) && $data['image']) {
-                if (isset($award->extension)) {
+                if (isset($award->extension) && $award->extension && $award->has_image) {
                     $old = $award->imageFileName;
                 } else {
                     $old = null;
@@ -260,10 +272,24 @@ class AwardService extends Service
                 $image = $data['image'];
                 unset($data['image']);
             }
+
+            // Make the image directory if it doesn't exist
+            if(!file_exists($award->imagePath))
+            {
+                // Create the directory.
+                if (!mkdir($award->imagePath, 0755, true)) {
+                    $this->setError('error', 'Failed to create image directory.');
+                    return false;
+                }
+                chmod($award->imagePath, 0755);
+            }
+
             if ($image) {
                 $award->extension = $image->getClientOriginalExtension();
+                $award->has_image = 1;
                 $award->update();
                 $this->handleImage($image, $award->imagePath, $award->imageFileName, $old);
+                $award->update();
             }
 
             $award->update($data);
