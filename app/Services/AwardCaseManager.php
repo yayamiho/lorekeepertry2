@@ -479,4 +479,38 @@ class AwardCaseManager extends Service
             ]
         );
     }
+
+    /*****************************************************************************
+     * 
+     * PROGRESSION STUFF
+     * 
+     *****************************************************************************/
+
+     /**
+      * Claims an award if a user has all progressions.
+      */
+    public function claimAward($award, $user)
+    {
+        DB::beginTransaction();
+
+        try {
+            
+            $progressionData = [];
+            foreach($award->progressions as $progression) {
+                if (!$progression->isUnlocked($user)) throw new \Exception("You do not have all the progressions required for this award.");
+
+                if (!isset($progressionData[$progression->type])) $progressionData[$progression->type] = [];
+                if (isset($progressionData[$progression->type][$progression->type_id])) $progressionData[$progression->type][$progression->type_id] += $progression->quantity;
+                else $progressionData[$progression->type] = [$progression->type_id => $progression->quantity];
+            }
+
+            // credit the award
+            if(!$this->creditAward($user, $user, 'Award Claim', ['data' => 'Received award by completing progessions', 'progression_data' => json_encode($progressionData)], $award, 1)) throw new \Exception("Failed to credit award.");
+
+            return $this->commitReturn(true);
+        } catch(\Exception $e) {
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
 }

@@ -38,6 +38,60 @@
     <a href="{{ url(Auth::user()->url.'/award-logs') }}">View logs...</a>
 </div>
 
+<h3>
+    In Progress Awards
+</h3>
+<div class="card mb-3 awardcase-category">
+    <div class="card-body awardcase-body">
+        @php
+            $completedAwards = $user->awards()->pluck('award_id')->toArray();
+            $inProgressAwards = \App\Models\Award\Award::whereNotIn('id', $completedAwards)->get();
+        @endphp
+        @if(!$inProgressAwards->count())
+            <p class="text-success">You have completed all available awards. Yay!</p>
+        @else
+            @foreach($inProgressAwards as $award)
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-9"><h5>{!!$award->displayName !!}</h5></div>
+                            <div class="col-3 text-right"><h5>({{ $award->progressionProgress($user) }}/{{count($award->progressions)}})</h5></div>
+                        </div>
+                    </div>
+                    <div class="card-body row mb-3">
+                        @if($award->imageUrl)
+                            <div class="col-md-3 world-entry-image border-right">
+                                <a href="{{ $award->imageUrl }}" data-lightbox="entry" data-title="{{ $award->name }}"><img src="{{ $award->imageUrl }}" class="world-entry-image img-fluid" /></a>
+                            </div>
+                        @endif
+                        <div class="{{ $award->imageUrl ? 'col-md-9' : 'col-md-12'}}">
+                            @foreach($award->progressions->chunk(4) as $chunk)
+                                <div class="row mb-3">
+                                    @foreach($chunk as $progression)
+                                        <div class="col-md-3">
+                                            {!! $progression->unlocked(Auth::user()) !!}
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endforeach
+
+                            <div class="text-right mb-0">
+                                @if($award->progressionProgress(Auth::user()) == count($award->progressions) && $award->canClaim(Auth::user()))
+                                    <div class="mt-2">
+                                        {!! Form::open(['url' => 'awardcase/claim/'.$award->id]) !!}
+                                            {!! Form::submit('Claim Award', ['class' => 'btn btn-primary']) !!}
+                                        {!! Form::close() !!}
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        @endif
+    </div>
+</div>
+
 @endsection
 @section('scripts')
 <script>

@@ -115,7 +115,7 @@
 </div>
 
 
-<div class="card">
+<div class="card mb-3">
     <div class="card-header">
         <h3 class="mb-0">
             <a href="#" class="btn btn-primary mr-2 float-right btn-sm" id="add-credit-button">Add Credit</a> Credits
@@ -139,11 +139,35 @@
     </div>
 </div>
 
+@if($award->id)
+    <div class="card mb-3">
+        <div class="card-header"><h3 class="mb-0">Automatic Unlock Progression</h3></div>
+        <div class="card-body">
+            <p>
+                If you want this award to be automatically unlocked by acquiring certain items, currencies, etc. add them here.
+                <br />
+                When a user has owned (at one point) all of these items, the award will be distributed to them on their next visit to the awards page
+
+                <hr />
+
+                If the progressions are changed after a user has claimed the award, they will see the requirements they fulfilled alongside the current ones.
+            </p>
+
+            <hr />
+
+            @include('widgets._loot_select', ['loots' => $award->progressions, 'showLootTables' => false, 'showRaffles' => false, 'progression' => true])
+            
+        </div>
+    </div>
+@endif
+
 <div class="text-right mt-2">
     {!! Form::submit($award->id ? 'Edit' : 'Create', ['class' => 'btn btn-primary px-5']) !!}
 </div>
 
 {!! Form::close() !!}
+
+@include('widgets._loot_select_row', ['items' => $items, 'currencies' => $currencies, 'tables' => $tables, 'raffles' => $raffles, 'showLootTables' => false, 'showRaffles' => false, 'progression' => true])
 
 <div class="row hide credit-row col-12 mb-1">
     <div class="col-md-2">
@@ -186,6 +210,7 @@
 
 @section('scripts')
 @parent
+@include('js._loot_js', ['showLootTables' => true, 'showRaffles' => true])
 <script>
 $( document ).ready(function() {
     var $credits = $('#creditsTable');

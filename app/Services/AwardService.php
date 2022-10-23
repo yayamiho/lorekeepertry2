@@ -6,6 +6,7 @@ use DB;
 use Config;
 
 use App\Models\Award\AwardCategory;
+use App\Models\Award\AwardProgression;
 use App\Models\Award\Award;
 
 class AwardService extends Service
@@ -303,6 +304,8 @@ class AwardService extends Service
                     ]) // rarity, availability info (original source, drop locations)
             ]);
 
+            $this->populateProgression($data, $award);
+
             return $this->commitReturn($award);
         } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
@@ -357,6 +360,27 @@ class AwardService extends Service
         }
 
         return $data;
+    }
+
+    /**
+     * Populates the progressions of an award.
+     */
+    private function populateProgression($data, $award)
+    {
+        // Clear the old shit...
+        $award->progressions()->delete();
+
+        if(isset($data['rewardable_type'])) {
+            foreach($data['rewardable_type'] as $key => $type)
+            {
+                AwardProgression::create([
+                    'award_id' => $award->id,
+                    'type'     => $type,
+                    'type_id'       => $data['rewardable_id'][$key],
+                    'quantity' => $data['quantity'][$key],
+                ]);
+            }
+        }
     }
 
     /**

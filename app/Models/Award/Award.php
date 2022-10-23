@@ -84,6 +84,13 @@ class Award extends Model
         return $this->belongsTo('App\Models\Award\AwardCategory', 'award_category_id');
     }
 
+    /**
+     * Gets the awards progressions.
+     */
+    public function progressions()
+    {
+        return $this->hasMany('App\Models\Award\AwardProgression', 'award_id');
+    }
 
     /**********************************************************************************************
 
@@ -307,4 +314,25 @@ class Award extends Model
 
     **********************************************************************************************/
 
+    /**
+     * Check if user can claim this award
+     */
+    public function canClaim($user)
+    {
+        if($user->awards()->where('award_id', $this->id)->count()) return false;
+        return true;
+    }
+
+    /**
+     * Gets how many progressions are completed by a user
+     */
+    public function progressionProgress($user = null)
+    {
+        if(!$user) return 0;
+        $progressionSum = 0;
+        foreach($this->progressions as $progression) {
+            if($progression->isUnlocked($user)) $progressionSum += 1;
+        }
+        return $progressionSum;
+    }
 }
