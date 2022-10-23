@@ -167,7 +167,9 @@
 
 {!! Form::close() !!}
 
-@include('widgets._loot_select_row', ['items' => $items, 'currencies' => $currencies, 'tables' => $tables, 'raffles' => $raffles, 'showLootTables' => false, 'showRaffles' => false, 'progression' => true])
+@if($award->id)
+    @include('widgets._loot_select_row', ['items' => $items, 'currencies' => $currencies, 'tables' => $tables, 'raffles' => $raffles, 'showLootTables' => false, 'showRaffles' => false, 'progression' => true])
+@endif
 
 <div class="row hide credit-row col-12 mb-1">
     <div class="col-md-2">
@@ -215,8 +217,6 @@
 $( document ).ready(function() {
     var $credits = $('#creditsTable');
     var $value = 1000;
-
-    $('.selectize').selectize();
 
     $('#promptsList').selectize({
         maxAwards: 10
