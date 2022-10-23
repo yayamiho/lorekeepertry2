@@ -46,6 +46,10 @@
         @php
             $completedAwards = $user->awards()->pluck('award_id')->toArray();
             $inProgressAwards = \App\Models\Award\Award::whereNotIn('id', $completedAwards)->get();
+            // get rid of any that do not have progressions
+            $inProgressAwards = $inProgressAwards->filter(function($award) {
+                return $award->progressions->count() > 0;
+            });
         @endphp
         @if(!$inProgressAwards->count())
             <p class="text-success">You have completed all available awards. Yay!</p>
