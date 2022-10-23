@@ -47,7 +47,7 @@
                 </div>
             @endif
             {{-- progression --}}
-            @if($award->progressions)
+            @if(count($award->progressions) > 0)
                 <div class="card-header h5">Award Progress ({{count($award->progressions)}}/{{count($award->progressions)}})</div>
                 <div class="card-body d-flex flex-wrap justify-content-center">
                     <p>Note that this looks fully completed, since you are viewing it as an admin. Progression is only visible on the awards page or user inventory.</p>

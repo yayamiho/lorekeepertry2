@@ -212,7 +212,7 @@
 
 @section('scripts')
 @parent
-@include('js._loot_js', ['showLootTables' => true, 'showRaffles' => true])
+@include('js._loot_js', ['showLootTables' => false, 'showRaffles' => false])
 <script>
 $( document ).ready(function() {
     var $credits = $('#creditsTable');
