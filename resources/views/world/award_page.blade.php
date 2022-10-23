@@ -65,7 +65,7 @@
                 </div>
             @endif
             {{-- progression --}}
-            @if(Auth::check() && $award->progressions)
+            @if(Auth::check() && count($award->progressions) > 0)
 
                 <div class="card-header h5">Award Progress ({{ $award->progressionProgress(Auth::user()) }}/{{count($award->progressions)}})</div>
                 {{-- get sum of award progressions that the user has unlocked --}}
