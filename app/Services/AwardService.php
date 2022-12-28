@@ -7,6 +7,7 @@ use Config;
 
 use App\Models\Award\AwardCategory;
 use App\Models\Award\AwardProgression;
+use App\Models\Award\AwardReward;
 use App\Models\Award\Award;
 
 class AwardService extends Service
@@ -305,6 +306,7 @@ class AwardService extends Service
             ]);
 
             $this->populateProgression($data, $award);
+            $this->populateRewards($data, $award);
 
             return $this->commitReturn($award);
         } catch(\Exception $e) {
@@ -331,6 +333,7 @@ class AwardService extends Service
         $data['is_featured'] = ((isset($data['is_featured']) && $data['is_featured']) ? 1 : 0);
         $data['is_character_owned'] = ((isset($data['is_character_owned']) && $data['is_character_owned']) ? 1 : 0);
         $data['is_user_owned'] = ((isset($data['is_user_owned']) && $data['is_user_owned']) ? 1 : 0);
+        $data['allow_reclaim'] = ((isset($data['allow_reclaim']) && $data['allow_reclaim']) ? 1 : 0);
 
         $data['credits'] = [];
         if(isset($data['credit-name']))
@@ -378,6 +381,27 @@ class AwardService extends Service
                     'type'     => $type,
                     'type_id'       => $data['rewardable_id'][$key],
                     'quantity' => $data['quantity'][$key],
+                ]);
+            }
+        }
+    }
+
+    /**
+     * Populates the rewards of an award.
+     */
+    private function populateRewards($data, $award)
+    {
+        // Clear the old shit...
+        $award->rewards()->delete();
+
+        if(isset($data['award_type'])) {
+            foreach($data['award_type'] as $key => $type)
+            {
+                AwardReward::create([
+                    'award_id' => $award->id,
+                    'type'     => $type,
+                    'type_id'       => $data['award_id'][$key],
+                    'quantity' => $data['award_quantity'][$key],
                 ]);
             }
         }

@@ -15,6 +15,13 @@ use App\Models\Character\Character;
 use App\Models\Character\CharacterAward;
 use App\Models\User\User;
 use App\Models\User\UserAward;
+use App\Models\User\UserItem;
+
+use App\Models\Currency\Currency;
+use App\Models\Item\Item;
+use App\Models\Loot\LootTable;
+use App\Models\Raffle\Raffle;
+use App\Models\Prompt\Prompt;
 
 class AwardCaseManager extends Service
 {
@@ -504,13 +511,90 @@ class AwardCaseManager extends Service
                 else $progressionData[$progression->type] = [$progression->type_id => $progression->quantity];
             }
 
-            // credit the award
-            if(!$this->creditAward($user, $user, 'Award Claim', ['data' => 'Received award by completing progessions', 'progression_data' => json_encode($progressionData)], $award, 1)) throw new \Exception("Failed to credit award.");
+            // credit the award (if the user has the award already, we do not give them another one)
+            if(!$user->awards()->where('award_id', $award->id)->first())
+                if(!$this->creditAward($user, $user, 'Award Claim', ['data' => 'Received award by completing progessions', 'progression_data' => json_encode($progressionData)], $award, 1)) throw new \Exception("Failed to credit award.");
+            
+            // grant the award rewards
+            $rewards = $this->processRewards($award);
+            if(!$rewards = fillUserAssets($rewards, $user, $user, 'Award Claim', ['data' => 'Received award by completing progessions'])) throw new \Exception("Failed to distribute rewards to user.");
+
+            // debit all the progressions
+            $this->debitProgressions($user, $award);
 
             return $this->commitReturn(true);
         } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
+    }
+    
+    //
+    private function processRewards($award)
+    {
+        $assets = createAssetsArray(false);
+        // Process the additional rewards
+
+        foreach($award->rewards as $loot)
+        {
+            $reward = null;
+            switch($loot->type)
+            {
+                case 'Item':
+                    $reward = Item::find($loot->type_id);
+                    break;
+                case 'Currency':
+                    $reward = Currency::find($loot->type_id);
+                    if(!$reward->is_user_owned) throw new \Exception("Invalid currency selected.");
+                    break;
+                case 'Award':
+                    $reward = Award::find($loot->type_id);
+                    break;
+                case 'LootTable':
+                    if (!$isStaff) break;
+                    $reward = LootTable::find($loot->type_id);
+                    break;
+                case 'Raffle':
+                    if (!$isStaff) break;
+                    $reward = Raffle::find($loot->type_id);
+                    break;
+            }
+            if(!$reward) continue;
+            addAsset($assets, $reward, $loot->quantity);
+        }
+
+        return $assets;
+    }
+
+    //
+    private function debitProgressions($user, $award)
+    {
+        foreach($award->progressions as $loot)
+        {
+            $reward = null;
+            switch($loot->type)
+            {
+                case 'Item':
+                    $reward = Item::find($loot->type_id);
+                    $service = new InventoryManager;
+                    // debit the item
+                    $stack = UserItem::where('user_id', $user->id)->where('item_id', $reward->id)->where('count', '>', 0)->first();
+                    if(!$service->debitStack($user, 'Award Claim', ['data' => 'Used in an Award Claim'], $stack, $loot->quantity)) throw new \Exception("Failed to debit item (you likely do not have enough).");
+                    break;
+                case 'Currency':
+                    $reward = Currency::find($loot->type_id);
+                    if(!$reward->is_user_owned) throw new \Exception("Invalid currency selected.");
+                    $service = new CurrencyManager;
+                    // debit the currency
+                    if(!$service->debitCurrency($user, null, 'Award Claim', 'Used in an Award Claim', $reward, $loot->quantity)) throw new \Exception("Failed to debit currency (you likely do not have enough).");
+                    break;
+                case 'Award':
+                    $reward = Award::find($loot->type_id);
+                    // debit the award
+                    $stack = UserAward::where('user_id', $user->id)->where('award_id', $reward->id)->where('count', '>', 0)->first();
+                    if(!$this->debitStack($user, 'Award Claim', ['data' => 'Used in an Award Claim'], $reward, $loot->quantity)) throw new \Exception("Failed to debit award (you likely do not have enough).");
+                    break;
+            }
+        }
     }
 }

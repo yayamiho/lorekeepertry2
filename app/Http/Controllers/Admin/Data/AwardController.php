@@ -240,7 +240,9 @@ class AwardController extends Controller
             'description', 'image', 'remove_image', 'uses', 'prompts', 'release',
             'credit-name', 'credit-url', 'credit-id', 'credit-role',
             // progression stuff - since we're reusing loot select we gotta refer to it as rewardable
-            'rewardable_id', 'rewardable_type', 'quantity'
+            'rewardable_id', 'rewardable_type', 'quantity',
+            // reward
+            'award_type', 'award_id', 'award_quantity', 'allow_reclaim'
         ]);
         if($id && $service->updateAward(Award::find($id), $data, Auth::user())) {
             flash('Award updated successfully.')->success();

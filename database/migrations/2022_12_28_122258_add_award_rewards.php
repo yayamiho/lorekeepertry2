@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAwardProgression extends Migration
+class AddAwardRewards extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,16 @@ class CreateAwardProgression extends Migration
      */
     public function up()
     {
-        Schema::create('award_progressions', function (Blueprint $table) {
+        //
+        Schema::create('award_rewards', function (Blueprint $table) {
             $table->integer('award_id');
             $table->string('type');
             $table->integer('type_id');
             $table->integer('quantity');
+        });
+
+        Schema::table('awards', function (Blueprint $table) {
+            $table->boolean('allow_reclaim')->default(0);
         });
     }
 
@@ -28,6 +33,11 @@ class CreateAwardProgression extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('award_progressions');
+        //
+        Schema::dropIfExists('award_rewards');
+
+        Schema::table('awards', function (Blueprint $table) {
+            $table->dropColumn('allow_reclaim');
+        });
     }
 }

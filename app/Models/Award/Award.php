@@ -22,7 +22,7 @@ class Award extends Model
     protected $fillable = [
         'award_category_id', 'name', 'has_image', 'description', 'parsed_description',
         'data', 'is_released', 'is_featured', 'is_user_owned', 'is_character_owned',
-        'user_limit', 'character_limit', 'allow_transfer', 'extension',
+        'user_limit', 'character_limit', 'allow_transfer', 'extension', 'allow_reclaim'
     ];
 
     /**
@@ -90,6 +90,14 @@ class Award extends Model
     public function progressions()
     {
         return $this->hasMany('App\Models\Award\AwardProgression', 'award_id');
+    }
+
+    /**
+     * Gets the awards rewards.
+     */
+    public function rewards()
+    {
+        return $this->hasMany('App\Models\Award\AwardReward', 'award_id');
     }
 
     /**********************************************************************************************
@@ -319,7 +327,7 @@ class Award extends Model
      */
     public function canClaim($user)
     {
-        if($user->awards()->where('award_id', $this->id)->count()) return false;
+        if($user->awards()->where('award_id', $this->id)->count() && !$this->allow_reclaim) return false;
         return true;
     }
 

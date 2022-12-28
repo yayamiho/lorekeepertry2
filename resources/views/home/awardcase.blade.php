@@ -44,7 +44,10 @@
 <div class="card mb-3 awardcase-category">
     <div class="card-body awardcase-body">
         @php
-            $completedAwards = $user->awards()->pluck('award_id')->toArray();
+            // get all completed awards where the award has allow_reclaiming set to false
+            $completedAwards = $user->awards()->where(function($query) {
+                $query->where('allow_reclaim', 0);
+            })->pluck('award_id')->toArray();
             $inProgressAwards = \App\Models\Award\Award::whereNotIn('id', $completedAwards)->get();
             // get rid of any that do not have progressions
             $inProgressAwards = $inProgressAwards->filter(function($award) {
@@ -55,7 +58,7 @@
             <p class="text-success">You have completed all available awards. Yay!</p>
         @else
             @foreach($inProgressAwards as $award)
-                <div class="card">
+                <div class="card mb-2">
                     <div class="card-header">
                         <div class="row">
                             <div class="col-9"><h5>{!!$award->displayName !!}</h5></div>
@@ -72,8 +75,9 @@
                             @foreach($award->progressions->chunk(4) as $chunk)
                                 <div class="row mb-3">
                                     @foreach($chunk as $progression)
-                                        <div class="col-md-3">
+                                        <div class="col-md-3 text-center">
                                             {!! $progression->unlocked(Auth::user()) !!}
+                                            x {{ $progression->quantity }}
                                         </div>
                                     @endforeach
                                 </div>

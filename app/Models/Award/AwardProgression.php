@@ -75,13 +75,14 @@ class AwardProgression extends Model
         switch ($this->type)
         {
             case 'Item':
-                return $user->items()->where('item_id', $this->type_id)->count() >= $this->quantity;
+                // get all the user items with this id and sum the quantity
+                return boolval($user->items()->where('item_id', $this->type_id)->sum('count') >= $this->quantity);
                 break;
             case 'Currency':
-                return \App\Models\User\UserCurrency:: where('user_id', $user->id)->where('currency_id', $this->type_id)->sum('quantity') >= $this->quantity;
+                return \App\Models\User\UserCurrency::where('user_id', $user->id)->where('currency_id', $this->type_id)->sum('quantity') >= $this->quantity;
                 break;
             case 'Award':
-                return $user->awards()->where('award_id', $this->type_id)->count() >= $this->quantity;
+                return boolval($user->awards()->where('award_id', $this->type_id)->sum('count') >= $this->quantity);
                 break;
         }
         return false;
