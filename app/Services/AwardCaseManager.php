@@ -226,7 +226,7 @@ class AwardCaseManager extends Service
         try {
             foreach($stacks as $key=>$stack) {
                 $quantity = $quantities[$key];
-                if(!$sender->hasAlias) throw new \Exception("Transfer failed: Your alias must be verified before you can perform this action.");
+                if(!$sender->hasAlias) throw new \Exception("You need to have a linked social media account before you can perform this action.");
                 if(!$stack) throw new \Exception("Transfer failed: An invalid award was selected.");
                 if(!$recipient) throw new \Exception("Transfer failed: Invalid recipient selected.");
                 if($stack->user_id != $sender->id && !$sender->hasPower('edit_inventories')) throw new \Exception("Transfer failed: You do not own one of the selected awards.");
@@ -284,7 +284,7 @@ class AwardCaseManager extends Service
                 foreach($stacks as $key=>$stack) {
                     $user = Auth::user();
                     $quantity = $quantities[$key];
-                    if(!$owner->hasAlias) throw new \Exception("Your alias account must be verified before you can perform this action.");
+                    if(!$owner->hasAlias) throw new \Exception("You need to have a linked social media account before you can perform this action.");
                     if(!$stack) throw new \Exception("An invalid award was selected.");
                     if($stack->user_id != $owner->id && !$user->hasPower('edit_inventories')) throw new \Exception("You do not own one of the selected awards.");
                     if($stack->count < $quantity) throw new \Exception("Quantity to delete exceeds award count.");
@@ -307,7 +307,7 @@ class AwardCaseManager extends Service
                 foreach($stacks as $key=>$stack) {
                     $quantity = $quantities[$key];
                     $user = Auth::user();
-                    if(!$user->hasAlias) throw new \Exception("Your deviantART account must be verified before you can perform this action.");
+                    if(!$user->hasAlias) throw new \Exception("You need to have a linked social media account before you can perform this action.");
                     if(!$stack) throw new \Exception("An invalid award was selected.");
                     if($stack->character->user_id != $user->id && !$user->hasPower('edit_inventories')) throw new \Exception("You do not own one of the selected awards.");
                     if($stack->count < $quantity) throw new \Exception("Quantity to delete exceeds award count.");
