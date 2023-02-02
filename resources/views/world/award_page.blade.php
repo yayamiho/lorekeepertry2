@@ -64,6 +64,65 @@
                     @endforeach
                 </div>
             @endif
+            {{-- progression --}}
+            @if(Auth::check() && count($award->progressions) > 0)
+
+                <div class="card-header h5">Award Progress ({{ $award->progressionProgress(Auth::user()) }}/{{count($award->progressions)}})</div>
+                {{-- get sum of award progressions that the user has unlocked --}}
+
+                <div class="card-body text-center justify-content-center">
+                    <div class="row">
+                        @foreach($award->progressions as $progression)
+                            <div class="col-md-2">
+                                {!! $progression->unlocked(Auth::user()) !!}
+                            </div>
+                        @endforeach
+                    </div>
+
+                    @if($award->progressionProgress(Auth::user()) == count($award->progressions) && $award->canClaim(Auth::user()))
+                        <div class="mt-2">
+                            {!! Form::open(['url' => 'awardcase/claim/'.$award->id]) !!}
+                                {!! Form::submit('Claim Award', ['class' => 'btn btn-primary']) !!}
+                            {!! Form::close() !!}
+                        </div>
+                    @elseif($award->progressionProgress(Auth::user()) == count($award->progressions) && !$award->canClaim(Auth::user()))
+                        <div class="mt-2">
+                            <hr class="w-50"/>
+                            <p class="text-danger">You have already claimed this award.</p>
+                            <p>You received this reward after gaining the following requirements:</p>
+                            {{-- get the user reward where the data column contains 'progression_data' in the JSON --}}
+                            @php
+                                $userAward = App\Models\User\UserAward::where('user_id', Auth::user()->id)->where('award_id', $award->id)->where('data', 'like', '%"progression_data"%')->first();
+                                $data = json_decode($userAward->data['progression_data']);
+                            @endphp
+                            <div class="row text-center d-flex flex-wrap justify-content-center">
+                                @foreach($data as $type => $type_data)
+                                    @foreach($type_data as $id => $quantity)
+                                        {{-- find the model from the type --}}
+                                        @php
+                                            switch($type) {
+                                                case 'Item':
+                                                    $info = App\Models\Item\Item::find($id);
+                                                    break;
+                                                case 'Currency':
+                                                    $info = App\Models\Currency\Currency::find($id);
+                                                    break;
+                                                case 'Award':
+                                                    $info = App\Models\Award\Award::find($id);
+                                                    break;
+                                            }
+                                        @endphp
+                                        
+                                        <div class="col-sm-1">
+                                            <img src="{{ $info->imageUrl }}" class="img-fluid" data-toggle="tooltip" title="{{ $info->name }} x{{ $quantity }}" />
+                                        </div>
+                                    @endforeach
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+                </div>
+            @endif
         </div>
     </div>
 </div>

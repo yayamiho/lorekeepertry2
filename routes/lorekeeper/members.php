@@ -55,6 +55,7 @@ Route::group(['prefix' => 'inventory', 'namespace' => 'Users'], function() {
 Route::group(['prefix' => 'awardcase', 'namespace' => 'Users'], function() {
     Route::get('/', 'AwardCaseController@getIndex');
     Route::post('edit', 'AwardCaseController@postEdit');
+    Route::post('claim/{id}', 'AwardCaseController@postClaimAward');
 
     Route::get('selector', 'AwardCaseController@getSelector');
 });

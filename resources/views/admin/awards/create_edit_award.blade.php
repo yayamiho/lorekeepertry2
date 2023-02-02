@@ -115,7 +115,7 @@
 </div>
 
 
-<div class="card">
+<div class="card mb-3">
     <div class="card-header">
         <h3 class="mb-0">
             <a href="#" class="btn btn-primary mr-2 float-right btn-sm" id="add-credit-button">Add Credit</a> Credits
@@ -139,11 +139,59 @@
     </div>
 </div>
 
+@if($award->id)
+    <div class="card mb-3">
+        <div class="card-header"><h3 class="mb-0">Automatic Unlock Progression</h3></div>
+        <div class="card-body">
+            <p>
+                If you want this award to be automatically unlocked by acquiring certain items, currencies, etc. add them here.
+                <br />
+                When a user has owned (at one point) all of these items, the award will be distributed to them on their next visit to the awards page
+
+                <hr />
+
+                If the progressions are changed after a user has claimed the award, they will see the requirements they fulfilled alongside the current ones.
+            </p>
+
+            <hr />
+
+            @include('widgets._loot_select', ['loots' => $award->progressions, 'showLootTables' => false, 'showRaffles' => false, 'progression' => true])
+        </div>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-header"><h3 class="mb-0">Unlock Reward</h3></div>
+        <div class="card-body">
+            <p>
+                If you want this award to grant an award when claimed, add it here.
+                <br />
+                When a user receives an award through obtaining all of the above items, they will also receive this award.
+                <br />
+                <br />
+                <b>The user will only receive this reward through the automatic unlock process. When they claim the award, if the award has any rewards all the items required for unlock will be debitted from their inventory.</b>
+            </p>
+
+            @include('widgets._reward_select', ['loots' => $award->rewards, 'showLootTables' => false, 'showRaffles' => false])
+
+            <p>
+                {!! Form::checkbox('allow_reclaim', 1, $award->id ? $award->allow_reclaim : 0, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
+                {!! Form::label('allow_reclaim', 'Allow Reclaim?', ['class' => 'form-check-label font-weight-bold ml-3']) !!}
+                {!! add_help('Do you want the user to be able to claim the reward from this badge multiple times? They will only receive the badge once.') !!}
+            </p>
+        </div>
+    </div>
+@endif
+
 <div class="text-right mt-2">
     {!! Form::submit($award->id ? 'Edit' : 'Create', ['class' => 'btn btn-primary px-5']) !!}
 </div>
 
 {!! Form::close() !!}
+
+@if($award->id)
+    @include('widgets._loot_select_row', ['items' => $items, 'currencies' => $currencies, 'tables' => $tables, 'raffles' => $raffles, 'showLootTables' => false, 'showRaffles' => false, 'progression' => true])
+    @include('widgets._reward_select_row', ['items' => $items, 'currencies' => $currencies, 'tables' => $tables, 'raffles' => $raffles, 'showLootTables' => false, 'showRaffles' => false, 'progression' => true])
+@endif
 
 <div class="row hide credit-row col-12 mb-1">
     <div class="col-md-2">
@@ -186,12 +234,12 @@
 
 @section('scripts')
 @parent
+@include('js._loot_js', ['showLootTables' => false, 'showRaffles' => false])
+@include('js._reward_js', ['showLootTables' => false, 'showRaffles' => false])
 <script>
 $( document ).ready(function() {
     var $credits = $('#creditsTable');
     var $value = 1000;
-
-    $('.selectize').selectize();
 
     $('#promptsList').selectize({
         maxAwards: 10

@@ -7,7 +7,11 @@ use Illuminate\Http\Request;
 use Auth;
 
 use App\Models\Award\AwardCategory;
+use App\Models\Item\Item;
+use App\Models\Currency\Currency;
+use App\Models\Loot\LootTable;
 use App\Models\Award\Award;
+use App\Models\Raffle\Raffle;
 
 use App\Models\Shop\Shop;
 use App\Models\Prompt\Prompt;
@@ -207,7 +211,12 @@ class AwardController extends Controller
             'award' => $award,
             'categories' => ['none' => 'No category'] + AwardCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'prompts' => Prompt::where('is_active', 1)->orderBy('id')->pluck('name', 'id'),
-            'userOptions' => User::query()->orderBy('name')->pluck('name', 'id')->toArray()
+            'userOptions' => User::query()->orderBy('name')->pluck('name', 'id')->toArray(),
+            'items' => Item::orderBy('name')->pluck('name', 'id'),
+            'awards' => Award::orderBy('name')->pluck('name', 'id'),
+            'currencies' => Currency::where('is_user_owned', 1)->orderBy('name')->pluck('name', 'id'),
+            'tables' => LootTable::orderBy('name')->pluck('name', 'id'),
+            'raffles' => Raffle::where('rolled_at', null)->where('is_active', 1)->orderBy('name')->pluck('name', 'id'),
         ]);
     }
 
@@ -230,6 +239,10 @@ class AwardController extends Controller
             'is_user_owned', 'is_character_owned', 'user_limit', 'character_limit', 'is_featured',
             'description', 'image', 'remove_image', 'uses', 'prompts', 'release',
             'credit-name', 'credit-url', 'credit-id', 'credit-role',
+            // progression stuff - since we're reusing loot select we gotta refer to it as rewardable
+            'rewardable_id', 'rewardable_type', 'quantity',
+            // reward
+            'award_type', 'award_id', 'award_quantity', 'allow_reclaim'
         ]);
         if($id && $service->updateAward(Award::find($id), $data, Auth::user())) {
             flash('Award updated successfully.')->success();

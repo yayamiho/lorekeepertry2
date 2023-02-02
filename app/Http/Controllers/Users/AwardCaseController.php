@@ -231,4 +231,25 @@ class AwardCaseController extends Controller
         }
         return redirect()->back();
     }
+
+    /*****************************************************************************
+     * 
+     * PROGRESSION STUFF
+     * 
+     *****************************************************************************/
+
+     /**
+      * Claims award if progression is met.
+      */
+    public function postClaimAward(AwardCaseManager $service, $id)
+    {
+        $award = Award::find($id);
+        if($service->claimAward($award, Auth::user())) {
+            flash('Award claimed successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
 }
