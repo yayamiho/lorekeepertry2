@@ -114,7 +114,6 @@
     </div>
 </div>
 
-
 <div class="card mb-3">
     <div class="card-header">
         <h3 class="mb-0">
@@ -123,7 +122,7 @@
     </div>
     <div class="card-body">
         <div class="row no-gutters form-group" id="creditList" style="clear:both;">
-            @if($award->id && isset($award->credits))@foreach($award->credits as $id => $credit)
+            @if($award->id && isset($award->credits)) @foreach($award->credits as $id => $credit)
                 <div class="col-md-3 align-items-center mb-2">
                     <a href="#" class="remove-credit-button btn btn-danger btn-sm mr-2"><i class="fas fa-trash"></i></a>
                     <a href="{{ isset($credit['url']) ? $credit['url'] :  (isset($credit['id']) ? url('/user').'/'.$userOptions[$credit['id']] : 'unknown') }}" target="_blank">
@@ -147,14 +146,10 @@
                 If you want this award to be automatically unlocked by acquiring certain items, currencies, etc. add them here.
                 <br />
                 When a user has owned (at one point) all of these items, the award will be distributed to them on their next visit to the awards page
-
                 <hr />
-
                 If the progressions are changed after a user has claimed the award, they will see the requirements they fulfilled alongside the current ones.
             </p>
-
             <hr />
-
             @include('widgets._loot_select', ['loots' => $award->progressions, 'showLootTables' => false, 'showRaffles' => false, 'progression' => true])
         </div>
     </div>
@@ -163,7 +158,7 @@
         <div class="card-header"><h3 class="mb-0">Unlock Reward</h3></div>
         <div class="card-body">
             <p>
-                If you want this award to grant an award when claimed, add it here.
+                If you want this award to grant a reward when claimed, add it here.
                 <br />
                 When a user receives an award through obtaining all of the above items, they will also receive this award.
                 <br />

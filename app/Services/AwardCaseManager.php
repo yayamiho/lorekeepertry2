@@ -441,6 +441,7 @@ class AwardCaseManager extends Service
         DB::beginTransaction();
 
         try {
+
             $stack->count -= $quantity;
             $stack->save();
 
@@ -488,9 +489,9 @@ class AwardCaseManager extends Service
     }
 
     /*****************************************************************************
-     * 
+     *
      * PROGRESSION STUFF
-     * 
+     *
      *****************************************************************************/
 
      /**
@@ -501,7 +502,7 @@ class AwardCaseManager extends Service
         DB::beginTransaction();
 
         try {
-            
+
             $progressionData = [];
             foreach($award->progressions as $progression) {
                 if (!$progression->isUnlocked($user)) throw new \Exception("You do not have all the progressions required for this award.");
@@ -514,7 +515,7 @@ class AwardCaseManager extends Service
             // credit the award (if the user has the award already, we do not give them another one)
             if(!$user->awards()->where('award_id', $award->id)->first())
                 if(!$this->creditAward($user, $user, 'Award Claim', ['data' => 'Received award by completing progessions', 'progression_data' => json_encode($progressionData)], $award, 1)) throw new \Exception("Failed to credit award.");
-            
+
             // grant the award rewards
             $rewards = $this->processRewards($award);
             if(!$rewards = fillUserAssets($rewards, $user, $user, 'Award Claim', ['data' => 'Received award by completing progessions'])) throw new \Exception("Failed to distribute rewards to user.");
@@ -528,7 +529,7 @@ class AwardCaseManager extends Service
         }
         return $this->rollbackReturn(false);
     }
-    
+
     //
     private function processRewards($award)
     {
@@ -592,7 +593,7 @@ class AwardCaseManager extends Service
                     $reward = Award::find($loot->type_id);
                     // debit the award
                     $stack = UserAward::where('user_id', $user->id)->where('award_id', $reward->id)->where('count', '>', 0)->first();
-                    if(!$this->debitStack($user, 'Award Claim', ['data' => 'Used in an Award Claim'], $reward, $loot->quantity)) throw new \Exception("Failed to debit award (you likely do not have enough).");
+                    if(!$this->debitStack($user, 'Award Claim', ['data' => 'Used in an Award Claim'], $stack, $loot->quantity)) throw new \Exception("Failed to debit award (you likely do not have enough).");
                     break;
             }
         }
