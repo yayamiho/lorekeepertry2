@@ -30,9 +30,31 @@ class AwardProgression extends Model
 
     /**********************************************************************************************
 
+        ATTRIBUTES
+
+     **********************************************************************************************/
+
+    /**
+     * Serve progression type the same way as loot 
+     * so as to keep the loot blades being re-used as simple as possible
+     */
+    public function getRewardableTypeAttribute() {
+        return $this->type;
+    }
+
+    /**
+     * Serve progression type id the same way as loot 
+     * so as to keep the loot blades being re-used as simple as possible
+     */
+    public function getRewardableIdAttribute() {
+        return $this->type_id;
+    }
+
+    /**********************************************************************************************
+
         RELATIONS
 
-    **********************************************************************************************/
+     **********************************************************************************************/
 
     /**
      * Get the award the progression belongs to.
