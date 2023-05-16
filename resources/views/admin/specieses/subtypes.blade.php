@@ -3,11 +3,11 @@
 @section('admin-title') Species @endsection
 
 @section('admin-content')
-{!! breadcrumbs(['Admin Panel' => 'admin', trans_choice('lorekeeper.subtypes', 2)  => 'admin/data/subtypes']) !!}
+{!! breadcrumbs(['Admin Panel' => 'admin', __('lorekeeper.subtypes')  => 'admin/data/subtypes']) !!}
 
-<h1>{{ trans_choice('lorekeeper.subtypes', 2) }}</h1>
+<h1>{{ __('lorekeeper.subtypes') }}</h1>
 
-<p>{{ ucfirst(trans_choice('lorekeeper.subtypes', 2)) }} are optional categories that can be added to species. Characters require a species, but do not require a {{ __('lorekeeper.subtype') }}. Note that the sort order here reflects the sort order under the species name as well.</p>
+<p>{{ ucfirst(__('lorekeeper.subtypes')) }} are optional categories that can be added to species. Characters require a species, but do not require a {{ __('lorekeeper.subtype') }}. Note that the sort order here reflects the sort order under the species name as well.</p>
 
 <div class="text-right mb-3"><a class="btn btn-primary" href="{{ url('admin/data/subtypes/create') }}"><i class="fas fa-plus"></i> Create New {{ ucfirst(__('lorekeeper.subtype')) }}</a></div>
 @if(count($subtypes))
@@ -38,7 +38,7 @@
     </div>
 @endif
 
-<div class="text-center mt-4 small text-muted">{{ $subtypes->count() }} {{ trans_choice('lorekeeper.subtypes', $subtypes->count()) }} found.</div>
+<div class="text-center mt-4 small text-muted">{{ $subtypes->count() }} {{ trans_choice('lorekeeper.subtypes_', $subtypes->count()) }} found.</div>
 
 @endsection
 

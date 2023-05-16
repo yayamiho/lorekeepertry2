@@ -3,7 +3,7 @@
 @section('admin-title') {{ ucfirst(__('lorekeeper.subtype')) }} @endsection
 
 @section('admin-content')
-{!! breadcrumbs(['Admin Panel' => 'admin', ucfirst(trans_choice('lorekeeper.subtypes',2)) => 'admin/data/subtypes', ($subtype->id ? 'Edit' : 'Create').' '.ucfirst(__('lorekeeper.subtype')) => $subtype->id ? 'admin/data/subtypes/edit/'.$subtype->id : 'admin/data/subtypes/create']) !!}
+{!! breadcrumbs(['Admin Panel' => 'admin', ucfirst(__('lorekeeper.subtypes')) => 'admin/data/subtypes', ($subtype->id ? 'Edit' : 'Create').' '.ucfirst(__('lorekeeper.subtype')) => $subtype->id ? 'admin/data/subtypes/edit/'.$subtype->id : 'admin/data/subtypes/create']) !!}
 
 <h1>{{ $subtype->id ? 'Edit' : 'Create' }} {{ ucfirst(__('lorekeeper.subtype')) }}
     @if($subtype->id)

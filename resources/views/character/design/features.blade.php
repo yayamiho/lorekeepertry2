@@ -82,12 +82,12 @@
 @else
     <div class="mb-1">
         <div class="row">
-            <div class="col-md-2 col-4"><h5>Species</h5></div>
+            <div class="col-md-2 col-4"><h5>{{ ucfirst(__('lorekeeper.species')) }}</h5></div>
             <div class="col-md-10 col-8">{!! $request->species ? $request->species->displayName : 'None Selected' !!}</div>
         </div>
         @if($request->subtype_id)
         <div class="row">
-            <div class="col-md-2 col-4"><h5>Subtype</h5></div>
+            <div class="col-md-2 col-4"><h5>{{ ucfirst(__('lorekeeper.subtype')) }}</h5></div>
             <div class="col-md-10 col-8">
             @if($request->character->is_myo_slot && $request->character->image->subtype_id)
                 {!! $request->character->image->subtype->displayName !!}
