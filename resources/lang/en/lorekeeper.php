@@ -12,14 +12,14 @@ return [
     |
     */
 
-    'character' => 'charr', // Incomplete
-    'characters' => 'charr|charrs', // Incomplete
+    'character' => 'character', // Incomplete
+    'characters' => 'character|characters', // Incomplete
 
-    'myo' => 'charr', // Incomplete
+    'myo' => 'MYO', // Incomplete
     'myos' => 'MYO|MYOs', // Incomplete
 
-    'subtype' => 'subspecies',
-    'subtypes' => 'subspecies|subspecieses',
+    'subtype' => 'subtype',
+    'subtypes' => 'subtype|subtypes',
 
     'species' => 'species',
     'specieses' => 'species|specieses',
