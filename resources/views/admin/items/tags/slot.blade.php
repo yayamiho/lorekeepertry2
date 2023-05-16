@@ -7,7 +7,7 @@
     </div>
 
 <div class="form-group">
-    {!! Form::label('Description (Optional)') !!} 
+    {!! Form::label('Description (Optional)') !!}
     @if($isMyo)
         {!! add_help('This section is for making additional notes about the MYO slot. If there are restrictions for the character that can be created by this slot that cannot be expressed with the options below, use this section to describe them.') !!}
     @else
@@ -24,7 +24,7 @@
 <h3>Transfer Information</h3>
 
 <div class="alert alert-info">
-    These are displayed on the MYO slot's profile, but don't have any effect on site functionality except for the following: 
+    These are displayed on the MYO slot's profile, but don't have any effect on site functionality except for the following:
     <ul>
         <li>If all switches are off, the MYO slot cannot be transferred by the user (directly or through trades).</li>
         <li>If a transfer cooldown is set, the MYO slot also cannot be transferred by the user (directly or through trades) until the cooldown is up.</li>
@@ -52,7 +52,7 @@
 <h3>Traits</h3>
 
 <div class="form-group">
-    {!! Form::label('Species') !!} {!! add_help('This will lock the slot into a particular species. Leave it blank if you would like to give the user a choice.') !!}
+    {!! Form::label( ucfirst(__('lorekeeper.species'))) !!} {!! add_help('This will lock the slot into a particular species. Leave it blank if you would like to give the user a choice.') !!}
     {!! Form::select('species_id', $specieses, $tag->getData()['species_id'], ['class' => 'form-control', 'id' => 'species']) !!}
 </div>
 

@@ -13,7 +13,7 @@
     <p>Select the traits for the {{ $request->character->is_myo_slot ? 'created' : 'updated' }} character. @if($request->character->is_myo_slot) Some traits may have been restricted for you - you cannot change them. @endif Staff will not be able to modify these traits for you during approval, so if in doubt, please communicate with them beforehand to make sure that your design is acceptable.</p>
     {!! Form::open(['url' => 'designs/'.$request->id.'/traits']) !!}
         <div class="form-group">
-            {!! Form::label('species_id', 'Species') !!}
+            {!! Form::label('species_id',  ucfirst(__('lorekeeper.species'))) !!}
             @if($request->character->is_myo_slot && $request->character->image->species_id)
                 <div class="alert alert-secondary">{!! $request->character->image->species->displayName !!}</div>
             @else
@@ -23,7 +23,7 @@
         </div>
 
         <div class="form-group">
-            {!! Form::label('subtype_id', 'Species Subtype') !!}
+            {!! Form::label('subtype_id', 'Species '.ucfirst(__('lorekeeper.subtype'))) !!}
             @if($request->character->is_myo_slot && $request->character->image->subtype_id)
                 <div class="alert alert-secondary">{!! $request->character->image->subtype->displayName !!}</div>
             @else
