@@ -66,7 +66,7 @@
                         @endif
                         <td class="col-1">
                             @if(!$awardRow->isTransferrable)
-                                <i class="fas fa-lock" data-toggle="tooltip" title="Account-bound awards cannot be transferred but can be deleted."></i>
+                                <i class="fas fa-lock" data-toggle="tooltip" title="Account-bound {{ __('awards.awards') }} cannot be transferred but can be deleted."></i>
                             @endif
                         </td>
                     </tr>
@@ -101,7 +101,7 @@
                         <p class="alert alert-warning">Note: Your rank allows you to transfer account-bound {{__('awards.awards')}} to another user.</p>
                     @endif
                     <div class="form-group">
-                        {!! Form::label('user_id', 'Recipient') !!} {!! add_help('You can only transfer awards to verified users.') !!}
+                        {!! Form::label('user_id', 'Recipient') !!} {!! add_help('You can only transfer '.__('awards.awards').' to verified users.') !!}
                         {!! Form::select('user_id', $userOptions, null, ['class'=>'form-control']) !!}
                     </div>
                     <div class="text-right">

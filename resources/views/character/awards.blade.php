@@ -47,7 +47,7 @@
   <div class="d-flex row flex-wrap col-12 mt-1 pt-1 px-0 ubt-bottom">
     <div class="col-6 col-md-2 font-weight-bold">Sender</div>
     <div class="col-6 col-md-2 font-weight-bold">Recipient</div>
-    <div class="col-6 col-md-2 font-weight-bold">Award</div>
+    <div class="col-6 col-md-2 font-weight-bold">{{ucfirst(__('awards.award'))}}</div>
     <div class="col-6 col-md-4 font-weight-bold">Log</div>
     <div class="col-6 col-md-2 font-weight-bold">Date</div>
   </div>
@@ -68,11 +68,11 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                <p>Note that granting {{__('awards.awards')}} does not check against any hold limits for characters.</p>
+                <p>Note that granting {{__('awards.awards')}} does not check against any hold limits for {{__('lorekeeper.characters')}}.</p>
                 <div class="form-group">
                 {!! Form::open(['url' => 'admin/character/'.$character->slug.'/grant-awards']) !!}
 
-                    {!! Form::label('award_ids',ucfirst(__('awards.award')).'(s)') !!} {!! add_help('Must have at least 1 award and Quantity must be at least 1.') !!}
+                    {!! Form::label('award_ids',ucfirst(__('awards.award')).'(s)') !!} {!! add_help('Must have at least 1 '.__('awards.award').' and quantity must be at least 1.') !!}
                     <div id="awardList">
                         <div class="d-flex mb-2">
                             {!! Form::select('award_ids[]', $awardOptions, null, ['class' => 'form-control mr-2 default award-select', 'placeholder' => 'Select '.ucfirst(__('awards.award'))]) !!}
@@ -82,7 +82,7 @@
                     </div>
                     <div><a href="#" class="btn btn-primary" id="add-award">Add {{ucfirst(__('awards.award'))}}</a></div>
                     <div class="award-row hide mb-2">
-                        {!! Form::select('award_ids[]', $awardOptions, null, ['class' => 'form-control mr-2 award-select', 'placeholder' => 'Select Award']) !!}
+                        {!! Form::select('award_ids[]', $awardOptions, null, ['class' => 'form-control mr-2 award-select', 'placeholder' => 'Select '.ucfirst(__('awards.award'))]) !!}
                         {!! Form::text('quantities[]', 1, ['class' => 'form-control mr-2', 'placeholder' => 'Quantity']) !!}
                         <a href="#" class="remove-award btn btn-danger mb-2">✖</a>
                     </div>
@@ -90,18 +90,18 @@
                     <h5 class="mt-2">Additional Data</h5>
 
                     <div class="form-group">
-                        {!! Form::label('data', 'Reason (Optional)') !!} {!! add_help('A reason for the grant. This will be noted in the logs and in the awards description.') !!}
+                        {!! Form::label('data', 'Reason (Optional)') !!} {!! add_help('A reason for the grant. This will be noted in the logs and in the '.__('awards.award').'\'s description.') !!}
                         {!! Form::text('data', null, ['class' => 'form-control', 'maxlength' => 400]) !!}
                     </div>
 
                     <div class="form-group">
-                        {!! Form::label('notes', 'Notes (Optional)') !!} {!! add_help('Additional notes for the award. This will appear in the award\'s description, but not in the logs.') !!}
+                        {!! Form::label('notes', 'Notes (Optional)') !!} {!! add_help('Additional notes for the '.__('awards.award').'. This will appear in the '.__('awards.award').'\'s description, but not in the logs.') !!}
                         {!! Form::text('notes', null, ['class' => 'form-control', 'maxlength' => 400]) !!}
                     </div>
 
                     <div class="form-group">
                         {!! Form::checkbox('disallow_transfer', 1, 0, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
-                        {!! Form::label('disallow_transfer', 'Character-bound', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If this is on, the character\'s owner will not be able to transfer this award to their awards. Awards that disallow transfers by default will still not be transferrable.') !!}
+                        {!! Form::label('disallow_transfer', ucfirst(__('lorekeeper.character')).'-bound', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If this is on, the '.__('lorekeeper.character').'\'s owner will not be able to transfer this '.__('awards.award').' to their '.__('awards.awardcase').'. '.ucfirst(__('awards.awards')).' that disallow transfers by default will still not be transferrable.') !!}
                     </div>
 
                     <div class="text-right">
@@ -127,7 +127,7 @@ $( document ).ready(function() {
     $('.awards-stack').on('click', function(e) {
         e.preventDefault();
         var $parent = $(this).parent().parent();
-        loadModal("{{ url('awards') }}/character/" + $parent.data('id'), $parent.data('name'));
+        loadModal("{{ url(__('awards.awards')) }}/character/" + $parent.data('id'), $parent.data('name'));
     });
 
     $('.default.award-select').selectize();

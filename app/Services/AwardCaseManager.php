@@ -236,7 +236,7 @@ class AwardCaseManager extends Service
                 if(!$sender->hasAlias) throw new \Exception("You need to have a linked social media account before you can perform this action.");
                 if(!$stack) throw new \Exception("Transfer failed: An invalid ".__('awards.award')." was selected.");
                 if(!$recipient) throw new \Exception("Transfer failed: Invalid recipient selected.");
-                if($stack->user_id != $sender->id && !$sender->hasPower('edit_inventories')) throw new \Exception("Transfer failed: You do not own one of the selected awards.");
+                if($stack->user_id != $sender->id && !$sender->hasPower('edit_inventories')) throw new \Exception("Transfer failed: You do not own one of the selected ".__('awards.awards').".");
                 if($stack->user_id == $recipient->id) throw new \Exception("Transfer failed: Cannot send ".__('awards.awards')." to the ".__('awards.award')."'s owner.");
                 if(!$recipient->hasAlias) throw new \Exception("Transfer failed: Cannot transfer ".__('awards.awards')." to a non-verified member.");
                 if($recipient->is_banned) throw new \Exception("Transfer failed: Cannot transfer ".__('awards.awards')." to a banned member.");

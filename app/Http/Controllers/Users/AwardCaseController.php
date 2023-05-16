@@ -122,7 +122,7 @@ class AwardCaseController extends Controller
      */
     public function postEdit(Request $request, AwardCaseManager $service)
     {
-        if(!$request->ids) { flash('No awards selected.')->error(); }
+        if(!$request->ids) { flash('No '.__('awards.awards').' selected.')->error(); }
         if(!$request->quantities) { flash('Quantities not set.')->error(); }
 
         if($request->ids && $request->quantities) {

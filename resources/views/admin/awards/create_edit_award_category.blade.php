@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('admin-title') Award Categories @endsection
+@section('admin-title') {{ucfirst(__('awards.award'))}} Categories @endsection
 
 @section('admin-content')
 {!! breadcrumbs(['Admin Panel' => 'admin', ucfirst(__('awards.award')).' Categories' => 'admin/data/award-categories', ($category->id ? 'Edit' : 'Create').' Category' => $category->id ? 'admin/data/award-categories/edit/'.$category->id : 'admin/data/award-categories/create']) !!}

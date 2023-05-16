@@ -401,7 +401,7 @@ class WorldController extends Controller
         $award = $award->first();
         if(!$award) abort(404);
 
-        if(!$released) flash('This award is not yet released.')->error();
+        if(!$released) flash('This '.__('awards.award').' is not yet released.')->error();
 
 
         return view('world.award_page', [

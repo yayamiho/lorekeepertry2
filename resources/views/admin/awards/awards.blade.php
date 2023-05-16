@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('admin-title') Awards @endsection
+@section('admin-title') {{ucfirst(__('awards.awards'))}} @endsection
 
 @section('admin-content')
 {!! breadcrumbs(['Admin Panel' => 'admin', ucfirst(__('awards.awards')) => 'admin/data/awards']) !!}

@@ -1,9 +1,9 @@
 @extends('home.layout')
 
-@section('home-title') Awardcase @endsection
+@section('home-title') {{ ucfirst(__('awards.awardcase')) }} @endsection
 
 @section('home-content')
-{!! breadcrumbs([ ucfirst(__('awards.awards'))  => 'Awards']) !!}
+{!! breadcrumbs([ ucfirst(__('awards.awardcase'))  => __('awards.awardcase')]) !!}
 
 <h1>
     {{ucfirst(__('awards.awardcase'))}}
@@ -86,7 +86,7 @@
                             <div class="text-right mb-0">
                                 @if($award->progressionProgress(Auth::user()) == count($award->progressions) && $award->canClaim(Auth::user()))
                                     <div class="mt-2">
-                                        {!! Form::open(['url' => 'awardcase/claim/'.$award->id]) !!}
+                                        {!! Form::open(['url' => __('awards.awardcase').'/claim/'.$award->id]) !!}
                                             {!! Form::submit('Claim '.ucfirst(__('awards.award')), ['class' => 'btn btn-primary']) !!}
                                         {!! Form::close() !!}
                                     </div>
@@ -108,7 +108,7 @@ $(document).ready(function() {
     $('.awardcase-stack').on('click', function(e) {
         e.preventDefault();
         var $parent = $(this).parent().parent();
-        loadModal("{{ url('awards') }}/" + $parent.data('id'), $parent.data('name'));
+        loadModal("{{ url(__('awards.awardcase').) }}/" + $parent.data('id'), $parent.data('name'));
     });
 });
 

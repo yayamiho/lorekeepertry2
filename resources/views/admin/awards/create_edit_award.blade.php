@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('admin-title') Awards @endsection
+@section('admin-title') {{ucfirst(__('awards.awards'))}} @endsection
 
 @section('admin-content')
 {!! breadcrumbs(['Admin Panel' => 'admin', ucfirst(__('awards.awards')) => 'admin/data/awards', ($award->id ? ('Edit '.$award->name) : 'Create '.(ucfirst(__('awards.award')))) => $award->id ? 'admin/data/awards/edit/'.$award->id : 'admin/data/awards/create']) !!}
@@ -56,21 +56,21 @@
             <div class="col-md-4 form-group pl-md-3">
                 {!! Form::checkbox('is_released', 1, $award->id ? $award->is_released : 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
                 {!! Form::label('is_released', 'Is Released', ['class' => 'form-check-label font-weight-bold ml-3']) !!}
-                {!! add_help('If this is off, users will not be able to view information for the award/it will be hidden from view. This is overridden by the award being owned at any point by anyone on the site.') !!}
+                {!! add_help('If this is off, users will not be able to view information for the '.__('awards.award').'/it will be hidden from view. This is overridden by the '.__('awards.award').' being owned at any point by anyone on the site.') !!}
             </div>
             <div class="col-md-4 form-group pl-md-3">
                 {!! Form::checkbox('is_featured', 1, $award->id ? $award->is_featured : 0, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
                 {!! Form::label('is_featured', 'Is Featured', ['class' => 'form-check-label font-weight-bold ml-3']) !!}
-                {!! add_help('This award is featured on the holder\'s profile. <br>Limited to the number set in extension configuration per character/user.') !!}
+                {!! add_help('This '.__('awards.award').' is featured on the holder\'s profile. <br>Limited to the number set in extension configuration per character/user.') !!}
             </div>
             <div class="col-md-4 form-group pl-md-3">
                 {!! Form::checkbox('allow_transfer', 1, $award->id ? $award->allow_transfer : 0, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
-                {!! Form::label('allow_transfer', 'Allow User → User Transfer', ['class' => 'form-check-label font-weight-bold ml-3']) !!} {!! add_help('If this is off, users will not be able to transfer this award to other users. Non-account-bound awards can be account-bound when granted to users directly.') !!}
+                {!! Form::label('allow_transfer', 'Allow User → User Transfer', ['class' => 'form-check-label font-weight-bold ml-3']) !!} {!! add_help('If this is off, users will not be able to transfer this '.__('awards.award').' to other users. Non-account-bound '.__('awards.awards').' can be account-bound when granted to users directly.') !!}
             </div>
             <div class="col-md-6 form-group pl-md-3">
                 {!! Form::checkbox('is_character_owned', 1, $award->id ? $award->is_character_owned : 0, ['class' => 'form-check-input hold-toggle', 'data-toggle' => 'toggle']) !!}
                 {!! Form::label('is_character_owned', 'Character Held', ['class' => 'form-check-label font-weight-bold ml-3']) !!}
-                {!! add_help('If this is enabled, characters will be able to hold this award. The limit is how many can be held at a time. 0 means no limit, if set to 1 then quantity will be treated as a boolean.') !!}
+                {!! add_help('If this is enabled, characters will be able to hold this '.__('awards.award').'. The limit is how many can be held at a time. 0 means no limit, if set to 1 then quantity will be treated as a boolean.') !!}
                 <div class="limit d-inline-flex align-items-center ml-3 {{ $award->is_character_owned ? '' : 'hide' }}">
                     {!! Form::label('character_limit', 'Limit', ['class' => 'font-weight-bold mr-3 mb-0']) !!}
                     {!! Form::number('character_limit', $award->id ? $award->character_limit : 0, ['class' => 'form-control']) !!}
@@ -79,7 +79,7 @@
             <div class="col-md-6 form-group pl-md-3">
                 {!! Form::checkbox('is_user_owned', 1, $award->id ? $award->is_user_owned : 1, ['class' => 'form-check-input hold-toggle', 'data-toggle' => 'toggle']) !!}
                 {!! Form::label('is_user_owned', 'User Held', ['class' => 'form-check-label font-weight-bold ml-3']) !!}
-                {!! add_help('If this is enabled, users will be able to hold this award. The limit is how many can be held at a time. 0 means no limit, if set to 1 then quantity will be treated as a boolean.') !!}
+                {!! add_help('If this is enabled, users will be able to hold this'.__('awards.award').'. The limit is how many can be held at a time. 0 means no limit, if set to 1 then quantity will be treated as a boolean.') !!}
                 <div class="limit d-inline-flex align-items-center ml-3 {{ !$award->id || $award->is_user_owned ? '' : 'hide' }}">
                     {!! Form::label('user_limit', 'Limit', ['class' => 'font-weight-bold mr-3 mb-0']) !!}
                     {!! Form::number('user_limit', $award->id ? $award->user_limit : 0, ['class' => 'form-control']) !!}
@@ -107,7 +107,7 @@
             </div>
 
             <div class="col form-group d-md-flex align-items-center">
-                {!! Form::label('release', 'Source (Optional)', ['class' => 'mr-2 mb-0 font-weight-bold']) !!} {!! add_help('Where or how this award was earned.') !!}
+                {!! Form::label('release', 'Source (Optional)', ['class' => 'mr-2 mb-0 font-weight-bold']) !!} {!! add_help('Where or how this '.__('awards.award').' was earned.') !!}
                 {!! Form::text('release', $award && $award->source ? $award->source : '', ['class' => 'ml-md-2 form-control']) !!}
             </div>
         </div>
@@ -242,7 +242,7 @@ $( document ).ready(function() {
 
     $('.delete-award-button').on('click', function(e) {
         e.preventDefault();
-        loadModal("{{ url('admin/data/awards/delete') }}/{{ $award->id }}", 'Delete Award');
+        loadModal("{{ url('admin/data/awards/delete') }}/{{ $award->id }}", 'Delete '+"{{ucfirst(__('awards.award'))}}" );
     });
 
     $('#add-credit-button').on('click', function(e) {

@@ -93,7 +93,7 @@
 </div>
     <div class="card mb-3">
         <div class="card-body text-center">
-            <h5 class="card-title">Awards</h5>
+            <h5 class="card-title">{{ ucfirst(__('awards.awards')) }}</h5>
             <div class="card-body">
                 @if(count($awards))
                     <div class="row">
@@ -108,10 +108,10 @@
                         @endforeach
                     </div>
                 @else
-                    <div>No awards earned.</div>
+                    <div>No {{ __('awards.awards') }} earned.</div>
                 @endif
             </div>
-            <div class="text-right"><a href="{{ $user->url.'/awardcase' }}">View all...</a></div>
+            <div class="text-right"><a href="{{ $user->url.'/'.__('awards.awardcase') }}">View all...</a></div>
         </div>
     </div>
 

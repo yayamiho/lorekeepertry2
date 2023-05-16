@@ -25,7 +25,7 @@
             <div class="card-header d-flex flex-wrap no-gutters">
                 <h1 class="col-12">{!! $name !!}
                     <div class="float-md-right small">
-                        @if($award->is_character_owned)<i class="fas fa-paw mx-2 small" data-toggle="tooltip" title="This {{__('awards.award')}} can be held by characters."></i>@endif
+                        @if($award->is_character_owned)<i class="fas fa-paw mx-2 small" data-toggle="tooltip" title="This {{__('awards.award')}} can be held by {{ __('lorekeeper.characters') }}."></i>@endif
                         @if($award->is_user_owned)<i class="fas fa-user mx-2 small" data-toggle="tooltip" title="This {{__('awards.award')}} can be held by users."></i>@endif
                     </div>
                 </h1>
@@ -82,7 +82,7 @@
                     @if($award->progressionProgress(Auth::user()) == count($award->progressions) && $award->canClaim(Auth::user()))
                         <div class="mt-2">
                             {!! Form::open(['url' => 'awardcase/claim/'.$award->id]) !!}
-                                {!! Form::submit('Claim Award', ['class' => 'btn btn-primary']) !!}
+                                {!! Form::submit('Claim Reward', ['class' => 'btn btn-primary']) !!}
                             {!! Form::close() !!}
                         </div>
                     @elseif($award->progressionProgress(Auth::user()) == count($award->progressions) && !$award->canClaim(Auth::user()))

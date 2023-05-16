@@ -16,7 +16,7 @@
 
     <h5>Owned Stacks</h5>
 
-    {!! Form::open(['url' => 'character/'.$character->slug.'/awardcase/edit']) !!}
+    {!! Form::open(['url' => 'character/'.$character->slug.'/'.__('awards.awardcase').'/edit']) !!}
     <div class="card" style="border: 0px">
         <table class="table table-sm">
             <thead class="thead">
@@ -64,7 +64,7 @@
                         @endif
                         <td class="col-1">
                             @if(!$awardRow->isTransferrable)
-                                <i class="fas fa-lock" data-toggle="tooltip" title="Character-bound awards cannot be transferred but can be deleted."></i>
+                                <i class="fas fa-lock" data-toggle="tooltip" title="{{ ucfirst(__('lorekeeper.character')) }}-bound {{ __('awards.awards') }} cannot be transferred but can be deleted."></i>
                             @endif
                         </td>
                     </tr>
