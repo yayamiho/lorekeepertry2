@@ -70,7 +70,7 @@ class GrantController extends Controller
     {
         $data = $request->only(['award_ids', 'quantities', 'data', 'disallow_transfer', 'notes']);
         if($service->grantCharacterAwards($data,  Character::where('slug', $slug)->first(), Auth::user())) {
-            flash('Awards granted successfully.')->success();
+            flash(ucfirst(__('awards.awards')).' granted successfully.')->success();
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();

@@ -154,7 +154,7 @@ class AwardCaseController extends Controller
     private function postTransfer(Request $request, AwardCaseManager $service)
     {
         if($service->transferStack(Auth::user(), User::visible()->where('id', $request->get('user_id'))->first(), UserAward::find($request->get('ids')), $request->get('quantities'))) {
-            flash('Award transferred successfully.')->success();
+            flash(ucfirst(__('awards.award')).' transferred successfully.')->success();
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
@@ -172,7 +172,7 @@ class AwardCaseController extends Controller
     private function postTransferToCharacter(Request $request, AwardCaseManager $service)
     {
         if($service->transferCharacterStack(Auth::user(), Character::visible()->where('id', $request->get('character_id'))->first(), UserAward::find($request->get('ids')), $request->get('quantities'))) {
-            flash('Award transferred successfully.')->success();
+            flash(ucfirst(__('awards.award')).' transferred successfully.')->success();
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
@@ -190,7 +190,7 @@ class AwardCaseController extends Controller
     private function postDelete(Request $request, AwardCaseManager $service)
     {
         if($service->deleteStack(Auth::user(), UserAward::find($request->get('ids')), $request->get('quantities'))) {
-            flash('Award deleted successfully.')->success();
+            flash(ucfirst(__('awards.award')).' deleted successfully.')->success();
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
@@ -223,7 +223,7 @@ class AwardCaseController extends Controller
         $tag = $request->get('tag');
         $service = $stacks->first()->award->hasTag($tag) ? $stacks->first()->award->tag($tag)->service : null;
         if($service && $service->act($stacks, Auth::user(), $request->all())) {
-            flash('Award used successfully.')->success();
+            flash(ucfirst(__('awards.award')).' used successfully.')->success();
         }
         else if(!$stacks->first()->award->hasTag($tag)) flash('Invalid action selected.')->error();
         else {
@@ -233,9 +233,9 @@ class AwardCaseController extends Controller
     }
 
     /*****************************************************************************
-     * 
+     *
      * PROGRESSION STUFF
-     * 
+     *
      *****************************************************************************/
 
      /**
@@ -245,7 +245,7 @@ class AwardCaseController extends Controller
     {
         $award = Award::find($id);
         if($service->claimAward($award, Auth::user())) {
-            flash('Award claimed successfully.')->success();
+            flash(ucfirst(__('awards.award')).' claimed successfully.')->success();
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();

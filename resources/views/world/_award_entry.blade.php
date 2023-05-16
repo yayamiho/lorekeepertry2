@@ -7,8 +7,8 @@
             <div class="card-header d-flex flex-wrap no-gutters">
                 <h1 class="col-12">{!! $name !!}
                     <div class="float-md-right small">
-                        @if($award->is_character_owned)<i class="fas fa-paw mx-2 small" data-toggle="tooltip" title="This award can be held by characters."></i>@endif
-                        @if($award->is_user_owned)<i class="fas fa-user mx-2 small" data-toggle="tooltip" title="This award can be held by users."></i>@endif
+                        @if($award->is_character_owned)<i class="fas fa-paw mx-2 small" data-toggle="tooltip" title="This {{ __('awards.award') }} can be held by characters."></i>@endif
+                        @if($award->is_user_owned)<i class="fas fa-user mx-2 small" data-toggle="tooltip" title="This {{ __('awards.award') }} can be held by users."></i>@endif
                     </div>
                 </h1>
                 @if(isset($award->category) && $award->category)
@@ -48,9 +48,9 @@
             @endif
             {{-- progression --}}
             @if(count($award->progressions) > 0)
-                <div class="card-header h5">Award Progress ({{count($award->progressions)}}/{{count($award->progressions)}})</div>
+                <div class="card-header h5">{{ ucfirst(__('awards.award')) }} Progress ({{count($award->progressions)}}/{{count($award->progressions)}})</div>
                 <div class="card-body d-flex flex-wrap justify-content-center">
-                    <p>Note that this looks fully completed, since you are viewing it as an admin. Progression is only visible on the awards page or user inventory.</p>
+                    <p>Note that this looks fully completed, since you are viewing it as an admin. Progression is only visible on the {{__('awards.awards')}} page or user inventory.</p>
                     <div class="row col-12">
                         @foreach($award->progressions as $progression)
                             <div class="col-md-2">

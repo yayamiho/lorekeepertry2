@@ -20,7 +20,7 @@ return [
             'TGI'  => 'https://github.com/tjgallaha/',
             'Ne-wt' => 'https://github.com/ne-wt/',
         ]),
-        'version' => '1.4.0',
+        'version' => '2.0.0',
     ],
 
 ];

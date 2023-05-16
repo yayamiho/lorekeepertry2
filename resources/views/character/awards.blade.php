@@ -1,12 +1,12 @@
 @extends('character.layout', ['isMyo' => $character->is_myo_slot])
 
-@section('profile-title') {{ $character->fullName }}'s Awards @endsection
+@section('profile-title') {{ $character->fullName }}'s {{ __('awards.awards') }} @endsection
 
 @section('profile-content')
 @if($character->is_myo_slot)
-{!! breadcrumbs(['MYO Slot Masterlist' => 'myos', $character->fullName => $character->url, 'Awards' => $character->url.'/awards']) !!}
+{!! breadcrumbs([ucfirst(__('lorekeeper.myo')).' Masterlist' => 'myos', $character->fullName => $character->url, ucfirst(__('awards.awardcase'))  => $character->url.'/awardcase']) !!}
 @else
-{!! breadcrumbs([($character->category->masterlist_sub_id ? $character->category->sublist->name.' Masterlist' : 'Character masterlist') => ($character->category->masterlist_sub_id ? 'sublist/'.$character->category->sublist->key : 'masterlist' ), $character->fullName => $character->url, 'Awards' => $character->url.'/awards']) !!}
+{!! breadcrumbs([($character->category->masterlist_sub_id ? $character->category->sublist->name.' Masterlist' : ucfirst(__('lorekeeper.character')).' masterlist') => ($character->category->masterlist_sub_id ? 'sublist/'.$character->category->sublist->key : 'masterlist' ), $character->fullName => $character->url, ucfirst(__('awards.awardcase')) => $character->url.'/'.__('awards.awardcase')]) !!}
 @endif
 
 @include('character._header', ['character' => $character])
@@ -15,7 +15,7 @@
     @if(Auth::check() && Auth::user()->hasPower('edit_inventories'))
         <a href="#" class="float-right btn btn-outline-info btn-sm" id="grantButton" data-toggle="modal" data-target="#grantModal"><i class="fas fa-cog"></i> Admin</a>
     @endif
-    Awards
+    {{ __('awards.awardcase') }}
 </h3>
 
 @foreach($awards as $categoryId=>$categoryAwards)
@@ -29,7 +29,7 @@
                     @foreach($chunk as $awardId=>$stack)
                         <div class="col-sm-3 col-6 text-center awards-award" data-id="{{ $stack->first()->pivot->id }}" data-name="{{ $character->name ? $character->name : $character->slug }}'s {{ $stack->first()->name }}">
                             <div class="mb-1">
-                                <a href="#" class="awards-stack {{ $stack->first()->is_featured ? 'alert alert-success' : '' }}"><img src="{{ $stack->first()->imageUrl }}" alt="{{ $stack->first()->name }}"/></a>
+                                <a href="#" class="awards-stack {{ $stack->first()->is_featured ? 'alert alert-success' : '' }}"><img src="{{ $stack->first()->imageUrl }}" alt="{{ $stack->first()->name }}" class="mw-100"/></a>
                             </div>
                             <div>
                                 <a href="#" class="awards-stack awards-stack-name">{{ $stack->first()->name }}@if($stack->first()->user_limit != 1) x{{ $stack->sum('pivot.count') }}@endif</a>
@@ -56,7 +56,7 @@
       @endforeach
 </div>
 <div class="text-right">
-    <a href="{{ url($character->url.'/award-logs') }}">View all...</a>
+    <a href="{{ url($character->url.'/'.__('awards.award').'-logs') }}">View all...</a>
 </div>
 
 @if(Auth::check() && Auth::user()->hasPower('edit_inventories'))
@@ -64,30 +64,30 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <span class="modal-title h5 mb-0">[ADMIN] Grant Awards</span>
+                    <span class="modal-title h5 mb-0">[ADMIN] Grant {{ucfirst(__('awards.awards'))}} </span>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                <p>Note that granting awards does not check against any hold limits for characters.</p>
+                <p>Note that granting {{__('awards.awards')}} does not check against any hold limits for characters.</p>
                 <div class="form-group">
                 {!! Form::open(['url' => 'admin/character/'.$character->slug.'/grant-awards']) !!}
 
-                    {!! Form::label('Award(s)') !!} {!! add_help('Must have at least 1 award and Quantity must be at least 1.') !!}
+                    {!! Form::label('award_ids',ucfirst(__('awards.award')).'(s)') !!} {!! add_help('Must have at least 1 award and Quantity must be at least 1.') !!}
                     <div id="awardList">
                         <div class="d-flex mb-2">
-                            {!! Form::select('award_ids[]', $awardOptions, null, ['class' => 'form-control mr-2 default award-select', 'placeholder' => 'Select Award']) !!}
+                            {!! Form::select('award_ids[]', $awardOptions, null, ['class' => 'form-control mr-2 default award-select', 'placeholder' => 'Select '.ucfirst(__('awards.award'))]) !!}
                             {!! Form::text('quantities[]', 1, ['class' => 'form-control mr-2', 'placeholder' => 'Quantity']) !!}
-                            <a href="#" class="remove-award btn btn-danger mb-2 disabled">×</a>
+                            <a href="#" class="remove-award btn btn-danger mb-2 disabled">✖</a>
                         </div>
                     </div>
-                    <div><a href="#" class="btn btn-primary" id="add-award">Add Award</a></div>
+                    <div><a href="#" class="btn btn-primary" id="add-award">Add {{ucfirst(__('awards.award'))}}</a></div>
                     <div class="award-row hide mb-2">
                         {!! Form::select('award_ids[]', $awardOptions, null, ['class' => 'form-control mr-2 award-select', 'placeholder' => 'Select Award']) !!}
                         {!! Form::text('quantities[]', 1, ['class' => 'form-control mr-2', 'placeholder' => 'Quantity']) !!}
-                        <a href="#" class="remove-award btn btn-danger mb-2">×</a>
+                        <a href="#" class="remove-award btn btn-danger mb-2">✖</a>
                     </div>
 
-                    <h5>Additional Data</h5>
+                    <h5 class="mt-2">Additional Data</h5>
 
                     <div class="form-group">
                         {!! Form::label('data', 'Reason (Optional)') !!} {!! add_help('A reason for the grant. This will be noted in the logs and in the awards description.') !!}

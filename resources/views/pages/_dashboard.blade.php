@@ -60,11 +60,11 @@
         <div class="card mb-12">
             <div class="card-body text-center">
                 <img src="{{ asset('images/awards.png') }}" />
-                <h5 class="card-title">Awards</h5>
+                <h5 class="card-title">{{ ucfirst(__('awards.awards')) }}</h5>
             </div>
             <ul class="list-group list-group-flush">
-                <li class="list-group-item"><a href="{{ url('awardcase') }}">My Awards</a></li>
-                <li class="list-group-item"><a href="{{ Auth::user()->url . '/award-logs' }}">Award Logs</a></li>
+                <li class="list-group-item"><a href="{{ url(__('awards.awardcase')) }}">My {{ ucfirst(__('awards.awards')) }}</a></li>
+                <li class="list-group-item"><a href="{{ Auth::user()->url . '/'.__('awards.award').'-logs' }}">{{ ucfirst(__('awards.award')) }} Logs</a></li>
             </ul>
         </div>
     </div>

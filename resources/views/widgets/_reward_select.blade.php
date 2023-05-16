@@ -21,7 +21,7 @@
                         @elseif($loot->type == 'Currency')
                             {!! Form::select('award_id[]', $currencies, $loot->type_id, ['class' => 'form-control currency-select selectize', 'placeholder' => 'Select Currency']) !!}
                         @elseif($loot->type == 'Award')
-                            {!! Form::select('award_id[]', $awards, $loot->type_id, ['class' => 'form-control award-select selectize', 'placeholder' => 'Select Award']) !!}
+                            {!! Form::select('award_id[]', $awards, $loot->type_id, ['class' => 'form-control award-select selectize', 'placeholder' => 'Select '.ucfirst(__('awards.award')) ]) !!}
                         @elseif($showLootTables && $loot->type == 'LootTable')
                             {!! Form::select('award_id[]', $tables, $loot->type_id, ['class' => 'form-control table-select selectize', 'placeholder' => 'Select Loot Table']) !!}
                         @elseif($showRaffles && $loot->type == 'Raffle')

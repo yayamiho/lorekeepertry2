@@ -3,13 +3,13 @@
 @section('home-title') Awardcase @endsection
 
 @section('home-content')
-{!! breadcrumbs(['Awards' => 'Awards']) !!}
+{!! breadcrumbs([ ucfirst(__('awards.awards'))  => 'Awards']) !!}
 
 <h1>
-    Awards
+    {{ucfirst(__('awards.awardcase'))}}
 </h1>
 
-<p>These are the awards you've earned for participating on this site.</p>
+<p>These are the {{ __('awards.awards') }} you've earned for participating on this site.</p>
 @foreach($awards as $categoryId=>$categoryAwards)
     <div class="card mb-3 awardcase-category">
         <h5 class="card-header awardcase-header">
@@ -21,7 +21,7 @@
                     @foreach($chunk as $awardId=>$stack)
                         <div class="col-sm-3 col-6 text-center awardcase-award" data-id="{{ $stack->first()->pivot->id }}" data-name="{{ $user->name }}'s {{ $stack->first()->name }}">
                             <div class="mb-1">
-                                <a href="#" class="awardcase-stack {{ $stack->first()->is_featured ? 'alert alert-success' : '' }}"><img src="{{ $stack->first()->imageUrl }}" /></a>
+                                <a href="#" class="awardcase-stack {{ $stack->first()->is_featured ? 'alert alert-success' : '' }}"><img src="{{ $stack->first()->imageUrl }}" alt="{{ $stack->first()->name }}" class="mw-100"/></a>
                             </div>
                             <div>
                                 <a href="#" class="awardcase-stack awardcase-stack-name">{{ $stack->first()->name }}
@@ -35,11 +35,11 @@
     </div>
 @endforeach
 <div class="text-right mb-4">
-    <a href="{{ url(Auth::user()->url.'/award-logs') }}">View logs...</a>
+    <a href="{{ url(Auth::user()->url.'/'.__('awards.award').'-logs') }}">View logs...</a>
 </div>
 
 <h3>
-    In Progress Awards
+    In Progress {{ucfirst(__('awards.awards'))}}
 </h3>
 <div class="card mb-3 awardcase-category">
     <div class="card-body awardcase-body">
@@ -55,7 +55,7 @@
             });
         @endphp
         @if(!$inProgressAwards->count())
-            <p class="text-success">You have completed all available awards. Yay!</p>
+            <p class="text-success">You have completed all available {{__('awards.awards')}}. Yay!</p>
         @else
             @foreach($inProgressAwards as $award)
                 <div class="card mb-2">
@@ -87,7 +87,7 @@
                                 @if($award->progressionProgress(Auth::user()) == count($award->progressions) && $award->canClaim(Auth::user()))
                                     <div class="mt-2">
                                         {!! Form::open(['url' => 'awardcase/claim/'.$award->id]) !!}
-                                            {!! Form::submit('Claim Award', ['class' => 'btn btn-primary']) !!}
+                                            {!! Form::submit('Claim '.ucfirst(__('awards.award')), ['class' => 'btn btn-primary']) !!}
                                         {!! Form::close() !!}
                                     </div>
                                 @endif

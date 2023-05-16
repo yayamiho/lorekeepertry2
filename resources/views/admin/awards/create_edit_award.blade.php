@@ -3,11 +3,11 @@
 @section('admin-title') Awards @endsection
 
 @section('admin-content')
-{!! breadcrumbs(['Admin Panel' => 'admin', 'Awards' => 'admin/data/awards', ($award->id ? 'Edit' : 'Create').' Award' => $award->id ? 'admin/data/awards/edit/'.$award->id : 'admin/data/awards/create']) !!}
+{!! breadcrumbs(['Admin Panel' => 'admin', ucfirst(__('awards.awards')) => 'admin/data/awards', ($award->id ? ('Edit '.$award->name) : 'Create '.(ucfirst(__('awards.award')))) => $award->id ? 'admin/data/awards/edit/'.$award->id : 'admin/data/awards/create']) !!}
 
-<h1>{!! $award->id ? 'Edit '.$award->displayName : 'Create Award' !!}
+<h1>{!! $award->id ? 'Edit '.$award->displayName : 'Create '.ucfirst(__('awards.award')) !!}
     @if($award->id)
-        <a href="#" class="btn btn-outline-danger float-right delete-award-button">Delete Award</a>
+        <a href="#" class="btn btn-outline-danger float-right delete-award-button">Delete {{ucfirst(__('awards.award'))}}</a>
     @endif
 </h1>
 
@@ -143,11 +143,11 @@
         <div class="card-header"><h3 class="mb-0">Automatic Unlock Progression</h3></div>
         <div class="card-body">
             <p>
-                If you want this award to be automatically unlocked by acquiring certain items, currencies, etc. add them here.
+                If you want this {{ __('awards.award') }} to be automatically unlocked by acquiring certain items, currencies, etc. add them here.
                 <br />
-                When a user has owned (at one point) all of these items, the award will be distributed to them on their next visit to the awards page
+                When a user has owned (at one point) all of these items, the {{ __('awards.award') }} will be distributed to them on their next visit to the {{ __('awards.awards') }} page
                 <hr />
-                If the progressions are changed after a user has claimed the award, they will see the requirements they fulfilled alongside the current ones.
+                If the progressions are changed after a user has claimed the {{ __('awards.award') }}, they will see the requirements they fulfilled alongside the current ones.
             </p>
             <hr />
             @include('widgets._loot_select', ['loots' => $award->progressions, 'showLootTables' => false, 'showRaffles' => false, 'progression' => true])
@@ -158,12 +158,12 @@
         <div class="card-header"><h3 class="mb-0">Unlock Reward</h3></div>
         <div class="card-body">
             <p>
-                If you want this award to grant a reward when claimed, add it here.
+                If you want this {{ __('awards.award') }} to grant a reward when claimed, add it here.
                 <br />
-                When a user receives an award through obtaining all of the above items, they will also receive this award.
-                <br />
-                <br />
-                <b>The user will only receive this reward through the automatic unlock process. When they claim the award, if the award has any rewards all the items required for unlock will be debitted from their inventory.</b>
+                When a user receives an {{ __('awards.award') }} through obtaining all of the above items, they will also receive this reward.
+            </p>
+            <p>
+                <b>The user will only receive this reward through the automatic unlock process. When they claim the {{ __('awards.award') }}, if the {{ __('awards.award') }} has any rewards all the items required for unlock will be debitted from their inventory.</b>
             </p>
 
             @include('widgets._reward_select', ['loots' => $award->rewards, 'showLootTables' => false, 'showRaffles' => false])
@@ -184,8 +184,8 @@
 {!! Form::close() !!}
 
 @if($award->id)
-    @include('widgets._loot_select_row', ['items' => $items, 'currencies' => $currencies, 'tables' => $tables, 'raffles' => $raffles, 'showLootTables' => false, 'showRaffles' => false, 'progression' => true])
-    @include('widgets._reward_select_row', ['items' => $items, 'currencies' => $currencies, 'tables' => $tables, 'raffles' => $raffles, 'showLootTables' => false, 'showRaffles' => false, 'progression' => true])
+    @include('widgets._loot_select_row', ['items' => $items, 'currencies' => $currencies, 'tables' => $tables, 'raffles' => $raffles, 'awards' => $awards, 'showLootTables' => false, 'showRaffles' => false, 'progression' => true])
+    @include('widgets._reward_select_row', ['items' => $items, 'currencies' => $currencies, 'tables' => $tables, 'raffles' => $raffles, 'awards' => $awards, 'showLootTables' => false, 'showRaffles' => false, 'progression' => true])
 @endif
 
 <div class="row hide credit-row col-12 mb-1">

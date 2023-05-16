@@ -137,7 +137,7 @@ class AwardService extends Service
 
         try {
             // Check first if the category is currently in use
-            if(Award::where('award_category_id', $category->id)->exists()) throw new \Exception("An award with this category exists. Please change its category first.");
+            if(Award::where('award_category_id', $category->id)->exists()) throw new \Exception("An ".__('awards.award')." with this category exists. Please change its category first.");
 
             if($category->has_image) $this->deleteImage($category->categoryImagePath, $category->categoryImageFileName);
             $category->delete();
@@ -194,7 +194,7 @@ class AwardService extends Service
         try {
             if(isset($data['award_category_id']) && $data['award_category_id'] == 'none') $data['award_category_id'] = null;
 
-            if((isset($data['award_category_id']) && $data['award_category_id']) && !AwardCategory::where('id', $data['award_category_id'])->exists()) throw new \Exception("The selected award category is invalid.");
+            if((isset($data['award_category_id']) && $data['award_category_id']) && !AwardCategory::where('id', $data['award_category_id'])->exists()) throw new \Exception("The selected ".__('awards.award')." category is invalid.");
 
             $data = $this->populateData($data);
 
@@ -259,7 +259,7 @@ class AwardService extends Service
 
             // More specific validation
             if(Award::where('name', $data['name'])->where('id', '!=', $award->id)->exists()) throw new \Exception("The name has already been taken.");
-            if((isset($data['award_category_id']) && $data['award_category_id']) && !AwardCategory::where('id', $data['award_category_id'])->exists()) throw new \Exception("The selected award category is invalid.");
+            if((isset($data['award_category_id']) && $data['award_category_id']) && !AwardCategory::where('id', $data['award_category_id'])->exists()) throw new \Exception("The selected ".__('awards.award')." category is invalid.");
 
             $data = $this->populateData($data, $award);
 
@@ -419,10 +419,10 @@ class AwardService extends Service
 
         try {
             // Check first if the award is currently owned or if some other site feature uses it
-            if(DB::table('user_awards')->where([['award_id', '=', $award->id], ['count', '>', 0]])->exists()) throw new \Exception("At least one user currently owns this award. Please remove the award(s) before deleting it.");
-            if(DB::table('character_awards')->where([['award_id', '=', $award->id], ['count', '>', 0]])->exists()) throw new \Exception("At least one character currently owns this award. Please remove the award(s) before deleting it.");
-            if(DB::table('loots')->where('rewardable_type', 'Award')->where('rewardable_id', $award->id)->exists()) throw new \Exception("A loot table currently distributes this award as a potential reward. Please remove the award before deleting it.");
-            if(DB::table('prompt_rewards')->where('rewardable_type', 'Award')->where('rewardable_id', $award->id)->exists()) throw new \Exception("A prompt currently distributes this award as a reward. Please remove the award before deleting it.");
+            if(DB::table('user_awards')->where([['award_id', '=', $award->id], ['count', '>', 0]])->exists()) throw new \Exception("At least one user currently owns this ".__('awards.award').". Please remove the ".__('awards.awards')." before deleting it.");
+            if(DB::table('character_awards')->where([['award_id', '=', $award->id], ['count', '>', 0]])->exists()) throw new \Exception("At least one character currently owns this ".__('awards.award').". Please remove the ".__('awards.awards')." before deleting it.");
+            if(DB::table('loots')->where('rewardable_type', 'Award')->where('rewardable_id', $award->id)->exists()) throw new \Exception("At least one loot table currently distributes this ".__('awards.award')." as a potential reward. Please remove the ".__('awards.awards')." before deleting it.");
+            if(DB::table('prompt_rewards')->where('rewardable_type', 'Award')->where('rewardable_id', $award->id)->exists()) throw new \Exception("At least one prompt currently distributes this ".__('awards.award')." as a reward. Please remove the ".__('awards.awards')." before deleting it.");
 
             DB::table('awards_log')->where('award_id', $award->id)->delete();
             DB::table('user_awards')->where('award_id', $award->id)->delete();

@@ -12,9 +12,9 @@
 
 @section('content')
 @if(Auth::check() && Auth::user()->hasPower('edit_data'))
-    <a data-toggle="tooltip" title="[ADMIN] Edit Award" href="{{ url('admin/data/awards/edit/').'/'.$award->id }}" class="mb-2 float-right"><i class="fas fa-crown"></i></a>
+    <a data-toggle="tooltip" title="[ADMIN] Edit {{ ucfirst(__('awards.award')) }}" href="{{ url('admin/data/awards/edit/').'/'.$award->id }}" class="mb-2 float-right"><i class="fas fa-crown"></i></a>
 @endif
-{!! breadcrumbs(['World' => 'world', 'Awards' => 'world/awards', $award->name => $award->idUrl]) !!}
+{!! breadcrumbs(['World' => 'world', ucfirst(__('awards.awards')) => 'world/'.__('awards.awards'), $award->name => $award->idUrl]) !!}
 
 <div class="row world-entry align-items-center">
     @if($imageUrl)
@@ -25,8 +25,8 @@
             <div class="card-header d-flex flex-wrap no-gutters">
                 <h1 class="col-12">{!! $name !!}
                     <div class="float-md-right small">
-                        @if($award->is_character_owned)<i class="fas fa-paw mx-2 small" data-toggle="tooltip" title="This award can be held by characters."></i>@endif
-                        @if($award->is_user_owned)<i class="fas fa-user mx-2 small" data-toggle="tooltip" title="This award can be held by users."></i>@endif
+                        @if($award->is_character_owned)<i class="fas fa-paw mx-2 small" data-toggle="tooltip" title="This {{__('awards.award')}} can be held by characters."></i>@endif
+                        @if($award->is_user_owned)<i class="fas fa-user mx-2 small" data-toggle="tooltip" title="This {{__('awards.award')}} can be held by users."></i>@endif
                     </div>
                 </h1>
                 @if(isset($award->category) && $award->category)
@@ -67,7 +67,7 @@
             {{-- progression --}}
             @if(Auth::check() && count($award->progressions) > 0)
 
-                <div class="card-header h5">Award Progress ({{ $award->progressionProgress(Auth::user()) }}/{{count($award->progressions)}})</div>
+                <div class="card-header h5">{{ ucfirst(__('awards.award')) }} Progress ({{ $award->progressionProgress(Auth::user()) }}/{{count($award->progressions)}})</div>
                 {{-- get sum of award progressions that the user has unlocked --}}
 
                 <div class="card-body text-center justify-content-center">
@@ -88,7 +88,7 @@
                     @elseif($award->progressionProgress(Auth::user()) == count($award->progressions) && !$award->canClaim(Auth::user()))
                         <div class="mt-2">
                             <hr class="w-50"/>
-                            <p class="text-danger">You have already claimed this award.</p>
+                            <p class="text-danger">You have already claimed this reward.</p>
                             <p>You received this reward after gaining the following requirements:</p>
                             {{-- get the user reward where the data column contains 'progression_data' in the JSON --}}
                             @php
@@ -112,7 +112,7 @@
                                                     break;
                                             }
                                         @endphp
-                                        
+
                                         <div class="col-sm-1">
                                             <img src="{{ $info->imageUrl }}" class="img-fluid" data-toggle="tooltip" title="{{ $info->name }} x{{ $quantity }}" />
                                         </div>
