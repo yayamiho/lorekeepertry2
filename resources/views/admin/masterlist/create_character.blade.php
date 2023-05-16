@@ -211,7 +211,7 @@
     <h3>Traits</h3>
 
     <div class="form-group">
-        {!! Form::label('Species') !!} @if($isMyo) {!! add_help('This will lock the slot into a particular species. Leave it blank if you would like to give the user a choice.') !!} @endif
+        {!! Form::label( ucfirst(__('lorekeeper.species'))) !!} @if($isMyo) {!! add_help('This will lock the slot into a particular species. Leave it blank if you would like to give the user a choice.') !!} @endif
         {!! Form::select('species_id', $specieses, old('species_id'), ['class' => 'form-control', 'id' => 'species']) !!}
     </div>
 

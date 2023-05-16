@@ -106,7 +106,7 @@ Traits
 </h3>
 
 <div class="form-group">
-    {!! Form::label('Species') !!}
+    {!! Form::label( ucfirst(__('lorekeeper.species'))) !!}
     {!! Form::select('species_id', $specieses, old('species_id') ? : $character->image->species_id, ['class' => 'form-control', 'id' => 'species']) !!}
 </div>
 

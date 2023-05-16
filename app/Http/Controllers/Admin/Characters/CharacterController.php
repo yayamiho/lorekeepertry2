@@ -59,8 +59,8 @@ class CharacterController extends Controller
             'categories' => CharacterCategory::orderBy('sort')->get(),
             'userOptions' => User::query()->orderBy('name')->pluck('name', 'id')->toArray(),
             'rarities' => ['0' => 'Select Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'specieses' => ['0' => 'Select Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'subtypes' => ['0' => 'Pick a Species First'],
+            'specieses' => ['0' => 'Select '.ucfirst(__('lorekeeper.species'))] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'subtypes' => ['0' => 'Pick a '.ucfirst(__('lorekeeper.species')).' First'],
             'features' => Feature::orderBy('name')->pluck('name', 'id')->toArray(),
             'isMyo' => false
         ]);
@@ -76,8 +76,8 @@ class CharacterController extends Controller
         return view('admin.masterlist.create_character', [
             'userOptions' => User::query()->orderBy('name')->pluck('name', 'id')->toArray(),
             'rarities' => ['0' => 'Select Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'specieses' => ['0' => 'Select Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'subtypes' => ['0' => 'Pick a Species First'],
+            'specieses' => ['0' => 'Select '.ucfirst(__('lorekeeper.species'))] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'subtypes' => ['0' => 'Pick a '.ucfirst(__('lorekeeper.species')).' First'],
             'features' => Feature::orderBy('name')->pluck('name', 'id')->toArray(),
             'isMyo' => true
         ]);
@@ -92,7 +92,7 @@ class CharacterController extends Controller
     public function getCreateCharacterMyoSubtype(Request $request) {
       $species = $request->input('species');
       return view('admin.masterlist._create_character_subtype', [
-          'subtypes' => ['0' => 'Select Subtype'] + Subtype::where('species_id','=',$species)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+          'subtypes' => ['0' => 'Select '.ucfirst(__('lorekeeper.subtype'))] + Subtype::where('species_id','=',$species)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
           'isMyo' => $request->input('myo')
       ]);
     }
@@ -118,7 +118,7 @@ class CharacterController extends Controller
             'image', 'thumbnail', 'image_description'
         ]);
         if ($character = $service->createCharacter($data, Auth::user())) {
-            flash('Character created successfully.')->success();
+            flash(ucfirst(__('lorekeeper.character')).' created successfully.')->success();
             return redirect()->to($character->url);
         }
         else {
@@ -214,7 +214,7 @@ class CharacterController extends Controller
         $this->character = Character::where('slug', $slug)->first();
         if(!$this->character) abort(404);
         if ($service->updateCharacterStats($data, $this->character, Auth::user())) {
-            flash('Character stats updated successfully.')->success();
+            flash(ucfirst(__('lorekeeper.character')).' stats updated successfully.')->success();
             return redirect()->to($this->character->url);
         }
         else {
@@ -242,7 +242,7 @@ class CharacterController extends Controller
         $this->character = Character::where('is_myo_slot', 1)->where('id', $id)->first();
         if(!$this->character) abort(404);
         if ($service->updateCharacterStats($data, $this->character, Auth::user())) {
-            flash('Character stats updated successfully.')->success();
+            flash(ucfirst(__('lorekeeper.character')).' stats updated successfully.')->success();
             return redirect()->to($this->character->url);
         }
         else {
@@ -301,7 +301,7 @@ class CharacterController extends Controller
         $this->character = Character::where('slug', $slug)->first();
         if(!$this->character) abort(404);
         if ($service->updateCharacterDescription($data, $this->character, Auth::user())) {
-            flash('Character description updated successfully.')->success();
+            flash(ucfirst(__('lorekeeper.character')).' description updated successfully.')->success();
             return redirect()->to($this->character->url);
         }
         else {
@@ -326,7 +326,7 @@ class CharacterController extends Controller
         $this->character = Character::where('is_myo_slot', 1)->where('id', $id)->first();
         if(!$this->character) abort(404);
         if ($service->updateCharacterDescription($data, $this->character, Auth::user())) {
-            flash('Character description updated successfully.')->success();
+            flash(ucfirst(__('lorekeeper.character')).' description updated successfully.')->success();
             return redirect()->to($this->character->url);
         }
         else {
@@ -351,7 +351,7 @@ class CharacterController extends Controller
         $this->character = Character::where('slug', $slug)->first();
         if(!$this->character) abort(404);
         if ($service->updateCharacterSettings($data, $this->character, Auth::user())) {
-            flash('Character settings updated successfully.')->success();
+            flash(ucfirst(__('lorekeeper.character')).' settings updated successfully.')->success();
             return redirect()->to($this->character->url);
         }
         else {
@@ -376,7 +376,7 @@ class CharacterController extends Controller
         $this->character = Character::where('is_myo_slot', 1)->where('id', $id)->first();
         if(!$this->character) abort(404);
         if ($service->updateCharacterSettings($data, $this->character, Auth::user())) {
-            flash('Character settings updated successfully.')->success();
+            flash(ucfirst(__('lorekeeper.character')).' settings updated successfully.')->success();
             return redirect()->to($this->character->url);
         }
         else {
@@ -433,7 +433,7 @@ class CharacterController extends Controller
         if(!$this->character) abort(404);
 
         if ($service->deleteCharacter($this->character, Auth::user())) {
-            flash('Character deleted successfully.')->success();
+            flash(ucfirst(__('lorekeeper.character')).' deleted successfully.')->success();
             return redirect()->to('masterlist');
         }
         else {
@@ -456,7 +456,7 @@ class CharacterController extends Controller
         if(!$this->character) abort(404);
 
         if ($service->deleteCharacter($this->character, Auth::user())) {
-            flash('Character deleted successfully.')->success();
+            flash(ucfirst(__('lorekeeper.character')).' deleted successfully.')->success();
             return redirect()->to('myos');
         }
         else {
@@ -479,7 +479,7 @@ class CharacterController extends Controller
         if(!$this->character) abort(404);
 
         if($service->adminTransfer($request->only(['recipient_id', 'recipient_url', 'cooldown', 'reason']), $this->character, Auth::user())) {
-            flash('Character transferred successfully.')->success();
+            flash(ucfirst(__('lorekeeper.character')).' transferred successfully.')->success();
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
@@ -501,7 +501,7 @@ class CharacterController extends Controller
         if(!$this->character) abort(404);
 
         if($service->adminTransfer($request->only(['recipient_id', 'recipient_url', 'cooldown', 'reason']), $this->character, Auth::user())) {
-            flash('Character transferred successfully.')->success();
+            flash(ucfirst(__('lorekeeper.character')).' transferred successfully.')->success();
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
