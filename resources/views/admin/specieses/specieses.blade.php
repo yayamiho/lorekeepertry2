@@ -42,7 +42,7 @@
         {!! Form::close() !!}
     </div>
 
-    <div class="text-center mt-4 small text-muted">{{ count($specieses) }} {{ trans_choice('lorekeeper.specieses', $specieses->count()) }} found.</div>
+    <div class="text-center mt-4 small text-muted">{{ count($specieses) }} {{ trans_choice('lorekeeper.specieses_', $specieses->count()) }} found.</div>
 @endif
 
 @endsection

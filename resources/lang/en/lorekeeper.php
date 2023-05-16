@@ -13,15 +13,19 @@ return [
     */
 
     'character' => 'character', // Incomplete
-    'characters' => 'character|characters', // Incomplete
+    'characters' => 'characters', // Incomplete
+    'characters_' => 'character|characters', // Incomplete
 
     'myo' => 'MYO', // Incomplete
-    'myos' => 'MYO|MYOs', // Incomplete
+    'myos' => 'MYOs', // Incomplete
+    'myos_' => 'MYO|MYOs', // Incomplete
 
     'subtype' => 'subtype',
-    'subtypes' => 'subtype|subtypes',
+    'subtypes' => 'subtypes',
+    'subtypes_' => 'subtype|subtypes',
 
     'species' => 'species',
-    'specieses' => 'species|specieses',
+    'specieses' => 'species', // Note that "Specieses" is not a valid word
+    'specieses_' => 'species|species', // Note that "Specieses" is not a valid word
 
 ];

@@ -146,7 +146,7 @@ class Subtype extends Model
      */
     public function getUrlAttribute()
     {
-        return url('world/'.trans_choice('lorekeeper.subtypes',2).'?name='.$this->name);
+        return url('world/'.__('lorekeeper.subtypes').'?name='.$this->name);
     }
 
     /**

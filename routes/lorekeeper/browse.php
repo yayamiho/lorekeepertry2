@@ -108,8 +108,8 @@ Route::group(['prefix' => 'world'], function() {
     Route::get('currencies', 'WorldController@getCurrencies');
     Route::get('rarities', 'WorldController@getRarities');
     Route::get('species', 'WorldController@getSpecieses');
-    Route::get(trans_choice('lorekeeper.subtypes', 2), 'WorldController@getSubtypes');
-    Route::get('species/{id}/traits', 'WorldController@getSpeciesFeatures');
+    Route::get(__('lorekeeper.subtypes'), 'WorldController@getSubtypes');
+    Route::get(__('lorekeeper.specieses').'/{id}/traits', 'WorldController@getSpeciesFeatures');
     Route::get('item-categories', 'WorldController@getItemCategories');
     Route::get('items', 'WorldController@getItems');
     Route::get(__('awards.award').'-categories', 'WorldController@getAwardCategories');

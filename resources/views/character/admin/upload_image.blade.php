@@ -111,7 +111,7 @@ Traits
 </div>
 
 <div class="form-group" id="subtypes">
-    {!! Form::label('Subtype (Optional)') !!}
+    {!! Form::label(ucfirst(__('lorekeeper.subtype')).' (Optional)') !!}
     {!! Form::select('subtype_id', $subtypes, old('subtype_id') ? : $character->image->subtype_id, ['class' => 'form-control', 'id' => 'subtype']) !!}
 </div>
 
