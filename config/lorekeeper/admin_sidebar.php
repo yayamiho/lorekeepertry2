@@ -176,6 +176,10 @@ return [
                 'name' => 'Items',
                 'url' => 'admin/data/items'
             ],
+            [
+                'name' => 'Library',
+                'url' => 'admin/data/volumes'
+            ],
         ]
     ],
     'Raffles' => [

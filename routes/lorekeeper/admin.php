@@ -226,6 +226,25 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('prompts/create', 'PromptController@postCreateEditPrompt');
     Route::post('prompts/edit/{id?}', 'PromptController@postCreateEditPrompt');
     Route::post('prompts/delete/{id}', 'PromptController@postDeletePrompt');
+
+     # VOLUMES
+     Route::get('volumes', 'VolumeController@getVolumeIndex');
+     Route::get('volumes/create', 'VolumeController@getCreateVolume');
+     Route::get('volumes/edit/{id}', 'VolumeController@getEditVolume');
+     Route::get('volumes/delete/{id}', 'VolumeController@getDeleteVolume');
+     Route::post('volumes/create', 'VolumeController@postCreateEditVolume');
+     Route::post('volumes/edit/{id?}', 'VolumeController@postCreateEditVolume');
+     Route::post('volumes/delete/{id}', 'VolumeController@postDeleteVolume');
+ 
+     # BOOKS
+     Route::get('volumes/books', 'VolumeController@getBookIndex');
+     Route::get('volumes/books/create', 'VolumeController@getCreateBook');
+     Route::get('volumes/books/edit/{id}', 'VolumeController@getEditBook');
+     Route::get('volumes/books/delete/{id}', 'VolumeController@getDeleteBook');
+     Route::post('volumes/books/create', 'VolumeController@postCreateEditBook');
+     Route::post('volumes/books/edit/{id?}', 'VolumeController@postCreateEditBook');
+     Route::post('volumes/books/delete/{id}', 'VolumeController@postDeleteBook');
+     Route::post('volumes/books/sort', 'VolumeController@postSortBook');
 });
 
 

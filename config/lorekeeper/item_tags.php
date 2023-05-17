@@ -24,4 +24,10 @@ return [
         'text_color' => '#ffffff',
         'background_color' => '#1fd1a7'
     ],
+
+    'volume' => [
+        'name' => 'Volume',
+        'text_color' => '#ffffff',
+        'background_color' => '#1fd1a7'
+    ],
 ];
