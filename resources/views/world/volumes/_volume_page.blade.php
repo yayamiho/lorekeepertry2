@@ -5,7 +5,7 @@
 @section('meta-img') {{ $volume->imageUrl ? $volume->imageUrl : null }} @endsection
 
 @section('content')
-{!! breadcrumbs(['World' => 'world', __('volumes.library') => 'world/'.__('volumes.library'), $volume->name => $volume->idUrl]) !!}
+{!! breadcrumbs(['World' => 'world', __('volumes.library') => 'world/'.__('volumes.library'),  Auth::check() && Auth::user()->hasVolume($volume->id) ? $volume->name : '???' => $volume->idUrl]) !!}
 
 <div class="card mb-3">
     <div class="card-body">
