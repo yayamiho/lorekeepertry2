@@ -18,7 +18,7 @@
                     <h4>{{ __('volumes.volumes') }}</h4>
                         <ul>
                             @foreach($book->volumes as $volume)
-                            @if(Auth::check() && Auth::user()->hasVolume($volume->id))
+                            @if(Auth::check() && Auth::user()->hasVolume($volume->id) || $isAdmin)
                                 <li>{!! $volume->displayName !!}</li>
                                 @else 
                                 <li> <i>????? </i></li>

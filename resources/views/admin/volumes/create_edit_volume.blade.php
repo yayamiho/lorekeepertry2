@@ -65,7 +65,7 @@
     <h3>Preview</h3>
     <div class="card mb-3">
         <div class="card-body">
-        @include('world.volumes._volume_entry', ['volume' => $volume])
+        @include('world.volumes._volume_entry', ['volume' => $volume, 'isAdmin' => true])
         </div>
     </div>
 @endif
