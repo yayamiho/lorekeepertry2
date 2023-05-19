@@ -5,6 +5,7 @@ namespace App\Models\Volume;
 use Config;
 use DB;
 use App\Models\Model;
+use App\Models\User\UserVolume;
 
 class Volume extends Model
 {
@@ -14,7 +15,7 @@ class Volume extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'has_image','description', 'parsed_description', 'is_visible', 'book_id','summary'
+        'name', 'has_image','description', 'parsed_description', 'is_visible', 'book_id','summary','is_global'
     ];
 
     protected $appends = ['image_url'];
@@ -195,4 +196,14 @@ class Volume extends Model
         return 'volumes';
     }
 
+     /**
+     * global check for if any users have this volume
+     *
+     * @return bool
+     */
+    public function checkGlobal()
+    {
+        $users = UserVolume::where('volume_id', $this->id)->count();
+        return $users;
+    }
 }

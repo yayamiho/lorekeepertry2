@@ -34,12 +34,16 @@
 <div class="row">
     <div class="col-md-8">
         <div class="form-group">
-                    {!! Form::label('Book (Optional)') !!}
+                    {!! Form::label(ucfirst(__('volumes.book')).' (Optional)') !!}
                     {!! Form::select('book_id', $books, $volume->book_id, ['class' => 'form-control selectize']) !!}
         </div>
         <div class="form-group">
             {!! Form::checkbox('is_visible', 1, $volume->id ? $volume->is_visible : 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
             {!! Form::label('is_visible', 'Is Visible', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If turned off, the '.__('volumes.volume').' will not be visible.') !!}
+        </div>
+        <div class="form-group">
+            {!! Form::checkbox('is_global', 1, $volume->id ? $volume->is_global : 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
+            {!! Form::label('is_global', 'Is Global', ['class' => 'form-check-label ml-3']) !!} {!! add_help('Global '.__('volumes.volumes').' will have their contents visible for all users as long as at least 1 person has unlocked this '.__('volumes.volume').'.') !!}
         </div>
     </div>
 </div>
@@ -63,11 +67,7 @@
 
 @if($volume->id)
     <h3>Preview</h3>
-    <div class="card mb-3">
-        <div class="card-body">
         @include('world.volumes._volume_entry', ['volume' => $volume, 'isAdmin' => true])
-        </div>
-    </div>
 @endif
 
 @endsection

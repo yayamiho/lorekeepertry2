@@ -40,6 +40,7 @@
                 <th>Name</th>
                 <th>Is Visible</th>
                 <th>{{ ucfirst(__('volumes.book')) }}</th>
+                <th>Is Global</th>
                 <th></th>
             </tr>
         </thead>
@@ -51,6 +52,7 @@
                     </td>
                     <td>{{ $volume->is_visible ? 'Active' : '' }}</td>
                     <td> {{ $volume->book ? $volume->book->name : '' }} </td>
+                    <td>{{ $volume->is_global ? 'Global' : '' }}</td>
                     <td class="text-right">
                         <a href="{{ url('admin/data/volumes/edit/'.$volume->id) }}" class="btn btn-primary">Edit</a>
                     </td>

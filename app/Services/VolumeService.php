@@ -135,6 +135,8 @@ class VolumeService extends Service
 
         if(!isset($data['is_visible'])) $data['is_visible'] = 0;
 
+        if(!isset($data['is_global'])) $data['is_global'] = 0;
+
         return $data;
     }
 

@@ -13,7 +13,7 @@
                 <a data-toggle="tooltip" title="[ADMIN] Edit {{ __('volumes.volume') }}" href="{{ url('admin/data/volumes/edit/').'/'.$volume->id }}" class="mb-2 float-right"><i class="fas fa-crown"></i></a>
             @endif
         <div class="row world-entry">
-            @if(Auth::check() && Auth::user()->hasVolume($volume->id))
+            @if(Auth::check() && Auth::user()->hasVolume($volume->id) || $volume->is_global == 1 && $volume->checkGlobal() > 0)
                 @if($imageUrl)
                     <div class="col-md-3 world-entry-image"><a href="{{ $volume->imageUrl }}" data-lightbox="entry" data-title="{{ $volume->name }}"><img src="{{ $volume->imageUrl }}" class="world-entry-image" alt="{{ $volume->name }}"/></a></div>
                 @endif

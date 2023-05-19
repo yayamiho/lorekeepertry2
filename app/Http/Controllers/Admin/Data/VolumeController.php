@@ -48,7 +48,7 @@ class VolumeController extends Controller
             $query->where('name', 'LIKE', '%'.$data['name'].'%');
         return view('admin.volumes.volumes', [
             'volumes' => $query->paginate(20)->appends($request->query()),
-            'books' => ['none' => 'Any Book'] + Book::orderBy('name', 'DESC')->pluck('name', 'id')->toArray(),
+            'books' => ['none' => 'Any '.ucfirst(__('volumes.book'))] + Book::orderBy('name', 'DESC')->pluck('name', 'id')->toArray(),
             'is_visible' => ['none' => 'Any Status', '0' => 'Unreleased', '1' => 'Released'],
         ]);
     }
@@ -78,8 +78,7 @@ class VolumeController extends Controller
         if(!$volume) abort(404);
         return view('admin.volumes.create_edit_volume', [
             'volume' => $volume,
-            'volumes' => ['none' => 'No parent'] + Volume::visible()->where('id', '!=', $volume->id)->pluck('name', 'id')->toArray(),
-            'books' => ['none' => 'No book'] + Book::orderBy('name', 'DESC')->pluck('name', 'id')->toArray(),
+            'books' => ['none' => 'No '.ucfirst(__('volumes.book'))] + Book::orderBy('name', 'DESC')->pluck('name', 'id')->toArray(),
         ]);
     }
 
@@ -96,7 +95,7 @@ class VolumeController extends Controller
         $id ? $request->validate(Volume::$updateRules) : $request->validate(Volume::$createRules);
         $data = $request->only([
             'name', 'description', 'image', 'remove_image', 'is_visible', 'book_id'
-            ,'summary'
+            ,'summary','is_global'
         ]);
         if($id && $service->updateVolume(Volume::find($id), $data, Auth::user())) {
             flash(ucfirst(__('volumes.volume')).' updated successfully.')->success();

@@ -59,11 +59,7 @@
 
 @if($book->id)
     <h3>Preview</h3>
-    <div class="card mb-3">
-        <div class="card-body">
             @include('world.volumes._book_entry', ['item' => null,'imageUrl' => $book->imageUrl, 'name' => $book->displayName, 'description' => $book->description, 'book'=>$book, 'searchUrl' => $book->searchUrl, 'isAdmin' => true])
-        </div>
-    </div>
 @endif
 
 @endsection

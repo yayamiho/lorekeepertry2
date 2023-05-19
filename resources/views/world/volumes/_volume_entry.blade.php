@@ -1,5 +1,5 @@
 
-            @if(Auth::check() && Auth::user()->hasVolume($volume->id) || $isAdmin)
+@if(Auth::check() && Auth::user()->hasVolume($volume->id) || $isAdmin || $volume->is_global == 1 && $volume->checkGlobal() > 0)
             <div class="col-md-4 text-center">
                 <div class="card character-bio">
                     <div class="card-body tab-content">

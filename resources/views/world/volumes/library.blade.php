@@ -32,7 +32,7 @@
 {!! $books->render() !!}
 <div class="row">
     @foreach($books as $book)
-            @include('world.volumes._book_entry', ['book' => $book, 'imageUrl' => $book->imageUrl, 'name' => $book->displayName, 'description' => $book->parsed_description])
+    @include('world.volumes._book_entry', ['item' => null,'imageUrl' => $book->imageUrl, 'name' => $book->displayName, 'description' => $book->description, 'book'=>$book, 'searchUrl' => $book->searchUrl, 'isAdmin' => false])
     @endforeach
 </div>
 {!! $books->render() !!}

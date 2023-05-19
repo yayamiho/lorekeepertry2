@@ -35,7 +35,7 @@
 {!! $volumes->render() !!}
 <div class="row">
     @foreach($volumes as $volume)
-            @include('world.volumes._volume_entry', ['volume' => $volume])
+            @include('world.volumes._volume_entry', ['volume' => $volume, 'isAdmin' => false])
     @endforeach
 </div>
 {!! $volumes->render() !!}
