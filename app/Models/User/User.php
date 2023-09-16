@@ -189,6 +189,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany('App\Models\Character\CharacterBookmark')->where('user_id', $this->id);
     }
 
+
     /**********************************************************************************************
 
         SCOPES

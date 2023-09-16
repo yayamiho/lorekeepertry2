@@ -187,6 +187,20 @@ return [
             ],
         ]
     ],
+    'Cultivation' => [
+        'power' => 'edit_data',
+        'links' => [
+            [
+                'name' => 'Areas',
+                'url' => 'admin/cultivation/areas'
+            ],
+            [
+                'name' => 'Plots',
+                'url' => 'admin/cultivation/plots'
+            ],
+        ]
+    ],
+
     'Settings' => [
         'power' => 'edit_site_settings',
         'links' => [
