@@ -8,6 +8,8 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Cultivation\CultivationArea;
 use App\Models\Cultivation\CultivationPlot;
+use App\Models\Item\Item;
+use App\Models\Item\ItemTag;
 
 use App\Http\Controllers\Controller;
 use App\Services\CultivationService;
@@ -74,9 +76,10 @@ class CultivationController extends Controller
             if (!$plot) abort(404);
         }
         else $plot = new CultivationPlot;
+
         return view('admin.cultivation.create_edit_plot', [
             'plot' => $plot,
-            'areas' => CultivationArea::all()->pluck('name', 'id')
+            'items' => ItemTag::with('item')->where('tag', 'seed')->get()->pluck('item.name', 'item.id')
         ]);
     }
 
@@ -116,7 +119,7 @@ class CultivationController extends Controller
     public function postCreateEditPlot(Request $request, CultivationService $service, $id = null)
     {
         $data = $request->only(['name', 'description', 'parsed_description', 'is_active',
-        'stage_1_image', 'stage_2_image', 'stage_3_image', 'stage_4_image', 'stage_5_image', 'area_id']);
+        'stage_1_image', 'stage_2_image', 'stage_3_image', 'stage_4_image', 'stage_5_image', 'item_id']);
         $plot = null;
         if (!$id) $plot = $service->createPlot($data);
         else if ($id) $plot = $service->updatePlot(CultivationPlot::find($id), $data);

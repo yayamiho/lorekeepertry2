@@ -114,30 +114,24 @@
     </div>
 </div>
 
+@if($plot->id)
 <div class="card mb-3">
     <div class="card-header h3">
-        {!! Form::label('Areas') !!} {!! add_help('Add all areas that this plot should be able to be unlocked in.') !!}
+        {!! Form::label('Seed Items') !!} {!! add_help('Add all Seed items that may be planted on this plot.') !!}
     </div>
 
     <div class="text-right mb-3">
-        <a href="#" class="btn btn-outline-info" id="addArea">Add Area</a>
+        <a href="#" class="btn btn-outline-info" id="addArea">Add Item</a>
     </div>
 
-    <table class="table table-sm" id="areaTable">
-        <tbody id="areaTableBody">
-            <tr class="loot-row hide">
-                <td class="loot-row-select">
-                    {!! Form::select('area_id[]', $areas, null, ['class' => 'form-control item-select', 'placeholder'
-                    => 'Select Area']) !!}
-                </td>
-                <td class="text-right"><a href="#" class="btn btn-danger remove-area-button">Remove</a></td>
-            </tr>
-            @if($plot->areas()->count() > 0)
-            @foreach($plot->areas() as $area)
+    <table class="table table-sm" id="itemTable">
+        <tbody id="itemTableBody">
+            @if($plot->allowedItems->count() > 0)
+            @foreach($plot->allowedItems as $item)
             <tr class="loot-row">
                 <td class="loot-row-select">
-                    {!! Form::select('area_id[]', $areas, $area->id, ['class' => 'form-control item-select',
-                    'placeholder' => 'Select Area']) !!}
+                    {!! Form::select('item_id[]', $items, $item->id, ['class' => 'form-control item-select',
+                    'placeholder' => 'Select Item']) !!}
                 </td>
                 <td class="text-right"><a href="#" class="btn btn-danger remove-area-button">Remove</a></td>
             </tr>
@@ -147,6 +141,7 @@
         </tbody>
     </table>
 </div>
+@endif
 
 <div class="form-group">
     {!! Form::checkbox('is_active', 1, $plot->id ? $plot->is_active : 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle']) !!}
@@ -158,6 +153,20 @@
 </div>
 
 {!! Form::close() !!}
+
+<div id="itemRowData" class="hide">
+    <table class="table table-sm">
+        <tbody id="itemRow">
+        <tr class="loot-row">
+        <td class="loot-row-select">
+            {!! Form::select('item_id[]', $items, null, ['class' => 'form-control item-select', 'placeholder' => 'Select Item']) !!}
+        </td>
+        <td class="text-right"><a href="#" class="btn btn-danger remove-plot-button">Remove</a></td>
+    </tr>
+        </tbody>
+    </table>
+</div>
+
 @endsection
 
 @section('scripts')
@@ -170,19 +179,19 @@ $( document ).ready(function() {
     });
     $('.selectize').selectize();
 
-    var $areaTable = $('#areaTableBody');
-    var $areaRow = $('#areaTableBody').find('.hide');
+    var $itemTable = $('#itemTableBody');
+    var $itemRow = $('#itemRow').find('.loot-row');
 
-    $('#areaTableBody .selectize').selectize();
-    attachRemoveListener($('#areaTableBody .remove-area-button'));
+    $('#itemTableBody .selectize').selectize();
+    attachRemoveListener($('#itemTableBody .remove-area-button'));
 
 
     $('#addArea').on('click', function(e) {
         e.preventDefault();
-        var $clone = $areaRow.clone();
+        var $clone = $itemRow.clone();
         $clone.removeClass('hide');
 
-        $areaTable.append($clone);
+        $itemTable.append($clone);
         attachRemoveListener($clone.find('.remove-area-button'));
     });
 

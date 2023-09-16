@@ -65,17 +65,25 @@ class CultivationPlot extends Model
     /**
      * Get areas that use this plot.
      */
-    public function attachedAreas()
+    public function areas()
     {
-        return $this->hasMany('App\Models\Cultivation\PlotArea', 'area_id');
+        return $this->belongsToMany('App\Models\Cultivation\CultivationArea', 'plot_area', 'plot_id', 'area_id');
     }
 
     /**
      * Get the items that can be planted on this plot.
      */
-    public function attachedItems()
+    public function allowedItems()
     {
-        return $this->hasMany('App\Models\Cultivation\PlotItem', 'item_id');
+        return $this->belongsToMany('App\Models\Item\Item', 'plot_item', 'plot_id', 'item_id');
+    }
+
+    /**
+     * Get the plot items.
+     */
+    public function plotItems()
+    {
+        return $this->hasMany('App\Models\Cultivation\PlotItem', 'plot_id');
     }
 
     /**********************************************************************************************

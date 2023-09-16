@@ -65,6 +65,15 @@ class CultivationArea extends Model
         return $this->belongsToMany('App\Models\Cultivation\CultivationPlot', 'plot_area', 'area_id', 'plot_id');
     }
 
+    
+    /**
+     * Get the plot areas.
+     */
+    public function plotAreas()
+    {
+        return $this->hasMany('App\Models\Cultivation\PlotArea', 'area_id');
+    }
+
     /**********************************************************************************************
 
         SCOPES

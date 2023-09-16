@@ -88,13 +88,7 @@
 
     <table class="table table-sm" id="plotTable">
         <tbody id="plotTableBody">
-            <tr class="loot-row hide">
-                <td class="loot-row-select">
-                    {!! Form::select('plot_id[]', $plots, null, ['class' => 'form-control item-select', 'placeholder'
-                    => 'Select Plot']) !!}
-                </td>
-                <td class="text-right"><a href="#" class="btn btn-danger remove-plot-button">Remove</a></td>
-            </tr>
+
             @if($area->allowedPlots->count() > 0)
             @foreach($area->allowedPlots as $plot)
             <tr class="loot-row">
@@ -122,6 +116,21 @@
 </div>
 
 {!! Form::close() !!}
+
+
+<div id="plotRowData" class="hide">
+    <table class="table table-sm">
+        <tbody id="plotRow">
+        <tr class="loot-row">
+        <td class="loot-row-select">
+            {!! Form::select('plot_id[]', $plots, null, ['class' => 'form-control item-select', 'placeholder' => 'Select Plot']) !!}
+        </td>
+        <td class="text-right"><a href="#" class="btn btn-danger remove-plot-button">Remove</a></td>
+    </tr>
+        </tbody>
+    </table>
+</div>
+
 @endsection
 
 @section('scripts')
@@ -136,7 +145,9 @@ $( document ).ready(function() {
 
     
     var $plotTable = $('#plotTableBody');
-    var $plotRow = $('#plotTableBody').find('.hide');
+    var $plotRow = $('#plotRow').find('.loot-row');
+
+    console.log($plotRow);
 
     $('#plotTableBody .selectize').selectize();
     attachRemoveListener($('#plotTableBody .remove-plot-button'));

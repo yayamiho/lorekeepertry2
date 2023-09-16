@@ -29,7 +29,7 @@ class PlotItem extends Model
      *
      * @var string
      */
-    protected $table = 'plot_area';
+    protected $table = 'plot_item';
 
     /**********************************************************************************************
 

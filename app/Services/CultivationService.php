@@ -122,10 +122,14 @@ class CultivationService extends Service
                 $this->handleImage($plotImage, $area->imagePath, $area->plotImageFileName, $old);
             }
 
-            //add plots
+
+            //update plots
+            //remove old plots
+            if(!isset($data["plot_id"])) $area->plotAreas()->delete();
             if(isset($data["plot_id"])){
-                foreach($data["plot_id"] as $plot_id){
-                    PlotArea::create(['area_id' => $area->id, 'plot_id' => $plot_id]);
+                //add set plots if not yet there
+                foreach(array_filter($data["plot_id"]) as $plot_id){
+                    if($area->plotAreas->where('plot_id', $plot_id)->where('area_id', $area->id)->count() <= 0) PlotArea::create(['area_id' => $area->id, 'plot_id' => $plot_id]);
                 }
             }
 
@@ -382,6 +386,17 @@ class CultivationService extends Service
             if ($stage5Image) {
                 $plot->stage_5_extension = $stage5Image->getClientOriginalExtension();
                 $this->handleImage($stage5Image, $plot->imagePath, $plot->getStageImageFileNameAttribute(5), $old);
+            }
+
+            
+            //update items
+            //remove old items
+            if(!isset($data["item_id"])) $plot->plotItems()->delete();
+            if(isset($data["item_id"])){
+                //add set plots if not yet there
+                foreach(array_filter($data["item_id"]) as $item_id){
+                    if($plot->plotItems->where('item_id', $item_id)->where('plot_id', $plot->id)->count() <= 0) PlotItem::create(['plot_id' => $plot->id, 'item_id' => $item_id]);
+                }
             }
 
             $plot->update($data);
