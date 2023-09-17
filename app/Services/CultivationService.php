@@ -9,8 +9,8 @@ use App\Models\Cultivation\CultivationArea;
 use App\Models\Cultivation\CultivationPlot;
 use App\Models\Cultivation\PlotItem;
 use App\Models\Cultivation\PlotArea;
-use App\Models\Cultivation\UserArea;
-use App\Models\Cultivation\UserPlot;
+use App\Models\User\UserArea;
+use App\Models\User\UserPlot;
 
 class CultivationService extends Service
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Cultivation;
+namespace App\Models\User;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -49,7 +49,7 @@ class UserPlot extends Model
      */
     public function userArea()
     {
-        return $this->belongsTo('App\Models\Cultivation\UserArea', 'user_area_id');
+        return $this->belongsTo('App\Models\User\UserArea', 'user_area_id');
     }
 
     /**

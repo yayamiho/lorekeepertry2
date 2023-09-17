@@ -189,6 +189,14 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany('App\Models\Character\CharacterBookmark')->where('user_id', $this->id);
     }
 
+    /**
+     * Get the user's areas.
+     */
+    public function areas()
+    {
+        return $this->belongsToMany('App\Models\Cultivation\CultivationArea', 'user_area', 'user_id', 'area_id');
+    }
+
 
     /**********************************************************************************************
 

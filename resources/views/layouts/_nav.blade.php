@@ -112,6 +112,9 @@
                         <a class="dropdown-item" href="{{ url('shops') }}">
                             Shops
                         </a>
+                        <a class="dropdown-item" href="{{ url(__('cultivation.cultivation')) }}">
+                            {{__('cultivation.cultivation')}}
+                        </a>
                     </div>
                 </li>
                 <li class="nav-item">

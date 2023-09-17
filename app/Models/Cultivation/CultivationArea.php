@@ -200,7 +200,7 @@ class CultivationArea extends Model
      */
     public function getUrlAttribute()
     {
-        return url('world/cultivation/areas?name='.$this->name);
+        return url('cultivation?name='.$this->name);
     }
 
     /**
@@ -210,7 +210,7 @@ class CultivationArea extends Model
      */
     public function getIdUrlAttribute()
     {
-        return url('world/cultivation/areas/'.$this->id);
+        return url('cultivation/'.$this->id);
     }
 
 
