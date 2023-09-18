@@ -95,7 +95,7 @@ class CultivationService extends Service
             // More specific validation
             if(CultivationArea::where('name', $data['name'])->where('id', '!=', $area->id)->exists()) throw new \Exception("The name has already been taken.");
 
-            $data = $this->populateAreaData($data);
+            $data = $this->populateAreaData($data, $area);
 
             $bgImage = null;
             if(isset($data['background_image']) && $data['background_image']) {
@@ -155,7 +155,7 @@ class CultivationService extends Service
             if($area && isset($area->background_extension) && $data['remove_background'])
             {
                 $data['background_extension'] = null;
-                $this->deleteImage($area->imagePath, $area->backkgroundImageFileName);
+                $this->deleteImage($area->imagePath, $area->backgroundImageFileName);
             }
             unset($data['remove_background']);
         }
@@ -163,7 +163,7 @@ class CultivationService extends Service
         {
             if($area && isset($area->plot_extension) && $data['remove_plot'])
             {
-                $data['remove_plot'] = null;
+                $data['plot_extension'] = null;
                 $this->deleteImage($area->imagePath, $area->plotImageFileName);
             }
             unset($data['remove_plot']);
@@ -326,7 +326,7 @@ class CultivationService extends Service
             // More specific validation
             if(CultivationPlot::where('name', $data['name'])->where('id', '!=', $plot->id)->exists()) throw new \Exception("The name has already been taken.");
 
-            $data = $this->populatePlotData($data);
+            $data = $this->populatePlotData($data, $plot);
 
             $stage1Image = null;
             if(isset($data['stage_1_image']) && $data['stage_1_image']) {
@@ -415,13 +415,13 @@ class CultivationService extends Service
     {
         if(isset($data['description']) && $data['description']) $data['parsed_description'] = parse($data['description']);
         $data['is_active'] = isset($data['is_active']);
-        
+
         if(isset($data['remove_stage_1']))
         {
             if($plot && isset($plot->stage_1_extension) && $data['remove_stage_1'])
             {
                 $data['stage_1_extension'] = null;
-                $this->deleteImage($plot->imagePath, $plot->getBackgroundImageFileNameAttribute(1));
+                $this->deleteImage($plot->imagePath, $plot->getStageImageFileNameAttribute(1));
             }
             unset($data['remove_stage_1']);
         }
@@ -431,7 +431,7 @@ class CultivationService extends Service
             if($plot && isset($plot->stage_2_extension) && $data['remove_stage_2'])
             {
                 $data['stage_2_extension'] = null;
-                $this->deleteImage($plot->imagePath, $plot->getBackgroundImageFileNameAttribute(2));
+                $this->deleteImage($plot->imagePath, $plot->getStageImageFileNameAttribute(2));
             }
             unset($data['remove_stage_2']);
         }
@@ -441,7 +441,7 @@ class CultivationService extends Service
             if($plot && isset($plot->stage_3_extension) && $data['remove_stage_3'])
             {
                 $data['stage_3_extension'] = null;
-                $this->deleteImage($plot->imagePath, $plot->getBackgroundImageFileNameAttribute(3));
+                $this->deleteImage($plot->imagePath, $plot->getStageImageFileNameAttribute(3));
             }
             unset($data['remove_stage_3']);
         }
@@ -451,7 +451,7 @@ class CultivationService extends Service
             if($plot && isset($plot->stage_4_extension) && $data['remove_stage_4'])
             {
                 $data['stage_4_extension'] = null;
-                $this->deleteImage($plot->imagePath, $plot->getBackgroundImageFileNameAttribute(4));
+                $this->deleteImage($plot->imagePath, $plot->getStageImageFileNameAttribute(4));
             }
             unset($data['remove_stage_4']);
         }
@@ -461,7 +461,7 @@ class CultivationService extends Service
             if($plot && isset($plot->stage_5_extension) && $data['remove_stage_5'])
             {
                 $data['stage_5_extension'] = null;
-                $this->deleteImage($plot->imagePath, $plot->getBackgroundImageFileNameAttribute(5));
+                $this->deleteImage($plot->imagePath, $plot->getStageImageFileNameAttribute(5));
             }
             unset($data['remove_stage_5']);
         }
@@ -484,11 +484,11 @@ class CultivationService extends Service
 
             if(UserPlot::where('plot_id', $plot->id)->exists()) throw new \Exception("This plot is in use by a user and cannot be deleted.");
 
-            if(isset($plot->stage_1_extension)) $this->deleteImage($plot->imagePath, $plot->getBackgroundImageFileNameAttribute(1));
-            if(isset($plot->stage_2_extension)) $this->deleteImage($plot->imagePath, $plot->getBackgroundImageFileNameAttribute(2));
-            if(isset($plot->stage_3_extension)) $this->deleteImage($plot->imagePath, $plot->getBackgroundImageFileNameAttribute(3));
-            if(isset($plot->stage_4_extension)) $this->deleteImage($plot->imagePath, $plot->getBackgroundImageFileNameAttribute(4));
-            if(isset($plot->stage_5_extension)) $this->deleteImage($plot->imagePath, $plot->getBackgroundImageFileNameAttribute(5));
+            if(isset($plot->stage_1_extension)) $this->deleteImage($plot->imagePath, $plot->getStageImageFileNameAttribute(1));
+            if(isset($plot->stage_2_extension)) $this->deleteImage($plot->imagePath, $plot->getStageImageFileNameAttribute(2));
+            if(isset($plot->stage_3_extension)) $this->deleteImage($plot->imagePath, $plot->getStageImageFileNameAttribute(3));
+            if(isset($plot->stage_4_extension)) $this->deleteImage($plot->imagePath, $plot->getStageImageFileNameAttribute(4));
+            if(isset($plot->stage_5_extension)) $this->deleteImage($plot->imagePath, $plot->getStageImageFileNameAttribute(5));
 
             $plot->areas()->delete();
             $plot->allowedItems()->delete();

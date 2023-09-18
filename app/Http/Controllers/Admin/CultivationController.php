@@ -93,7 +93,7 @@ class CultivationController extends Controller
      */
     public function postCreateEditArea(Request $request, CultivationService $service, $id = null)
     {
-        $data = $request->only(['name', 'description', 'parsed_description', 'background_image', 'plot_image', 'max_plots', 'is_active', 'plot_id']);
+        $data = $request->only(['name', 'description', 'parsed_description', 'background_image', 'remove_background', 'plot_image', 'remove_plot', 'max_plots', 'is_active', 'plot_id']);
         $area = null;
         if (!$id) $area = $service->createArea($data);
         else if ($id) $area = $service->updateArea(CultivationArea::find($id), $data);
@@ -118,8 +118,11 @@ class CultivationController extends Controller
      */
     public function postCreateEditPlot(Request $request, CultivationService $service, $id = null)
     {
-        $data = $request->only(['name', 'description', 'parsed_description', 'is_active',
-        'stage_1_image', 'stage_2_image', 'stage_3_image', 'stage_4_image', 'stage_5_image', 'item_id']);
+        $data = $request->only(['name', 'description', 'parsed_description', 'is_active','item_id',
+        'stage_1_image', 'stage_2_image', 'stage_3_image', 'stage_4_image', 'stage_5_image', 
+        'remove_stage_1', 'remove_stage_2', 'remove_stage_3', 'remove_stage_4', 'remove_stage_5', 
+
+        ]);
         $plot = null;
         if (!$id) $plot = $service->createPlot($data);
         else if ($id) $plot = $service->updatePlot(CultivationPlot::find($id), $data);

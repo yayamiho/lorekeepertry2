@@ -175,17 +175,18 @@ class CultivationPlot extends Model
     }
 
     /**
-     * Gets the URL of the model's image.
+     * Gets the URL of the model's current stage image.
      *
      * @return string
      */
-    public function getImageUrlAttribute($stage)
+    public function getStageImage($stage)
     {
-        if (!$this->stage_1_extension && $stage == 1) return null;
-        if (!$this->stage_2_extension && $stage == 2) return null;
-        if (!$this->stage_3_extension && $stage == 3) return null;
-        if (!$this->stage_4_extension && $stage == 4) return null;
-        if (!$this->stage_5_extension && $stage == 5) return null;
+        //stage 1 = nothing planted 
+        if (!$this->stage_1_extension && $stage == 1) return "/images/stage1.png";
+        if (!$this->stage_2_extension && $stage == 2) return "/images/stage2.png";
+        if (!$this->stage_3_extension && $stage == 3) return "/images/stage3.png";
+        if (!$this->stage_4_extension && $stage == 4) return "/images/stage4.png";
+        if (!$this->stage_5_extension && $stage == 5) return "/images/stage5.png";
 
         return asset($this->imageDirectory . '/' . $this->getStageImageFileNameAttribute($stage));
     }

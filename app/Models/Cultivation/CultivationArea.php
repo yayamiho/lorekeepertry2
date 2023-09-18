@@ -178,7 +178,7 @@ class CultivationArea extends Model
      */
     public function getBackgroundImageUrlAttribute()
     {
-        if (!$this->background_extension) return null;
+        if (!$this->background_extension) return "/images/area.png";
         return asset($this->imageDirectory . '/' . $this->backgroundImageFileName);
     }
 
@@ -189,7 +189,7 @@ class CultivationArea extends Model
      */
     public function getPlotImageUrlAttribute()
     {
-        if (!$this->plot_extension) return null;
+        if (!$this->plot_extension) return "/images/stage0.png";
         return asset($this->imageDirectory . '/' . $this->plotImageFileName);
     }
 

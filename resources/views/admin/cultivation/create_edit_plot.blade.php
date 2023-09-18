@@ -30,14 +30,14 @@
 
 <div class="card mb-3">
     <div class="card-header h3">Images</div>
-    <div class="m-4">Stages without images will not appear! Thus you can do less than 5 if you wish.
-        <div class="text-muted">Recommended size: any (but recommended to keep the stage art the same size!) </div>
+    <div class="m-4">A plot has 5 different stages of growth that it goes through. If you wish to use less images, you can use the same one for multiple stages.
+        <div class="text-muted">Recommended size: 250px wide, as that is what images will be sized to. </div>
     </div>
     <div class="card-body row">
 
         <div class="form-group col-md p-4 m-2 border">
             @if($plot->stage_1_extension)
-                <a href="{{$plot->getImageUrlAttribute(1)}}"  data-lightbox="entry" data-title="{{ $plot->name }}"><img src="{{$plot->getImageUrlAttribute(1)}}" class="mw-100 float-left mr-3" style="max-height:125px"></a>
+                <a href="{{$plot->getStageImage(1)}}"  data-lightbox="entry" data-title="{{ $plot->name }}"><img src="{{$plot->getStageImage(1)}}" class="mw-100 float-left mr-3" style="max-height:125px"></a>
             @endif
             {!! Form::label('Stage 1 Image (Optional)') !!} {!! add_help('Image of the empty plot.') !!}
             <div>{!! Form::file('stage_1_image') !!}</div>
@@ -50,9 +50,9 @@
 
         <div class="form-group col-md p-4 m-2 border">
             @if($plot->stage_2_extension)
-                <a href="{{$plot->getImageUrlAttribute(2)}}"  data-lightbox="entry" data-title="{{ $plot->name }}"><img src="{{$plot->getImageUrlAttribute(2)}}" class="mw-100 float-left mr-3" style="max-height:125px"></a>
+                <a href="{{$plot->getStageImage(2)}}"  data-lightbox="entry" data-title="{{ $plot->name }}"><img src="{{$plot->getStageImage(2)}}" class="mw-100 float-left mr-3" style="max-height:125px"></a>
             @endif
-            {!! Form::label('Stage 2 Image (Optional)') !!} {!! add_help('Image of a tiny first growth.') !!}
+            {!! Form::label('Stage 2 Image (Optional)') !!} {!! add_help('Image of a tiny first growth, after planting something.') !!}
             <div>{!! Form::file('stage_2_image') !!}</div>
             @if(isset($plot->stage_2_extension))
                 <div class="form-check">
@@ -63,7 +63,7 @@
 
         <div class="form-group col-md p-4 m-2 border">
             @if($plot->stage_3_extension)
-                <a href="{{$plot->getImageUrlAttribute(3)}}"  data-lightbox="entry" data-title="{{ $plot->name }}"><img src="{{$plot->getImageUrlAttribute(3)}}" class="mw-100 float-left mr-3" style="max-height:125px"></a>
+                <a href="{{$plot->getStageImage(3)}}"  data-lightbox="entry" data-title="{{ $plot->name }}"><img src="{{$plot->getStageImage(3)}}" class="mw-100 float-left mr-3" style="max-height:125px"></a>
             @endif
             {!! Form::label('Stage 3 Image (Optional)') !!} {!! add_help('Mid sized growth stage.') !!}
             <div>{!! Form::file('stage_3_image') !!}</div>
@@ -76,7 +76,7 @@
 
         <div class="form-group col-md p-4 m-2 border">
             @if($plot->stage_4_extension)
-                <a href="{{$plot->getImageUrlAttribute(4)}}"  data-lightbox="entry" data-title="{{ $plot->name }}"><img src="{{$plot->getImageUrlAttribute(4)}}" class="mw-100 float-left mr-3" style="max-height:125px"></a>
+                <a href="{{$plot->getStageImage(4)}}"  data-lightbox="entry" data-title="{{ $plot->name }}"><img src="{{$plot->getStageImage(4)}}" class="mw-100 float-left mr-3" style="max-height:125px"></a>
             @endif
             {!! Form::label('Stage 4 Image (Optional)') !!} {!! add_help('Fully grown stage.') !!}
             <div>{!! Form::file('stage_4_image') !!}</div>
@@ -89,7 +89,7 @@
  
         <div class="form-group col-md p-4 m-2 border">
             @if($plot->stage_5_extension)
-                <a href="{{$plot->getImageUrlAttribute(5)}}"  data-lightbox="entry" data-title="{{ $plot->name }}"><img src="{{$plot->getImageUrlAttribute(5)}}" class="mw-100 float-left mr-3" style="max-height:125px"></a>
+                <a href="{{$plot->getStageImage(5)}}"  data-lightbox="entry" data-title="{{ $plot->name }}"><img src="{{$plot->getStageImage(5)}}" class="mw-100 float-left mr-3" style="max-height:125px"></a>
             @endif
             {!! Form::label('Stage 5 Image (Optional)') !!} {!! add_help('Ready for harvest with fruit/whatever!') !!}
             <div>{!! Form::file('stage_5_image') !!}</div>

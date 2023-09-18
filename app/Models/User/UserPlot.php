@@ -13,7 +13,7 @@ class UserPlot extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'plot_id', 'item_id', 'user_area_id', 'stage', 'tended_at'
+        'user_id', 'plot_id', 'item_id', 'user_area_id', 'stage', 'tended_at', 'plot_number'
     ];
 
     /**
