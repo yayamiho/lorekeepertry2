@@ -13,7 +13,7 @@ class UserPlot extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'plot_id', 'item_id', 'user_area_id', 'stage', 'tended_at', 'plot_number'
+        'user_id', 'plot_id', 'item_id', 'user_area_id', 'stage', 'tended_at', 'plot_number', 'counter'
     ];
 
     /**
@@ -71,9 +71,31 @@ class UserPlot extends Model
 
     /**********************************************************************************************
 
-        ACCESSORS
+        FUNCTIONS
 
     **********************************************************************************************/
 
+    public function getStageProgress(){
+        if(isset($this->item)){
+            $seedTag = $this->item->tag('seed');
+            if(isset($seedTag)){
+                switch($this->stage)
+                {
+                    case 2:
+                        return (int) $seedTag->data['stage_2_days'];
+                        break;
+            
+                    case 3:
+                        return (int) $seedTag->data['stage_3_days'];
+                        break;
+            
+                    case 4:
+                        return (int) $seedTag->data['stage_4_days'];
+                        break;
+                }
+            } 
+        }
+        return 0;
+    }
 
 }

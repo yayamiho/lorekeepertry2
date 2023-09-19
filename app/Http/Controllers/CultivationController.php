@@ -102,7 +102,6 @@ class CultivationController extends Controller
             flash('Successfully prepared plot.')->success();
         }
         else {
-            dd($service->errors()->getMessages());
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
         }        
         return redirect()->back();
@@ -121,7 +120,40 @@ class CultivationController extends Controller
             flash('Successfully cultivated plot.')->success();
         }
         else {
-            dd($service->errors()->getMessages());
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }        
+        return redirect()->back();
+    }
+
+    /**
+     * Tend to the plot.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function postTendPlot($plotId, Request $request, CultivationManager $service)
+    {
+        
+        if($service->tendPlot($plotId)) {
+            flash('Successfully tended to the plot.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }        
+        return redirect()->back();
+    }
+
+    /**
+     * Harvest the plot.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function postHarvestPlot($plotId, Request $request, CultivationManager $service)
+    {
+        
+        if($service->harvestPlot($plotId)) {
+            flash('Successfully harvested from the plot.')->success();
+        }
+        else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
         }        
         return redirect()->back();

@@ -11,6 +11,8 @@ use App\Models\User\UserArea;
 use App\Models\User\UserItem;
 use App\Models\User\UserPlot;
 
+use Carbon\Carbon;
+
 class CultivationManager extends Service
 {
     /*
@@ -62,7 +64,9 @@ class CultivationManager extends Service
             if(!isset($userArea)) throw new \Exception("Area could not be found.");
 
             $tag = $userTool->item->tag('tool');
-            if(!isset($tag)) throw new \Exception("Tool is missing its item tag.");
+            if(!isset($tag) || !isset($tag->data['plot_id'])) throw new \Exception("Tool is missing its item tag information.");
+
+            if(!$userArea->area->allowedPlots->pluck('id')->contains((int)$tag->data['plot_id'])) throw new \Exception("This tool cannot be used for this area.");
 
             $userPlot = UserPlot::where('user_id', $userTool->user_id)->where('plot_number', $plotNumber)->where('user_area_id', $areaId)->first();
 
@@ -72,6 +76,7 @@ class CultivationManager extends Service
                 $userPlot->update([
                     'plot_id' => $tag->data['plot_id'],
                     'stage' => 1,
+                    'counter' => 0,
                 ]);
             } else {
                 //create plot
@@ -81,6 +86,7 @@ class CultivationManager extends Service
                     'plot_id' => $tag->data['plot_id'],
                     'user_area_id' => $areaId,
                     'stage' => 1,
+                    'counter' => 0,
                     'plot_number' => $plotNumber
                 ]);
             }
@@ -115,9 +121,12 @@ class CultivationManager extends Service
             $tag = $userSeed->item->tag('seed');
             if(!isset($tag)) throw new \Exception("Seed is missing its item tag.");
 
+
             $userPlot = UserPlot::where('user_id', $userSeed->user_id)->where('plot_number', $plotNumber)->where('user_area_id', $areaId)->first();
 
             if(isset($userPlot)){
+                if(!$userPlot->plot->allowedItems->pluck('id')->contains($userSeed->item->id)) throw new \Exception("This item cannot be cultivated on this plot.");
+
                 //update plot with the new type and set stage
                 $userPlot->update([
                     'item_id' => $userSeed->item->id,
@@ -139,5 +148,53 @@ class CultivationManager extends Service
         }
         return $this->rollbackReturn(false);
 
+    }
+
+    /**
+     * Tends to a plot.
+     */
+    public function tendPlot($plotId){
+        DB::beginTransaction();
+
+        try {
+            $userPlot = UserPlot::find($plotId);
+            if(!isset($userPlot)) throw new \Exception("Plot could not be found.");
+
+            if($this->canTend($userPlot->tended_at)){
+                //dd($userPlot->counter, $userPlot->getStageProgress());
+                $newStage = ($userPlot->counter + 1 >= $userPlot->getStageProgress() && $userPlot->stage < 5) ? $userPlot->stage + 1 : $userPlot->stage;
+
+                $newCount = ($newStage > $userPlot->stage) ? 0 : $userPlot->counter + 1;
+
+                //dd($newStage, $newCount, $userPlot->counter, $userPlot->getStageProgress());
+    
+                $userPlot->update([
+                        'counter' => $newCount,
+                        'stage' => $newStage,
+                        'tended_at' => Carbon::now()
+                ]);
+            } else {
+                throw new \Exception("This plot has already been tended to for the day.");
+            }
+
+            return $this->commitReturn(true);
+
+        } catch (\Exception $e) {
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+
+    }
+
+    private function canTend($tendedAt)
+    {
+        $date = date("Y-m-d H:i:s", strtotime('midnight'));
+
+        if($tendedAt){
+            if($tendedAt >= $date) return false;
+        }
+      
+        return true;
+        
     }
 }

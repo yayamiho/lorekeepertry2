@@ -61,6 +61,7 @@ class CreateCultivationTables extends Migration
             $table->integer('stage')->unsigned(); //currently on stage 0-5
             $table->integer('plot_number')->unsigned(); //depends on max plot amount set per area
             $table->timestamp('tended_at')->nullable()->default(null); // last time the user tended to the plot
+            $table->integer('counter')->unsigned(); //counts the days of tend from which the stage can be deduced
             $table->timestamps();
 
         });
