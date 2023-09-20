@@ -37,7 +37,7 @@ class UserArea extends Model
     **********************************************************************************************/
 
     /**
-     * Get the attachers.
+     * Get the user.
      */
     public function user()
     {
@@ -45,11 +45,19 @@ class UserArea extends Model
     }
 
     /**
-     * Get the attachers.
+     * Get the area.
      */
     public function area()
     {
         return $this->belongsTo('App\Models\Cultivation\CultivationArea', 'area_id');
+    }
+
+    /**
+     * Get the plots.
+     */
+    public function plots()
+    {
+        return $this->hasMany('App\Models\User\UserPlot', 'user_area_id');
     }
 
 

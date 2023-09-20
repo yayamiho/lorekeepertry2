@@ -4,6 +4,7 @@ use App\Services\Service;
 
 use DB;
 use Config;
+use Settings;
 
 use App\Models\Theme;
 use App\Models\User\User;
@@ -159,14 +160,13 @@ class CultivationManager extends Service
         try {
             $userPlot = UserPlot::find($plotId);
             if(!isset($userPlot)) throw new \Exception("Plot could not be found.");
+            $date = date("Y-m-d H:i:s", strtotime('midnight'));
 
-            if($this->canTend($userPlot->tended_at)){
-                //dd($userPlot->counter, $userPlot->getStageProgress());
+            if($this->canTend($userPlot->tended_at, $date)){
+                $caredPlots = UserPlot::where('tended_at', '>=', $date)->get();
+                if(Settings::get('cultivation_care_cooldown') > 0 && $caredPlots->count() >= Settings::get('cultivation_care_cooldown')) throw new \Exception("You already tended to ". $caredPlots->count()." plot(s) today.");
                 $newStage = ($userPlot->counter + 1 >= $userPlot->getStageProgress() && $userPlot->stage < 5) ? $userPlot->stage + 1 : $userPlot->stage;
-
                 $newCount = ($newStage > $userPlot->stage) ? 0 : $userPlot->counter + 1;
-
-                //dd($newStage, $newCount, $userPlot->counter, $userPlot->getStageProgress());
     
                 $userPlot->update([
                         'counter' => $newCount,
@@ -186,15 +186,73 @@ class CultivationManager extends Service
 
     }
 
-    private function canTend($tendedAt)
+    private function canTend($tendedAt, $date)
     {
-        $date = date("Y-m-d H:i:s", strtotime('midnight'));
-
         if($tendedAt){
             if($tendedAt >= $date) return false;
         }
-      
         return true;
-        
+    }
+
+    /**
+     * Harvest a plot.
+     */
+    public function harvestPlot($plotId, $user){
+        DB::beginTransaction();
+
+        try {
+            $userPlot = UserPlot::find($plotId);
+            if(!isset($userPlot)) throw new \Exception("Plot could not be found.");
+
+            if($userPlot->stage == 5){
+                //dd($userPlot->counter, $userPlot->getStageProgress());
+                $seedTag = $userPlot->item->tag('seed');
+                if(!isset($seedTag)) throw new \Exception("Seed tag data could not be found.");
+                // Distribute user rewards
+                if(!$rewards = fillUserAssets(parseAssetData($seedTag->data), $user, $user, 'Harvesting Rewards', [
+                                            'data' => 'Received from harvesting a '.$userPlot->plot->name.' plot.'
+                ])) throw new \Exception("Failed to harvest plot.");
+
+
+                //reset plot
+                if(Settings::get('cultivation_plot_usability') == 0){
+                    $userPlot->update(['counter' => 0,'stage' => 1]);
+                } else {
+                    $userPlot->delete();
+                }
+
+                $this->commitReturn(true);
+                return $rewards;
+            } else {
+                throw new \Exception("This plot is not ready for harvest yet.");
+            } 
+
+        } catch (\Exception $e) {
+            $this->setError('error', $e->getMessage());
+        }
+        $this->rollbackReturn(false);
+        return null;
+
+    }
+
+
+    /**
+     * Deletes a user area.
+     *
+     * @param  \App\Models\Cultivation\UserArea  $area
+     * @return bool
+     */
+    public function deleteArea($area)
+    {
+        DB::beginTransaction();
+
+        try {
+            $area->plots()->delete();
+            $area->delete();
+            return $this->commitReturn(true);
+        } catch(\Exception $e) { 
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
     }
 }

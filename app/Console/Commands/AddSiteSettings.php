@@ -104,10 +104,8 @@ class AddSiteSettings extends Command
         $this->addSiteSetting('group_currency', 1, 'ID of the group currency to award from gallery submissions (if enabled).');
 
         //cultivation
-        $this->addSiteSetting('cultivation_currency', 1, 'ID of the currency that will be used to pay cultivation related fees.');
         $this->addSiteSetting('cultivation_plot_usability', 0, 'Do plots become unusable once an item was cultivated? 0=no / 1=yes');
         $this->addSiteSetting('cultivation_care_cooldown', 0, 'How many plots can users care for each day? 0=unlimited.');
-        $this->addSiteSetting('cultivation_area_change_fee', 0, 'How much does it cost to switch one area to another? Uses the cultivation_currency. 0=free.');
         $this->addSiteSetting('cultivation_area_unlock', 0, 'How many areas can a user unlock at the same time? 0=unlimited.');
 
         $this->line("\nSite settings up to date!");

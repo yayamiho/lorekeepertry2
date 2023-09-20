@@ -3,12 +3,13 @@
 @section('cultivation-title') {{ $userArea->area->name }} @endsection
 
 @section('cultivation-content')
-{!! breadcrumbs([ucfirst(__('cultivation.cultivation')) => ucfirst(__('cultivation.cultivation')), $userArea->area->name => $userArea->area->idUrl]) !!}
+{!! breadcrumbs([ucfirst(__('cultivation.cultivation')) => __('cultivation.cultivation'), $userArea->area->name => $userArea->area->idUrl]) !!}
+
 
 <h1>
     {{ $userArea->area->name }}
+    @if(Settings::get('cultivation_area_unlock') > 0)<a href="#" class="btn btn-outline-danger float-right abandon-area-button">Abandon Area</a> @endif
 </h1>
-
 
 <div class="justify-content-center">
 
@@ -25,6 +26,7 @@
             </div>
             @endforeach
         </div>
+        @if($caredPlots) <h4><span class="float-right badge badge-secondary m-2">Plots tended to: {{$caredPlots}} / {{Settings::get("cultivation_care_cooldown")}}</span></h4> @endif
 
         <div class="p-5 m-auto mt-5">{!! $userArea->area->parsed_description !!}</div>
 
@@ -40,9 +42,9 @@
             loadModal("{{ url('cultivation/'.$userArea->area->id) }}/" + $(this).data('id'), 'Plot ' + $(this).data('id'));
         });
 
-        $('.plot-button').on('click', function(e) {
+        $('.abandon-area-button').on('click', function(e) {
             e.preventDefault();
-            loadModal("{{ url('cultivation/'.$userArea->area->id) }}/" + $(this).data('id'), 'Plot ' + $(this).data('id'));
+            loadModal("{{ url('cultivation/area/delete/'.$userArea->id) }}", 'Abandon Area');
         });
     });
 

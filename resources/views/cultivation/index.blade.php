@@ -5,9 +5,15 @@
 @section('cultivation-content')
 {!! breadcrumbs([ucfirst(__('cultivation.cultivation')) => ucfirst(__('cultivation.cultivation'))]) !!}
 
-<h1>
-    {{ucfirst(__('cultivation.cultivation'))}}
-</h1>
+<div class="row">
+    <div class="col">
+    <h1>{{ucfirst(__('cultivation.cultivation'))}}</h1>
+    </div>
+    <div class="col">
+    @if($caredPlots) <h4><span class="float-right badge badge-secondary m-2">Plots tended to: {{$caredPlots}} / {{Settings::get("cultivation_care_cooldown")}}</span></h4> @endif
+    </div>
+</div>
+
 
 <div class="row shops-row">
     @foreach($areas as $area)

@@ -37,7 +37,8 @@ class CultivationController extends Controller
     {
         return view('cultivation.index', [
             'areas' => CultivationArea::where('is_active', 1)->orderBy('sort', 'DESC')->get(),
-            'user' => Auth::user()
+            'user' => Auth::user(), 
+            'caredPlots' => UserPlot::where('tended_at', '>=', date("Y-m-d H:i:s", strtotime('midnight')))->get()->count()
         ]);
     }
 
@@ -57,7 +58,8 @@ class CultivationController extends Controller
         return view('cultivation.area', [
             'userArea' => $userArea,
             'areas' => CultivationArea::where('is_active', 1)->orderBy('sort', 'DESC')->get(),
-            'user' => Auth::user()
+            'user' => Auth::user(),
+            'caredPlots' => UserPlot::where('tended_at', '>=', date("Y-m-d H:i:s", strtotime('midnight')))->get()->count()
         ]);
     }
 
@@ -130,7 +132,7 @@ class CultivationController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function postTendPlot($plotId, Request $request, CultivationManager $service)
+    public function postTendPlot($plotId, CultivationManager $service)
     {
         
         if($service->tendPlot($plotId)) {
@@ -147,16 +149,59 @@ class CultivationController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function postHarvestPlot($plotId, Request $request, CultivationManager $service)
+    public function postHarvestPlot($plotId, CultivationManager $service)
     {
         
-        if($service->harvestPlot($plotId)) {
-            flash('Successfully harvested from the plot.')->success();
+        if($rewards = $service->harvestPlot($plotId, Auth::user())) {
+            $rolledRewards = 0;
+            foreach($rewards as $type => $rewardList){
+                foreach($rewardList as $reward){
+                    $rolledRewards += 1;
+                    flash('You harvested '.$reward['quantity'].'x '.$reward['asset']->name."!")->success();
+                }
+            }
+            if($rolledRewards <= 0) flash('You harvested nothing usable...better luck next time!')->warning();
+
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
         }        
         return redirect()->back();
+    }
+
+    /**
+     * Get modal for abandoning an area.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getDeleteAreaModal($userAreaId)
+    {
+        $user = Auth::user();
+
+        $userArea = UserArea::find($userAreaId);
+        if(!isset($userArea)) abort(404);
+
+        return view('cultivation._delete_area_modal', [
+            'userArea' => $userArea,
+        ]);
+    }
+
+    /**
+     * Abandon an area.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function postDeleteArea($userAreaId, CultivationManager $service)
+    {
+        $userArea = UserArea::find($userAreaId);
+
+        if($service->deleteArea($userArea)) {
+            flash('You abandoned the '.$userArea->area->name .' area.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }        
+        return redirect()->to('cultivation');
     }
 }
 

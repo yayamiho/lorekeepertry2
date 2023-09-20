@@ -64,7 +64,6 @@ class SeedService extends Service
             $data['stage_2_days'] = $tag->data['stage_2_days'];
             $data['stage_3_days'] = $tag->data['stage_3_days'];
             $data['stage_4_days'] = $tag->data['stage_4_days'];
-            $data['stage_5_days'] = $tag->data['stage_5_days'];
         }
 
 
@@ -86,7 +85,6 @@ class SeedService extends Service
         if(isset($data['stage_2_days']) && $data['stage_2_days'] <= 0) throw new \Exception("Stage 2 days must be greater than 0.");
         if(isset($data['stage_3_days']) && $data['stage_3_days'] <= 0) throw new \Exception("Stage 3 days must be greater than 0.");
         if(isset($data['stage_4_days']) && $data['stage_4_days'] <= 0) throw new \Exception("Stage 4 days must be greater than 0.");
-        if(isset($data['stage_5_days']) && $data['stage_5_days'] <= 0) throw new \Exception("Stage 5 days must be greater than 0.");
 
 
         DB::beginTransaction();
@@ -120,7 +118,6 @@ class SeedService extends Service
             if(isset($data['stage_2_days'])) $assets['stage_2_days'] = $data['stage_2_days'];
             if(isset($data['stage_3_days'])) $assets['stage_3_days'] = $data['stage_3_days'];
             if(isset($data['stage_4_days'])) $assets['stage_4_days'] = $data['stage_4_days'];
-            if(isset($data['stage_5_days'])) $assets['stage_5_days'] = $data['stage_5_days'];
 
             $tag->update(['data' => json_encode($assets)]);
 

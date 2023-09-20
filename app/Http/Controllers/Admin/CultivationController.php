@@ -99,7 +99,7 @@ class CultivationController extends Controller
         else if ($id) $area = $service->updateArea(CultivationArea::find($id), $data);
         if ($area) {
             flash('Area ' . ($id ? 'updated' : 'created') . ' successfully!')->success();
-            return redirect()->back()->withInput();
+            return redirect()->to("/admin/cultivation/areas/edit/".$area->id);
         }
         else {
             flash('Couldn\'t create area.')->error();
@@ -128,7 +128,7 @@ class CultivationController extends Controller
         else if ($id) $plot = $service->updatePlot(CultivationPlot::find($id), $data);
         if ($plot) {
             flash('Plot ' . ($id ? 'updated' : 'created') . ' successfully!')->success();
-            return redirect()->back()->withInput();
+            return redirect()->to("/admin/cultivation/plots/edit/".$plot->id);
         }
         else {
             flash('Couldn\'t create plot.')->error();

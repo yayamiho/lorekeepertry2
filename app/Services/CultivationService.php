@@ -189,7 +189,7 @@ class CultivationService extends Service
             if(isset($area->background_extension)) $this->deleteImage($area->imagePath, $area->backgroundImageFileName);
             if(isset($area->plot_extension)) $this->deleteImage($area->imagePath, $area->plotImageFileName);
             
-            $area->allowedPlots()->delete();
+            $area->plotAreas()->delete();
             $area->delete();
 
             return $this->commitReturn(true);
@@ -490,8 +490,7 @@ class CultivationService extends Service
             if(isset($plot->stage_4_extension)) $this->deleteImage($plot->imagePath, $plot->getStageImageFileNameAttribute(4));
             if(isset($plot->stage_5_extension)) $this->deleteImage($plot->imagePath, $plot->getStageImageFileNameAttribute(5));
 
-            $plot->areas()->delete();
-            $plot->allowedItems()->delete();
+            $plot->plotItems()->delete();
             $plot->delete();
 
             return $this->commitReturn(true);
