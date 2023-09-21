@@ -19,5 +19,5 @@
 
 <p>These are the rewards that will be distributed to the user when they harvest from a stage 5 plot that had this seed planted.</p>
 
-@include('widgets._loot_select', ['loots' => $tag->getData()['rewards'], 'showLootTables' => true, 'showRaffles' => true])
+@include('widgets._loot_select', ['loots' => $tag->getData()['rewards'] ?? null, 'showLootTables' => true, 'showRaffles' => true])
 

@@ -10,7 +10,7 @@
     <h1>{{ucfirst(__('cultivation.cultivation'))}}</h1>
     </div>
     <div class="col">
-    @if($caredPlots) <h4><span class="float-right badge badge-secondary m-2">Plots tended to: {{$caredPlots}} / {{Settings::get("cultivation_care_cooldown")}}</span></h4> @endif
+    @if(Settings::get('cultivation_care_cooldown') > 0) <h4><span class="float-right badge badge-secondary m-2">Plots tended to: {{$caredPlots ?? 0}} / {{Settings::get("cultivation_care_cooldown")}}</span></h4> @endif
     </div>
 </div>
 

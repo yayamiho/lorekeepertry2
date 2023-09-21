@@ -26,7 +26,7 @@
             </div>
             @endforeach
         </div>
-        @if($caredPlots) <h4><span class="float-right badge badge-secondary m-2">Plots tended to: {{$caredPlots}} / {{Settings::get("cultivation_care_cooldown")}}</span></h4> @endif
+        @if(Settings::get('cultivation_care_cooldown') > 0) <h4><span class="float-right badge badge-secondary m-2">Plots tended to: {{$caredPlots ?? 0}} / {{Settings::get("cultivation_care_cooldown")}}</span></h4> @endif
 
         <div class="p-5 m-auto mt-5">{!! $userArea->area->parsed_description !!}</div>
 
