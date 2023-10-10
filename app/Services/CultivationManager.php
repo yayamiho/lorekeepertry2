@@ -216,7 +216,11 @@ class CultivationManager extends Service
 
                 //reset plot
                 if(Settings::get('cultivation_plot_usability') == 0){
-                    $userPlot->update(['counter' => 0,'stage' => 1]);
+                    $userPlot->update([
+                        'counter' => 0,
+                        'stage' => 1,
+                        'item_id' => null,
+                    ]);
                 } else {
                     $userPlot->delete();
                 }
