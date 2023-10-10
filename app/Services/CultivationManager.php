@@ -163,7 +163,7 @@ class CultivationManager extends Service
             $date = date("Y-m-d H:i:s", strtotime('midnight'));
 
             if($this->canTend($userPlot->tended_at, $date)){
-                $caredPlots = UserPlot::where('tended_at', '>=', $date)->get();
+                $caredPlots = UserPlot::where('user_id', $userPlot->user_id)->where('tended_at', '>=', $date)->get();
                 if(Settings::get('cultivation_care_cooldown') > 0 && $caredPlots->count() >= Settings::get('cultivation_care_cooldown')) throw new \Exception("You already tended to ". $caredPlots->count()." plot(s) today.");
                 $newStage = ($userPlot->counter + 1 >= $userPlot->getStageProgress() && $userPlot->stage < 5) ? $userPlot->stage + 1 : $userPlot->stage;
                 $newCount = ($newStage > $userPlot->stage) ? 0 : $userPlot->counter + 1;
