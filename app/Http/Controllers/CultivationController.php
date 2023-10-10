@@ -35,10 +35,12 @@ class CultivationController extends Controller
      */
     public function getIndex()
     {
+        $user = Auth::user();
+
         return view('cultivation.index', [
             'areas' => CultivationArea::where('is_active', 1)->orderBy('sort', 'DESC')->get(),
-            'user' => Auth::user(), 
-            'caredPlots' => UserPlot::where('tended_at', '>=', date("Y-m-d H:i:s", strtotime('midnight')))->get()->count()
+            'user' => $user, 
+            'caredPlots' => UserPlot::where("user_id", $user->id)->where('tended_at', '>=', date("Y-m-d H:i:s", strtotime('midnight')))->get()->count()
         ]);
     }
 
@@ -59,7 +61,7 @@ class CultivationController extends Controller
             'userArea' => $userArea,
             'areas' => CultivationArea::where('is_active', 1)->orderBy('sort', 'DESC')->get(),
             'user' => Auth::user(),
-            'caredPlots' => UserPlot::where('tended_at', '>=', date("Y-m-d H:i:s", strtotime('midnight')))->get()->count()
+            'caredPlots' => UserPlot::where("user_id", $user->id)->where('tended_at', '>=', date("Y-m-d H:i:s", strtotime('midnight')))->get()->count()
         ]);
     }
 
