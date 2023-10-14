@@ -23,13 +23,13 @@
 
 <script>
     $( document ).ready(function(){
-        var $termsButton = $('#termsButton');
+        var termsButton = $('#termsButton');
         let termsAccepted = localStorage.getItem("terms_accepted");
-        let $user = "{{ Auth::user() != null }}" 
-        let $userAccepted = "{{ Auth::user()?->has_accepted_terms > 0 }}"
+        let user = "{{ Auth::user() != null }}" 
+        let userAccepted = "{{ Auth::user()?->has_accepted_terms > 0 }}"
 
-        if($user){
-            if(!$userAccepted){
+        if(user){
+            if(!userAccepted){
                 showPopup();
             }
         } else {
@@ -38,7 +38,7 @@
             }
         }
 
-        $termsButton.on('click', function(e) {
+        termsButton.on('click', function(e) {
             e.preventDefault();
             localStorage.setItem("terms_accepted", true);
             window.location.replace("/terms/accept");
