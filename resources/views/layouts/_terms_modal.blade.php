@@ -18,7 +18,7 @@
         </div>
     </div>
 </div>
-<div class="fade modal-backdrop d-none" id="termsBackdrop">
+<div class="fade modal-backdrop d-none" id="termsBackdrop"></div>
 
 
 <script>
