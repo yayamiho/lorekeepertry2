@@ -15,6 +15,7 @@ use App\Models\Notification;
 
 use App\Services\UserService;
 use App\Services\LinkService;
+use App\Models\Border\Border;
 
 use App\Http\Controllers\Controller;
 
@@ -49,7 +50,21 @@ class AccountController extends Controller
      */
     public function getSettings()
     {
-        return view('account.settings');
+        if(Auth::user()->isStaff){
+            $borderOptions = ['0' => 'Select Border'] + Border::where('is_active', 1)->where('is_default', 1)->get()->pluck('settingsName', 'id')->toArray() + Border::where('admin_only', 1)->get()->pluck('settingsName', 'id')->toArray();
+            
+        }else{
+            $borderOptions = ['0' => 'Select Border'] + Border::where('is_active', 1)->where('is_default', 1)->where('admin_only', 0)->get()->pluck('settingsName', 'id')->toArray();
+        }
+
+        $default =  Border::where('is_active', 1)->where('is_default', 1)->get();
+        $admin = Border::where('admin_only', 1)->get();
+
+        return view('account.settings',[
+            'borders' => $borderOptions + Auth::user()->borders()->get()->pluck('settingsName', 'id')->toArray(),
+            'default' => $default,
+            'admin' => $admin
+        ]);
     }
     
     /**
@@ -269,6 +284,23 @@ class AccountController extends Controller
     {
         if($service->removeAlias($id, Auth::user())) {
             flash('Your alias has been removed successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
+
+     /**
+     * Edits the user's border.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postBorder(Request $request, UserService $service)
+    {
+        if($service->updateBorder($request->only('border'), Auth::user())) {
+            flash('Border updated successfully.')->success();
         }
         else {
             foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();

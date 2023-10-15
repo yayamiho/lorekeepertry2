@@ -94,6 +94,10 @@ return [
                 'name' => 'Item Grants',
                 'url' => 'admin/grants/items'
             ],
+            [
+                'name' => 'Border Grants',
+                'url' => 'admin/grants/borders'
+            ],
         ]
     ],
     'Masterlist' => [
@@ -175,6 +179,10 @@ return [
             [
                 'name' => 'Items',
                 'url' => 'admin/data/items'
+            ],
+            [
+                'name' => 'User Borders',
+                'url' => 'admin/data/borders'
             ],
         ]
     ],
