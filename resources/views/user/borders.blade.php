@@ -11,39 +11,10 @@
         {!! $user->displayName !!}'s Borders
     </h1>
 
-    <h4>Default</h4>
-    <div class="row mb-3">
-        @foreach ($default as $border)
-            <div class="class="col-md-3 col-6 mb-3 text-center">
-                <div class="shop-image">
-                    {!! $border->preview($user->id) !!}
-                </div>
-                <div class="shop-name mt-1 text-center">
-                    <h5>{!! $border->displayName !!}</h5>
-                </div>
-            </div>
-        @endforeach
-    </div>
-    @if ($user->borders->count())
-    <h4>Unlocked</h4>
-    <div class="row mb-3">
-        @foreach ($user->borders as $border)
-            <div class="class="col-md-3 col-6 mb-3 text-center">
-                <div class="shop-image">
-                    {!! $border->preview($user->id) !!}
-                </div>
-                <div class="shop-name mt-1 text-center">
-                    <h5>{!! $border->displayName !!}</h5>
-                </div>
-            </div>
-        @endforeach
-    </div>
-    @endif
-    @if ($user->isStaff)
-        <h4>Staff-Only</h4>
-        <small>{!! $user->displayName !!} has access to these as a member of staff</small>
+    @if ($default->count())
+        <h4>Default</h4>
         <div class="row mb-3">
-            @foreach ($admin as $border)
+            @foreach ($default as $border)
                 <div class="class="col-md-3 col-6 mb-3 text-center">
                     <div class="shop-image">
                         {!! $border->preview($user->id) !!}
@@ -54,6 +25,39 @@
                 </div>
             @endforeach
         </div>
+    @endif
+    @if ($user->borders->count())
+        <h4>Unlocked</h4>
+        <div class="row mb-3">
+            @foreach ($user->borders as $border)
+                <div class="class="col-md-3 col-6 mb-3 text-center">
+                    <div class="shop-image">
+                        {!! $border->preview($user->id) !!}
+                    </div>
+                    <div class="shop-name mt-1 text-center">
+                        <h5>{!! $border->displayName !!}</h5>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    @endif
+    @if ($user->isStaff)
+        @if ($admin->count())
+            <h4>Staff-Only</h4>
+            <small>{!! $user->displayName !!} has access to these as a member of staff</small>
+            <div class="row mb-3">
+                @foreach ($admin as $border)
+                    <div class="class="col-md-3 col-6 mb-3 text-center">
+                        <div class="shop-image">
+                            {!! $border->preview($user->id) !!}
+                        </div>
+                        <div class="shop-name mt-1 text-center">
+                            <h5>{!! $border->displayName !!}</h5>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        @endif
     @endif
     <h3>Latest Activity</h3>
     <div class="row ml-md-2 mb-4">
