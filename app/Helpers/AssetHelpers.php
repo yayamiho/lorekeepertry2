@@ -278,7 +278,7 @@ function fillUserAssets($assets, $sender, $recipient, $logType, $data)
             foreach($contents as $asset)
                 if(!$service->moveCharacter($asset['asset'], $recipient, $data, $asset['quantity'], $logType)) return false;
         }
-        if($key == 'borders' && count($contents))
+        elseif($key == 'borders' && count($contents))
         {
             $service = new \App\Services\BorderService;
             foreach($contents as $asset)
