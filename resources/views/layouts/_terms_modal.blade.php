@@ -46,7 +46,6 @@
 
         function showPopup(){
             $('#termsModal').addClass("show");
-            $('#termsModal').addClass("modal-open");
             $('#termsModal').removeClass("d-none");
             $('#termsBackdrop').addClass("show");
             $('#termsBackdrop').removeClass("d-none");
