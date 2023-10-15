@@ -1,6 +1,6 @@
 
 @if(Config::get('lorekeeper.settings.show_terms_popup') == 1)
-<div class="modal fade d-none" id="termsModal" role="dialog" style="display:inline;" data-backdrop="static"
+<div class="modal fade d-none" id="termsModal" role="dialog" style="display:inline;overflow:auto;" data-backdrop="static"
     data-keyboard="false">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -46,6 +46,7 @@
 
         function showPopup(){
             $('#termsModal').addClass("show");
+            $('#termsModal').addClass("modal-open");
             $('#termsModal').removeClass("d-none");
             $('#termsBackdrop').addClass("show");
             $('#termsBackdrop').removeClass("d-none");
