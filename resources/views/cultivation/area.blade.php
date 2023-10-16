@@ -18,7 +18,7 @@
             @php $userPlot = \App\Models\User\UserPlot::where('plot_number', $i)->where('user_id', $user->id)->where('user_area_id', $userArea->id)->first() @endphp
             <div class="col-md-3 col-6 mb-2">
                 <div class="row justify-content-center">
-                    <img class="plot-button" src="{{ (isset($userPlot)) ? $userPlot->plot->getStageImage($userPlot->stage) : $userArea->area->plotImageUrl }}" data-id="{{ $i }}" style="width:100%;max-width:250px;" alt="plot" />
+                    <img class="plot-button" src="{{ (isset($userPlot)) ? $userPlot->getStageImage($userPlot->stage) : $userArea->area->plotImageUrl }}" data-id="{{ $i }}" style="width:100%;max-width:250px;" alt="plot" />
                 </div>
                 <div class="row justify-content-center">
                     <button class="plot-button btn btn-primary btn-sm" data-id="{{ $i }}">Plot {{ $i }}</button>

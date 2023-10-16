@@ -3,6 +3,7 @@
 use App\Services\Service;
 
 use DB;
+use Carbon\Carbon;
 
 use App\Models\Item\Item;
 use App\Models\Currency\Currency;
@@ -64,6 +65,8 @@ class SeedService extends Service
             $data['stage_2_days'] = $tag->data['stage_2_days'];
             $data['stage_3_days'] = $tag->data['stage_3_days'];
             $data['stage_4_days'] = $tag->data['stage_4_days'];
+            $data['stage_5_image'] = $tag->data['stage_5_image'] ?? null;
+
         }
 
 
@@ -81,7 +84,7 @@ class SeedService extends Service
     {
 
         // If there's no data, return.
-        if(!isset($data['rewardable_type'])) return true;
+        if(!isset($data['rewardable_type'])) throw new \Exception("Please set at least one reward.");
         if(isset($data['stage_2_days']) && $data['stage_2_days'] <= 0) throw new \Exception("Stage 2 days must be greater than 0.");
         if(isset($data['stage_3_days']) && $data['stage_3_days'] <= 0) throw new \Exception("Stage 3 days must be greater than 0.");
         if(isset($data['stage_4_days']) && $data['stage_4_days'] <= 0) throw new \Exception("Stage 4 days must be greater than 0.");
@@ -90,7 +93,8 @@ class SeedService extends Service
         DB::beginTransaction();
 
         try {
-            
+        
+
             // The data will be stored as an asset table, json_encode()d. 
             // First build the asset table, then prepare it for storage.
             $assets = createAssetsArray();
@@ -118,6 +122,21 @@ class SeedService extends Service
             if(isset($data['stage_2_days'])) $assets['stage_2_days'] = $data['stage_2_days'];
             if(isset($data['stage_3_days'])) $assets['stage_3_days'] = $data['stage_3_days'];
             if(isset($data['stage_4_days'])) $assets['stage_4_days'] = $data['stage_4_days'];
+
+            $image = null;
+            if(isset($data['image']) && $data['image']) {
+                $data['has_image'] = 1;
+                $image = $data['image'];
+                unset($data['image']);
+
+                $saveName = $tag->id.'-image.'. $image->getClientOriginalExtension();
+                $fileName = $tag->id.'-image.'. $image->getClientOriginalExtension().'?v='. Carbon::now()->format('mdY_').randomString(6);
+
+                $assets['stage_5_image'] = 'images/data/items/seeds/'.$fileName;
+            }
+
+            if($image) $this->handleImage($image, public_path('images/data/items/seeds/'), $saveName);
+            else $assets['stage_5_image'] = ( $tag->getData() ? $tag->getData()['stage_5_image'] : null);
 
             $tag->update(['data' => json_encode($assets)]);
 

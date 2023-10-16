@@ -21,3 +21,20 @@
 
 @include('widgets._loot_select', ['loots' => $tag->getData()['rewards'] ?? null, 'showLootTables' => true, 'showRaffles' => true])
 
+
+<h3>
+Stage 5 Image (Optional)
+</h3>
+<p>
+    Upload an image for last stage (harvest stage) if you wish. Otherwise, the plots stage 5 image will be used as a default.
+</p>
+
+<div class="col-8 mx-auto">
+    @if($tag->data && isset($tag->getData()['stage_5_image']))
+        <img src="{{ url($tag->getData()['stage_5_image']) }}" class="img-fluid mb-2"/>
+        {!! Form::file('image') !!}
+    @else
+        {!! Form::file('image') !!}
+    @endif
+</div>
+

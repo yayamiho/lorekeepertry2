@@ -98,4 +98,18 @@ class UserPlot extends Model
         return 0;
     }
 
+    /**
+     * Get image for the plot.
+     */
+    public function getStageImage()
+    {
+        if(isset($this->item)){
+            $seedTag = $this->item->tag('seed');
+            if(isset($seedTag) && isset($seedTag->data["stage_5_image"])){
+                return "/".$seedTag->data["stage_5_image"];
+            }
+        }
+        return $this->plot->getStageImage($this->stage);
+    }
+
 }
