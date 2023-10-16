@@ -1,7 +1,7 @@
 
 
 <div class="row justify-content-center">
-        <img src="{{ (!isset($userPlot)) ? $userArea->area->plotImageUrl : $userPlot->plot->getStageImage($userPlot->stage) }}" style="width:100%;max-width:250px;" alt="plot" />
+        <img src="{{ (!isset($userPlot)) ? $userArea->area->plotImageUrl : $userPlot->getStageImage($userPlot->stage) }}" style="width:100%;max-width:250px;" alt="plot" />
 </div>
 
 <div class="row justify-content-center">
