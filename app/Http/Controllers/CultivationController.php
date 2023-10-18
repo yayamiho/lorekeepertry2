@@ -56,6 +56,7 @@ class CultivationController extends Controller
         return view('cultivation.guide', [
             'areas' => CultivationArea::where('is_active', 1)->orderBy('sort', 'DESC')->get(),
             'tools' => ItemTag::where('tag', 'tool'),
+            'user' => $user, 
         ]);
     }
 
