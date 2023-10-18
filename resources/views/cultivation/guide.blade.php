@@ -36,7 +36,7 @@
                                     <b> Created with: </b>
                                     <table class="table table-sm">
                                         <tbody>
-                                            @foreach($tools->where('data', 'like', '%"plot_id":"'.$plot->id.'"%')->get() as $tag) 
+                                            @foreach(App\Models\Item\ItemTag::where('tag', 'tool')->where('data', 'like', '%"plot_id":"'.$plot->id.'"%')->get() as $tag) 
                                             <tr>
                                                 <td> {!! $tag->item->displayName !!} </td>
                                             </tr>
