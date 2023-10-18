@@ -105,7 +105,7 @@ class UserPlot extends Model
     {
         if(isset($this->item)){
             $seedTag = $this->item->tag('seed');
-            if(isset($seedTag) && isset($seedTag->data["stage_5_image"])){
+            if($this->stage == 5 && isset($seedTag) && isset($seedTag->data["stage_5_image"])){
                 return "/".$seedTag->data["stage_5_image"];
             }
         }
