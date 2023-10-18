@@ -14,7 +14,6 @@
     </div>
 </div>
 
-
 <div class="row shops-row">
     @foreach($areas as $area)
         <div class="col-md-6 col-12 mb-3 text-center">

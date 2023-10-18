@@ -1,6 +1,11 @@
 <ul>
     <li class="sidebar-header"><a href="{{ url(__('cultivation.cultivation')) }}" class="card-link">{{ucfirst(__('cultivation.cultivation'))}}</a></li>
 
+    <li class="sidebar-section">
+        <div class="sidebar-item">
+                <a href="{{ url(__('cultivation.cultivation').'/guide') }}" class="{{ set_active(__('cultivation.cultivation').'/guide') }} btn text-left">Cultivation Guide</a> 
+        </div>
+    </li>
 
     <li class="sidebar-section">
         <div class="sidebar-section-header">{{ucfirst(__('cultivation.cultivation'))}} Areas</div>
@@ -15,4 +20,5 @@
             </div>
         @endforeach
     </li>
+
 </ul>

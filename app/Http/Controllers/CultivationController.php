@@ -45,6 +45,21 @@ class CultivationController extends Controller
     }
 
     /**
+     * Shows the cultivation guide.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getGuide()
+    {
+        $user = Auth::user();
+
+        return view('cultivation.guide', [
+            'areas' => CultivationArea::where('is_active', 1)->orderBy('sort', 'DESC')->get(),
+            'tools' => ItemTag::where('tag', 'tool'),
+        ]);
+    }
+
+    /**
      * Shows a cultivation area index.
      *
      * @return \Illuminate\Contracts\Support\Renderable

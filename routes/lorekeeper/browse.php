@@ -126,6 +126,8 @@ Route::group(['prefix' => 'shops'], function() {
 
 Route::group(['prefix' => __('cultivation.cultivation')], function() {
     Route::get('/', 'CultivationController@getIndex');
+    Route::get('/guide', 'CultivationController@getGuide');
+
 });
 
 /**************************************************************************************************
