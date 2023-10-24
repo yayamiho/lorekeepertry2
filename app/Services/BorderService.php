@@ -279,6 +279,7 @@ class BorderService extends Service
             $data['is_default'] = 0;
 
         if(!isset($data['is_active'])) $data['is_active'] = 0;
+        if(!isset($data['admin_only'])) $data['admin_only'] = 0;
 
         return $data;
     }
