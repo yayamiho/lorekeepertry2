@@ -93,7 +93,7 @@ class BorderService extends Service
                 $assets = createAssetsArray();
                 foreach ($data['rewardable_id'] as $key => $r) {
                     $asset = $type::find($data['rewardable_id'][$key]);
-                    addAsset($assets, $asset, $data['quantity'][$key]);
+                    addAsset($assets, $asset, 1);
                 }
                 $assets = getDataReadyAssets($assets);
             }

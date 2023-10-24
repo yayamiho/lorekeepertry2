@@ -611,7 +611,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         $border = Border::find($border_id);
         $user_has = $this->borders->contains($border);
-        $default = !$border->is_default;
+        $default = $border->is_default;
         return $default ? true : $user_has;
     }
 
