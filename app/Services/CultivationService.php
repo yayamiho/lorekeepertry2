@@ -205,7 +205,7 @@ class CultivationService extends Service
      * @param  array  $data
      * @return bool
      */
-    public function sortArea($data)
+    public function sortAreas($data)
     {
         DB::beginTransaction();
 
@@ -214,7 +214,7 @@ class CultivationService extends Service
             $sort = array_reverse(explode(',', $data));
 
             foreach($sort as $key => $s) {
-                Area::where('id', $s)->update(['sort' => $key]);
+                CultivationArea::where('id', $s)->update(['sort' => $key]);
             }
 
             return $this->commitReturn(true);
@@ -515,7 +515,7 @@ class CultivationService extends Service
             $sort = array_reverse(explode(',', $data));
 
             foreach($sort as $key => $s) {
-                Area::where('id', $s)->update(['sort' => $key]);
+                CultivationPlot::where('id', $s)->update(['sort' => $key]);
             }
 
             return $this->commitReturn(true);

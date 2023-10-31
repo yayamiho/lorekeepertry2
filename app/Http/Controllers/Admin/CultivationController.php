@@ -25,7 +25,7 @@ class CultivationController extends Controller
     public function getAreaIndex(Request $request)
     {
         return view('admin.cultivation.area_index', [
-            'areas' => CultivationArea::all(),
+            'areas' => CultivationArea::orderBy('sort', 'DESC')->get(),
         ]);
     }
 
@@ -38,7 +38,7 @@ class CultivationController extends Controller
     public function getPlotIndex(Request $request)
     {
         return view('admin.cultivation.plot_index', [
-            'plots' => CultivationPlot::all(),
+            'plots' => CultivationPlot::orderBy('sort', 'DESC')->get(),
         ]);
     }
 
@@ -147,9 +147,9 @@ class CultivationController extends Controller
         return redirect()->back();
     }
 
-    public function postSortPlots(Request $request, CultivationService $service)
+    public function postSortPlot(Request $request, CultivationService $service)
     {
-        if($service->sortPlots($request->get('sort'), Auth::user())) {
+        if($service->sortPlot($request->get('sort'), Auth::user())) {
             flash('Plots sorted successfully.')->success();
         }
         else {
