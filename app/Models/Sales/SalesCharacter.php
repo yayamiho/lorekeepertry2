@@ -177,7 +177,7 @@ class SalesCharacter extends Model
                 return 'Price: '.$symbol.$this->data['price'];
                 break;
             case 'pwyw':
-                return 'Minimum: '.$symbol.$this->data['minimum'];
+                return (isset($this->data['minimum']) ? 'Minimum: '.$symbol.$this->data['minimum'] : '');
                 break;
         }
     }

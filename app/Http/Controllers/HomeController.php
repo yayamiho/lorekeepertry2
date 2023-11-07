@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Sales\Sales;
 use App\Models\SitePage;
 use App\Services\LinkService;
 use App\Services\UserService;
@@ -32,6 +33,7 @@ class HomeController extends Controller
     {
         return view('welcome', [
             'about' => SitePage::where('key', 'about')->first(),
+            'saleses' => Sales::visible()->orderBy('id', 'DESC')->take(2)->get(),
         ]);
     }
 
