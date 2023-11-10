@@ -22,7 +22,7 @@
                     <h4 class="p-0 m-0">{{$area->name}}</h4>
                 </div>
             </div>
-            <div class="card-body">
+            <div class="card-body row">
                 @foreach($area->allowedPlots as $plot)
                 <div class="col-lg-6 col-12 mb-3 text-center">
                     <div class="card h-100">
