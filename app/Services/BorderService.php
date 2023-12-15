@@ -9,7 +9,6 @@ use Carbon\Carbon;
 
 use App\Models\Border\BorderCategory;
 use App\Models\Border\Border;
-use App\Models\Character\CharacterBorder;
 use App\Models\User\UserBorder;
 use App\Models\User\User;
 use Notifications;
@@ -297,9 +296,9 @@ class BorderService extends Service
 
         try {
             // Check first if the border is currently owned or if some other site feature uses it
-            if(CharacterBorder::where('border_id', $border->id)->exists()) throw new \Exception("At least one character currently owns this border. Please remove the border(s) before deleting it.");
+            if(UserBorder::where('border_id', $border->id)->exists()) throw new \Exception("At least one user currently owns this border. Please remove the border(s) before deleting it.");
 
-            DB::table('character_borders')->where('border_id', $border->id)->delete();
+            DB::table('user_borders')->where('border_id', $border->id)->delete();
 
             $this->deleteImage($border->imagePath, $border->imageFileName);
 
