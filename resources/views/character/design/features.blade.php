@@ -61,14 +61,14 @@
                 @if($request->features)
                     @foreach($request->features as $feature)
                         <div class="mb-2 d-flex">
-                            {!! Form::select('feature_id[]', $features, $feature->feature_id, ['class' => 'form-control mr-2 feature-select', 'placeholder' => 'Select Trait']) !!}
-                            {!! Form::text('feature_data[]', $feature->data, ['class' => 'form-control mr-2', 'placeholder' => 'Extra Info (Optional)']) !!}
-                            <a href="#" class="remove-feature btn btn-danger mb-2">×</a>
+                            <!--- Users no longer assign traits, this is done via addon trait item! --->
+                            {!! Form::select('feature_id[]', $features, $feature->feature_id, ['class' => 'form-control mr-2 feature-select', 'readonly', 'style' => 'pointer-events: none;']) !!}
+                            {!! Form::text('feature_data[]', $feature->data, ['class' => 'form-control mr-2', 'readonly']) !!}
+                            @if($request->canRemoveTrait($feature))<a href="#" class="remove-feature btn btn-danger mb-2">×</a>@endif
                         </div>
                     @endforeach
                 @endif
             </div>
-            <div><a href="#" class="btn btn-primary" id="add-feature">Add Trait</a></div>
             <div class="feature-row hide mb-2">
                 {!! Form::select('feature_id[]', $features, null, ['class' => 'form-control mr-2 feature-select', 'placeholder' => 'Select Trait']) !!}
                 {!! Form::text('feature_data[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Extra Info (Optional)']) !!}

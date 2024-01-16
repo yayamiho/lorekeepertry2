@@ -24,4 +24,14 @@ return [
         'text_color' => '#ffffff',
         'background_color' => '#1fd1a7'
     ],
+    'trait' => [
+        'name' => 'Trait',
+        'text_color' => '#ffffff',
+        'background_color' => '#c6538c'
+    ],
+    'trait_remover' => [
+        'name' => 'Trait Remover',
+        'text_color' => '#ffffff',
+        'background_color' => '#990033'
+    ],
 ];

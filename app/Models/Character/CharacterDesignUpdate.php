@@ -6,6 +6,7 @@ use Config;
 use DB;
 use App\Models\Model;
 use App\Models\Currency\Currency;
+use App\Models\User\UserItem;
 use App\Models\Feature\FeatureCategory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -363,5 +364,55 @@ class CharacterDesignUpdate extends Model
             $currency->quantity = $currencies[$currency->id];
         }
         return $result;
+    }
+
+    /**
+     * Check if trait is within the attached items.
+     *
+     * @param  string  $type
+     * @return array
+     */
+    public function isAttachedOrOnCharacter($featureId)
+    {
+        $addedItems = UserItem::whereIn('id', array_keys($this->inventory))->get();
+        $featureIds = $addedItems->filter(function ($userItem) {
+            return $userItem->item->hasTag('trait');
+        })->map(function ($userItem) {
+            return $userItem->item->tag('trait')->getData();
+        });
+
+        $characterFeatures = $this->character->image->features->pluck('id') ?? [];
+        
+        if($featureIds->contains($featureId) || ($characterFeatures->contains($featureId))){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Checks if a trait remover item was added to this request, allowing users to remove traits that are not set via item.
+     *
+     * @param  string  $type
+     * @return array
+     */
+    public function canRemoveTrait($feature)
+    {
+        $addedItems = UserItem::whereIn('id', array_keys($this->inventory))->get();
+        $featureIds = $addedItems->filter(function ($userItem) {
+            return $userItem->item->hasTag('trait');
+        })->map(function ($userItem) {
+            return $userItem->item->tag('trait')->getData();
+        });
+        
+        $traitRemover = $addedItems->filter(function ($userItem) {
+            return $userItem->item->hasTag('trait_remover');
+        })->first();
+
+        if(isset($traitRemover) && !$featureIds->contains($feature->id)){
+            return true;
+        } else {
+            return false;
+        }
     }
 }

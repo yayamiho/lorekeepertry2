@@ -1968,6 +1968,15 @@ is_object($sender) ? $sender->id : null,
                     $stack->update_count += $data['stack_quantity'][$stackId];
                     $stack->save();
 
+                    //if the item is a trait item, act here
+                    $traitTag = $stack->item->hasTag('trait') ? $stack->item->tag('trait'): null;
+                    if($traitTag){
+                        $service = $traitTag->service;
+                        if($service && !$service->act($traitTag, $request)) {
+                            throw new \Exception("Failed to automatically assign trait.");
+                        }
+                    }
+
                     addAsset($userAssets, $stack, $data['stack_quantity'][$stackId]);
                 }
             }
@@ -2051,6 +2060,9 @@ is_object($sender) ? $sender->id : null,
 
                 // Skip the feature if it's not the correct species.
                 if($features[$featureId]->species_id && $features[$featureId]->species_id != $species->id) continue;
+
+                // check trait was on og character OR is in an item, otherwise skip
+                if(!$request->isAttachedOrOnCharacter($featureId)) continue;
 
                 $feature = CharacterFeature::create(['character_image_id' => $request->id, 'feature_id' => $featureId, 'data' => $data['feature_data'][$key], 'character_type' => 'Update']);
             }
