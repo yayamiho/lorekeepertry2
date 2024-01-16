@@ -6,6 +6,8 @@ use DB;
 
 use App\Models\Character\CharacterFeature;
 use App\Models\Feature\Feature;
+use App\Models\Species\Species;
+use App\Models\Species\Subtype;
 
 class TraitService extends Service
 {
@@ -53,10 +55,10 @@ class TraitService extends Service
         DB::beginTransaction();
 
         try {
-            if(!isset($data['feature_id'])) throw new \Exception("You must select a trait that this item should grant.");
+            if (!isset($data['feature_id'])) throw new \Exception("You must select a trait that this item should grant.");
             $tag->update(['data' => json_encode($data)]);
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch (\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -76,11 +78,23 @@ class TraitService extends Service
         DB::beginTransaction();
 
         try {
-            $designUpdate->features;
-            if(!$designUpdate->features->pluck('id')->contains($tag->getData()))
-                CharacterFeature::create(['character_image_id' => $designUpdate->id, 'feature_id' => $tag->getData(), 'data' => null, 'character_type' => 'Update']);
+            $species = $designUpdate->character->image->species_id ? $designUpdate->character->image->species_id : $designUpdate->species_id ?? null;
+            $subtype = $designUpdate->character->image->subtype_id ? $designUpdate->character->image->subtype_id : $designUpdate->subtype_id ?? null;
+            $feature = Feature::find($tag->getData());
+
+            if($species == null) throw new \Exception("Please select a species and subtype under the traits tab first, so that valid traits can be determined.");
+
+            //check that species and subtype fit, otherwise do not add it. If no species is set, add all traits for now.
+            if ($feature->species_id == null || ($feature->species_id && $feature->species_id == $species))
+                if($feature->subtype_id == null || ($feature->subtype_id && $feature->subtype_id == $subtype))
+                    CharacterFeature::create(['character_image_id' => $designUpdate->id, 'feature_id' => $tag->getData(), 'data' => null, 'character_type' => 'Update']);
+                else
+                    throw new \Exception("At least one trait item does not match the character's subtype.");
+            else
+                throw new \Exception("At least one trait item does not match the character's species.");
+
             return $this->commitReturn(true);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);

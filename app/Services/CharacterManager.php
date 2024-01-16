@@ -1957,6 +1957,9 @@ is_object($sender) ? $sender->id : null,
             $userAssets = createAssetsArray();
             $characterAssets = createAssetsArray(true);
 
+            //clear features because they are added in the loop if applicable
+            $request->features()->delete();
+
             // Attach items. Technically, the user doesn't lose ownership of the item - we're just adding an additional holding field.
             // We're also not going to add logs as this might add unnecessary fluff to the logs and the items still belong to the user.
             // Perhaps later I'll add a way to locate items that are being held by updates/trades.
@@ -1973,7 +1976,7 @@ is_object($sender) ? $sender->id : null,
                     if($traitTag){
                         $service = $traitTag->service;
                         if($service && !$service->act($traitTag, $request)) {
-                            throw new \Exception("Failed to automatically assign trait.");
+                            throw new \Exception($service->errors()->getMessages()['error'][0]);
                         }
                     }
 
