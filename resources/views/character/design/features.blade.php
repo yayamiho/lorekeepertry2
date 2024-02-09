@@ -64,7 +64,7 @@
                             <!--- Users no longer assign traits, this is done via addon trait item! --->
                             {!! Form::select('feature_id[]', $features, $feature->feature_id, ['class' => 'form-control mr-2 feature-select', 'readonly', 'style' => 'pointer-events: none;']) !!}
                             {!! Form::text('feature_data[]', $feature->data, ['class' => 'form-control mr-2', 'readonly']) !!}
-                            @if($request->canRemoveTrait($feature))<a href="#" class="remove-feature btn btn-danger mb-2">×</a>@endif
+                            @if($request->canRemoveTrait($feature) || Settings::get('trait_remover_needed') == 0 )<a href="#" class="remove-feature btn btn-danger mb-2">×</a>@endif
                         </div>
                     @endforeach
                 @endif

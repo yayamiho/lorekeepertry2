@@ -84,14 +84,17 @@ class TraitService extends Service
 
             if($species == null) throw new \Exception("Please select a species and subtype under the traits tab first, so that valid traits can be determined.");
 
-            //check that species and subtype fit, otherwise do not add it. If no species is set, add all traits for now.
-            if ($feature->species_id == null || ($feature->species_id && $feature->species_id == $species))
-                if($feature->subtype_id == null || ($feature->subtype_id && $feature->subtype_id == $subtype))
-                    CharacterFeature::create(['character_image_id' => $designUpdate->id, 'feature_id' => $tag->getData(), 'data' => null, 'character_type' => 'Update']);
+            //check that the trait isnt already on the char
+            if(!in_array($feature->id, $designUpdate->features->pluck('id')->toArray())){
+                //check that species and subtype fit, otherwise do not add it. If no species is set, add all traits for now.
+                if ($feature->species_id == null || ($feature->species_id && $feature->species_id == $species))
+                    if($feature->subtype_id == null || ($feature->subtype_id && $feature->subtype_id == $subtype))
+                        CharacterFeature::create(['character_image_id' => $designUpdate->id, 'feature_id' => $tag->getData(), 'data' => null, 'character_type' => 'Update']);
+                    else
+                        throw new \Exception("At least one trait item does not match the character's subtype.");
                 else
-                    throw new \Exception("At least one trait item does not match the character's subtype.");
-            else
-                throw new \Exception("At least one trait item does not match the character's species.");
+                    throw new \Exception("At least one trait item does not match the character's species.");
+            }
 
             return $this->commitReturn(true);
         } catch (\Exception $e) {

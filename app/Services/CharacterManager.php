@@ -1957,9 +1957,10 @@ is_object($sender) ? $sender->id : null,
             $userAssets = createAssetsArray();
             $characterAssets = createAssetsArray(true);
 
-            //clear features because they are added in the loop if applicable
-            $request->features()->delete();
-
+             //clear features that the character does not originally have, because they are added in the loop if applicable
+             $currentFeatureIds = $request->character->image->features->pluck("id")->toArray() ?? null;
+             $request->features()->whereNotIn('feature_id', $currentFeatureIds)->delete();
+            
             // Attach items. Technically, the user doesn't lose ownership of the item - we're just adding an additional holding field.
             // We're also not going to add logs as this might add unnecessary fluff to the logs and the items still belong to the user.
             // Perhaps later I'll add a way to locate items that are being held by updates/trades.
