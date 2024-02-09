@@ -1957,10 +1957,7 @@ is_object($sender) ? $sender->id : null,
             $userAssets = createAssetsArray();
             $characterAssets = createAssetsArray(true);
 
-             //clear features that the character does not originally have, because they are added in the loop if applicable
-             $currentFeatureIds = $request->character->image->features->pluck("id")->toArray() ?? null;
-             $request->features()->whereNotIn('feature_id', $currentFeatureIds)->delete();
-            
+
             // Attach items. Technically, the user doesn't lose ownership of the item - we're just adding an additional holding field.
             // We're also not going to add logs as this might add unnecessary fluff to the logs and the items still belong to the user.
             // Perhaps later I'll add a way to locate items that are being held by updates/trades.
@@ -1971,16 +1968,6 @@ is_object($sender) ? $sender->id : null,
                     if(!isset($data['stack_quantity'][$stackId])) throw new \Exception("Invalid quantity selected.");
                     $stack->update_count += $data['stack_quantity'][$stackId];
                     $stack->save();
-
-                    //if the item is a trait item, act here
-                    $traitTag = $stack->item->hasTag('trait') ? $stack->item->tag('trait'): null;
-                    if($traitTag){
-                        $service = $traitTag->service;
-                        if($service && !$service->act($traitTag, $request)) {
-                            throw new \Exception($service->errors()->getMessages()['error'][0]);
-                        }
-                    }
-
                     addAsset($userAssets, $stack, $data['stack_quantity'][$stackId]);
                 }
             }
@@ -2015,6 +2002,11 @@ is_object($sender) ? $sender->id : null,
                 'character' => Arr::only(getDataReadyAssets($characterAssets), ['currencies'])
             ]);
             $request->save();
+
+            //clear features that the character does not originally have or has been added via item.
+            $currentFeatureIds = array_merge($request->character->image->features->pluck("id")->toArray() ?? [], $request->getAttachedTraitIds());
+            if(count($currentFeatureIds) > 0) $request->features()->whereNotIn('feature_id', array_merge($currentFeatureIds, $request->getAttachedTraitIds()))->delete();
+            else $request->features()->delete();
 
             return $this->commitReturn(true);
         } catch(\Exception $e) {

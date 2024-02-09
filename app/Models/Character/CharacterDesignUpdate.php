@@ -8,6 +8,7 @@ use App\Models\Model;
 use App\Models\Currency\Currency;
 use App\Models\User\UserItem;
 use App\Models\Feature\FeatureCategory;
+use App\Models\Feature\Feature;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class CharacterDesignUpdate extends Model
@@ -379,7 +380,7 @@ class CharacterDesignUpdate extends Model
             return $userItem->item->hasTag('trait');
         })->map(function ($userItem) {
             return $userItem->item->tag('trait')->getData();
-        });
+        })->flatten();
 
         $characterFeatures = $this->character->image->features->pluck('id') ?? [];
         
@@ -388,6 +389,51 @@ class CharacterDesignUpdate extends Model
         } else {
             return false;
         }
+    }
+
+    /**
+     * Get all attached traits.
+     *
+     * @param  string  $type
+     * @return array
+     */
+    public function getAttachedTraitIds()
+    {
+        $addedItems = UserItem::whereIn('id', array_keys($this->inventory))->get();
+        $featureIds = $addedItems->filter(function ($userItem) {
+            return $userItem->item->hasTag('trait');
+        })->map(function ($userItem) {
+            return $userItem->item->tag('trait')->getData();
+        })->flatten()->toArray();
+
+        return $featureIds;
+    }
+
+    /**
+     * Gets the trait list based on attached trait items.
+     *
+     * @param  string  $type
+     * @return array
+     */
+    public function getAttachedTraitSelect()
+    {
+        $selects = [];
+        $addedItems = UserItem::whereIn('id', array_keys($this->inventory))->get();
+        foreach($addedItems as $userItem){
+            if($userItem->item->hasTag('trait')){
+                $features = Feature::whereIn('id', $userItem->item->tag('trait')->getData());
+                $alreadyAddedFeatures = $this->features->whereIn('feature_id', $userItem->item->tag('trait')->getData());
+                $amount = $this->inventory[$userItem->id] - $alreadyAddedFeatures->count();
+                //add the select for each item
+                if($amount > 0){
+                    foreach(range(1,$amount) as $i){
+                        $choices = $features->whereNotIn('id', $alreadyAddedFeatures->pluck('id'))->orderBy('name')->pluck('name', 'id')->toArray();
+                        if(count($choices) > 0) $selects[] = $features->whereNotIn('id', $alreadyAddedFeatures->pluck('id'))->orderBy('name')->pluck('name', 'id')->toArray();
+                    }
+                }
+            }
+        }
+        return $selects;
     }
 
     /**

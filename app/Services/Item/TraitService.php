@@ -56,6 +56,7 @@ class TraitService extends Service
 
         try {
             if (!isset($data['feature_id'])) throw new \Exception("You must select a trait that this item should grant.");
+            $data['feature_id'] = array_filter($data['feature_id']);
             $tag->update(['data' => json_encode($data)]);
             return $this->commitReturn(true);
         } catch (\Exception $e) {
