@@ -410,12 +410,12 @@ class CharacterDesignUpdate extends Model
     }
 
     /**
-     * Gets the trait list based on attached trait items.
+     * Gets the selects list based on attached trait items.
      *
      * @param  string  $type
      * @return array
      */
-    public function getAttachedTraitSelect()
+    public function getAttachedTraitSelects()
     {
         $selects = [];
         $addedItems = UserItem::whereIn('id', array_keys($this->inventory))->get();
@@ -434,6 +434,27 @@ class CharacterDesignUpdate extends Model
             }
         }
         return $selects;
+    }
+
+    /**
+     * Gets the select list based on attached items.
+     *
+     * @param  string  $type
+     * @return array
+     */
+    public function getAttachedTraitSelect()
+    {
+        $select = [];
+        $addedItems = UserItem::whereIn('id', array_keys($this->inventory))->get();
+        foreach($addedItems as $userItem){
+            if($userItem->item->hasTag('trait')){
+                $features = Feature::whereIn('id', $userItem->item->tag('trait')->getData());
+                //add trait to select
+                $choices = $features->orderBy('name')->pluck('name', 'id')->toArray();
+                $select = $select + $choices;
+            }
+        }
+        return $select;
     }
 
     /**

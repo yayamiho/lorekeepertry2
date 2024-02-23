@@ -2039,6 +2039,7 @@ is_object($sender) ? $sender->id : null,
             if(!$species) throw new \Exception("Invalid species selected.");
             if($subtype && $subtype->species_id != $species->id) throw new \Exception("Subtype does not match the species.");
 
+
             // Clear old features
             $request->features()->delete();
 
@@ -2059,8 +2060,8 @@ is_object($sender) ? $sender->id : null,
 
                 // check trait was on og character OR is in an item, otherwise skip
                 if(!$request->isAttachedOrOnCharacter($featureId)) continue;
-
-                $feature = CharacterFeature::create(['character_image_id' => $request->id, 'feature_id' => $featureId, 'data' => $data['feature_data'][$key], 'character_type' => 'Update']);
+                if(!$request->features()->where('feature_id', $featureId)->count() > 0)
+                    CharacterFeature::create(['character_image_id' => $request->id, 'feature_id' => $featureId, 'data' => $data['feature_data'][$key], 'character_type' => 'Update']);
             }
 
             // Update other stats

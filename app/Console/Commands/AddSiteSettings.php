@@ -104,6 +104,7 @@ class AddSiteSettings extends Command
         $this->addSiteSetting('group_currency', 1, 'ID of the group currency to award from gallery submissions (if enabled).');
 
         $this->addSiteSetting('trait_remover_needed', 0, '0: No item needed to remove traits via design update. 1: Trait Remover item needed to remove traits via design update.');
+        $this->addSiteSetting('trait_per_item', 0, '0: One item unlocks x traits for selection, and x of them can be chosen. 1: One item unlocks x traits for selection, only one of them can be chosen.');
 
         $this->line("\nSite settings up to date!");
 

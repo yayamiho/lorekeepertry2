@@ -47,6 +47,11 @@
 
         <div class="form-group">
             {!! Form::label('Traits') !!}
+            @if(Settings::get('trait_per_item') == 0 && count($request->getAttachedTraitIds()) > 0 )<div><a href="#" class="btn btn-primary mb-2" id="add-feature">Add Trait</a></div>
+            @else
+            <i>You must attach a trait item in order to pick new traits for your character.</i>
+            @endif
+
             <div id="featureList">
                 {{-- Add in the compulsory traits for MYO slots --}}
                 @if($request->character->is_myo_slot && $request->character->image->features)
@@ -58,7 +63,6 @@
                         </div>
                     @endforeach
                 @endif
-
                 {{-- Add in the ones that currently exist --}}
                 @if($request->features)
                     @foreach($request->features as $feature)
@@ -82,7 +86,7 @@
                 @endif
             </div>
             <div class="feature-row hide mb-2">
-                {!! Form::select('feature_id[]', $features, null, ['class' => 'form-control mr-2 feature-select', 'placeholder' => 'Select Trait']) !!}
+                {!! Form::select('feature_id[]', $choiceFeatures, null, ['class' => 'form-control mr-2 feature-select', 'placeholder' => 'Select Trait']) !!}
                 {!! Form::text('feature_data[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Extra Info (Optional)']) !!}
                 <a href="#" class="remove-feature btn btn-danger mb-2">×</a>
             </div>
