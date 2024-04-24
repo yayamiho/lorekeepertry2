@@ -2001,6 +2001,8 @@ is_object($sender) ? $sender->id : null,
                 'user' => Arr::only(getDataReadyAssets($userAssets), ['user_items','currencies']),
                 'character' => Arr::only(getDataReadyAssets($characterAssets), ['currencies'])
             ]);
+            //make trait page red again once user changed items, so that they have to save again.
+            $request->has_features = false;
             $request->save();
 
             //clear features that the character does not originally have or has been added via item.
