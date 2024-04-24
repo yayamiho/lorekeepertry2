@@ -12,5 +12,12 @@ return [
     //     'version' => '1.0.0',
     // ],
     
-
+    'trait_item_tag' => [
+        'key' => 'trait_item_tag',
+        'wiki_key' => 'Trait_Item_Tag',
+        'creators' => json_encode([
+            'Cylunny' => 'https://toyhou.se/Cylunny',
+        ]),
+        'version' => '1.0.0',
+    ],
 ];
