@@ -13,7 +13,7 @@
 
 <div class="justify-content-center">
 
-        <div class="row d-flex align-items-end text-center" style="background:url('{{$userArea->area->backgroundImageUrl}}'); background-repeat:no-repeat; background-size:cover; min-height:450px;">
+        <div class="row d-flex align-items-end text-center justify-content-center" style="background:url('{{$userArea->area->backgroundImageUrl}}'); background-repeat:no-repeat; background-size:cover; min-height:450px;">
             @foreach(range(1 , $userArea->area->max_plots) as $i)
             @php $userPlot = \App\Models\User\UserPlot::where('plot_number', $i)->where('user_id', $user->id)->where('user_area_id', $userArea->id)->first() @endphp
             <div class="col-md-3 col-6 mb-2">
