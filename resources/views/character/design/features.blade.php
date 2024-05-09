@@ -70,7 +70,7 @@
                             <!--- Users no longer assign traits, this is done via addon trait item! Hence, turn this readonly --->
                             {!! Form::select('feature_id[]', $features, $feature->feature_id, ['class' => 'form-control mr-2 feature-select', 'readonly', 'style' => 'pointer-events: none;']) !!}
                             {!! Form::text('feature_data[]', $feature->data, ['class' => 'form-control mr-2', 'readonly']) !!}
-                            @if($request->canRemoveTrait($feature) || Settings::get('trait_remover_needed') == 0 )<a href="#" class="remove-feature btn btn-danger mb-2">×</a>@endif
+                            @if($request->canRemoveTrait() || Settings::get('trait_remover_needed') == 0 )<a href="#" class="remove-feature btn btn-danger mb-2">×</a>@endif
                         </div>
                     @endforeach
                 @endif
@@ -79,8 +79,7 @@
                         <div class="mb-2 d-flex">
                             <!--- These selects are built based on the trait item added and only allow the specified traits to be chosen! --->
                             {!! Form::select('feature_id[]', $itemFeature, array_key_first($itemFeature), ['class' => 'form-control mr-2 feature-select']) !!}
-                            {!! Form::text('feature_data[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Extra Info (Optional)']) !!}      
-                            @if($request->canRemoveTrait($itemFeature) || Settings::get('trait_remover_needed') == 0 )<a href="#" class="remove-feature btn btn-danger mb-2">×</a>@endif
+                            {!! Form::text('feature_data[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Extra Info (Optional)']) !!}
                         </div>
                     @endforeach
                 @endif

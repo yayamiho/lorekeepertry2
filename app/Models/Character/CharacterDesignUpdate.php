@@ -458,28 +458,18 @@ class CharacterDesignUpdate extends Model
     }
 
     /**
-     * Checks if a trait remover item was added to this request, allowing users to remove traits that are not set via item.
+     * Checks if a trait remover item was added to this request, allowing users to remove locked in traits.
      *
      * @param  string  $type
      * @return array
      */
-    public function canRemoveTrait($feature)
+    public function canRemoveTrait()
     {
         $addedItems = UserItem::whereIn('id', array_keys($this->inventory))->get();
-        $featureIds = $addedItems->filter(function ($userItem) {
-            return $userItem->item->hasTag('trait');
-        })->map(function ($userItem) {
-            return $userItem->item->tag('trait')->getData();
-        });
-        
         $traitRemover = $addedItems->filter(function ($userItem) {
             return $userItem->item->hasTag('trait_remover');
         })->first();
 
-        if(isset($traitRemover) && !$featureIds->contains($feature->id)){
-            return true;
-        } else {
-            return false;
-        }
+        return isset($traitRemover);
     }
 }
