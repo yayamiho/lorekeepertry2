@@ -1,4 +1,4 @@
-<div id="carouselDashboard" class="carousel slide" data-ride="carousel" data-interval="20000">
+<div id="carouselDashboard" class="carousel slide" data-ride="carousel" data-interval="{{ Settings::get('carousel_speed') }}">
     <div class="carousel-inner">
         @foreach (\App\Models\Carousel\Carousel::all() as $carousel)
             @if ($loop->first)

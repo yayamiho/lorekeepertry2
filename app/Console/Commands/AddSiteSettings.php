@@ -83,6 +83,8 @@ class AddSiteSettings extends Command {
 
         $this->addSiteSetting('comment_dislikes_enabled', 0, '0: Dislikes disabled, 1: Dislikes enabled.');
 
+        $this->addSiteSetting('carousel_speed', 10000, 'Speed of the carousel in milliseconds.');
+
         $this->line("\nSite settings up to date!");
     }
 
