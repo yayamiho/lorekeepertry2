@@ -105,6 +105,7 @@ main > .row {
     /*background-color: #eee;*/
     background-repeat: repeat;
     min-height: 200px;
+    text-align: center;
 }
 
 .navbar .navbar-brand, .navbar .nav-item {
@@ -201,6 +202,11 @@ main > .row {
     .site-header-image {
         display: none;
     }
+
+    .site-header-image #logo {
+        display: none;
+    }
+
     .site-mobile-header {
         display: block;
         position: fixed;
@@ -752,4 +758,12 @@ tr.accountbound {
 
 @media only screen and (max-width: 600px) {
     .comment_replies { padding-left:1rem;}
+}
+
+/* Logo *************************************************************************************/
+
+#logo {
+    max-height: 90%;
+    margin: 1%;
+    max-width: 90%;
 }
