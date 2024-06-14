@@ -19,19 +19,15 @@ class CarouselManager extends Service {
     /**
      * Uploads a file.
      *
-     * @param array  $file
-     * @param string $dir
-     * @param string $name
-     * @param bool   $isFileManager
+     * @param mixed $data
+     * @param mixed $user
      *
      * @return bool
      */
     public function createCarousel($data, $user) {
-
         DB::beginTransaction();
 
         try {
-
             $image = null;
             if (isset($data['image']) && $data['image']) {
                 $image = $data['image'];
@@ -52,7 +48,6 @@ class CarouselManager extends Service {
             }
 
             return $this->commitReturn($carousel);
-
         } catch (\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
@@ -63,7 +58,8 @@ class CarouselManager extends Service {
     /**
      * Deletes a file.
      *
-     * @param string $path
+     * @param mixed $carousel
+     * @param mixed $user
      *
      * @return bool
      */
@@ -81,5 +77,4 @@ class CarouselManager extends Service {
 
         return $this->rollbackReturn(false);
     }
-
 }

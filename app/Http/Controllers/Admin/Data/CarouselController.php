@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Admin\Data;
 
 use App\Http\Controllers\Controller;
-use App\Services\CarouselManager;
-use Illuminate\Http\Request;
 use App\Models\Carousel\Carousel;
+use App\Services\CarouselManager;
 use Auth;
+use Illuminate\Http\Request;
 
 class CarouselController extends Controller {
     /**
@@ -17,11 +17,10 @@ class CarouselController extends Controller {
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function getIndex($folder = null) {
-
         $carousels = Carousel::all();
 
         return view('admin.carousel.index', [
-            'carousels' => $carousels
+            'carousels' => $carousels,
         ]);
     }
 
@@ -34,7 +33,7 @@ class CarouselController extends Controller {
      */
     public function postUploadCarousel(Request $request, CarouselManager $service) {
         $request->validate(Carousel::$createRules);
-        $data = $request->only('image','alt_text','link');
+        $data = $request->only('image', 'alt_text', 'link');
 
         if ($service->createCarousel($data, Auth::user())) {
             flash('New carousel section uploaded successfully.')->success();
