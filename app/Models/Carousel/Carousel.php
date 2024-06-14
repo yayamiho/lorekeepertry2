@@ -5,14 +5,13 @@ namespace App\Models\Carousel;
 use App\Models\Model;
 
 class Carousel extends Model {
-
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'alt_text', 'link', 'extension', 'image'
+        'alt_text', 'link', 'extension', 'image',
     ];
 
     /**
@@ -29,7 +28,6 @@ class Carousel extends Model {
      */
     public $timestamps = true;
 
-
     /**
      * Validation rules for image creation.
      *
@@ -37,8 +35,8 @@ class Carousel extends Model {
      */
     public static $createRules = [
         'image'      => 'required|mimes:jpeg,jpg,gif,png,webp|max:20000',
-        'link' => 'required',
-        'alt_text'  => 'required',
+        'link'       => 'required',
+        'alt_text'   => 'required',
     ];
 
     /**
@@ -47,7 +45,7 @@ class Carousel extends Model {
      * @var array
      */
     public static $updateRules = [
-        'link' => 'required',
+        'link'      => 'required',
         'alt_text'  => 'required',
     ];
 
@@ -57,7 +55,7 @@ class Carousel extends Model {
 
     **********************************************************************************************/
 
-/**
+    /**
      * Gets the file directory containing the model's image.
      *
      * @return string
@@ -92,5 +90,4 @@ class Carousel extends Model {
     public function getImageUrlAttribute() {
         return asset($this->imageDirectory.'/'.$this->imageFileName);
     }
-
 }
