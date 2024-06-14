@@ -1,9 +1,9 @@
 <?php
 
 return [
-    'wiki_key' => 'Extension_Tracker',
+    'wiki_key' => 'Carousel',
     'creators' => json_encode([
-        'Uri' => 'https://github.com/preimpression/',
+        'Uri' => 'https://github.com/perappu',
     ]),
-    'version'  => '1.4.0',
+    'version'  => '3.0.0',
 ];
