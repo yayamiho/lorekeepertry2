@@ -1,9 +1,9 @@
 <?php
 
 return [
-    'wiki_key' => 'Logo',
+    'wiki_key' => 'Extension_Tracker',
     'creators' => json_encode([
-        'Uri' => 'https://github.com/perappu/',
+        'Uri' => 'https://github.com/preimpression/',
     ]),
-    'version'  => '3.0.0',
+    'version'  => '1.4.0',
 ];
