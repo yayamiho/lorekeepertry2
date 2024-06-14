@@ -30,6 +30,7 @@
             <th>Action</th>
             <th>Action Details</th>
             <th>Date</th>
+            <th>Delete</th>
         </thead>
         <tbody>
             @foreach ($logs as $log)

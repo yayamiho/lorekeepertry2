@@ -194,6 +194,10 @@ return [
                 'name' => 'Items',
                 'url'  => 'admin/data/items',
             ],
+            [
+                'name' => 'Carousel',
+                'url'  => 'admin/data/carousel',
+            ],
         ],
     ],
     'Raffles'    => [
