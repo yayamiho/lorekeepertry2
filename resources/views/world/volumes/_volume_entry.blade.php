@@ -4,6 +4,11 @@
             <h3>{!! $volume->volumeName(Auth::user() ?? null, $isAdmin ?? false) !!}
                 @include('world.volumes._volume_icons', ['volume' => $volume])
             </h3>
+            @if ($volume->isUnlocked(Auth::user() ?? null))
+                @if ($volume->imageUrl)
+                    <img src="{{ $volume->imageUrl }}" class="img-fluid mb-2" />
+                @endif
+            @endif
             @if ($volume->summary)
                 <p>{!! $volume->volumeSummary(Auth::user() ?? null, $isAdmin ?? false) !!}</p>
             @endif

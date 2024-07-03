@@ -16,7 +16,6 @@
                             {!! $tag->displayName !!}{{ !$loop->last ? ',' : '' }}
                         @endforeach
                     </li>
-                    <br>
                 @endif
                 @if ($book->authors->count())
                     <li class="list-group-item">
@@ -30,6 +29,7 @@
                         @endforeach
                     </li>
                 @endif
+                <hr class="my-4 w-75" />
                 <div class="world-entry-text">
                     {!! $book->parsed_description !!}
                 </div>

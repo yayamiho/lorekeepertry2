@@ -17,11 +17,12 @@
                     <div>
                         <strong>In {{ __('volumes.book') }}: {!! $volume->book->displayName !!}</strong>
                     </div>
-                    <br>
                 @endif
+                <hr class="my-4 w-75" />
                 <div class="world-entry-text">
                     {!! $volume->volumeDesc(Auth::user() ?? null, $isAdmin ?? false) !!}
                 </div>
+                <hr class="my-4 w-75" />
             </div>
             <div class="col text-center">
                 @if ($volume->prevNextVolume('previous'))
