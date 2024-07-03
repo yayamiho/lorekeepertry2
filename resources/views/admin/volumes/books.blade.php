@@ -24,6 +24,9 @@
                     <td>
                         {!! $book->displayName !!}
                     </td>
+                    <td>
+                        {!! $book->bookshelf ? $book->bookshelf->displayName : '' !!}
+                    </td>
                     <td class="text-right">
                         <a href="{{ url('admin/data/volumes/books/edit/'.$book->id) }}" class="btn btn-primary">Edit</a>
                     </td>

@@ -23,7 +23,7 @@
         <h2 class="text-center">{{ __('volumes.volumes') }}</h2>
         <div class="row">
             @foreach ($book->volumes as $volume)
-                @include('world.volumes._volume_entry', ['volume' => $volume, 'isAdmin' => false])
+                @include('world.volumes._volume_entry', ['volume' => $volume])
             @endforeach
         </div>
     @endif

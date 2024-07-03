@@ -98,7 +98,11 @@ class BookService extends Service
                 // Next, try to delete the tag item. If successful, we can grant the volume.
                 if ((new InventoryManager)->debitStack($stack->user, 'Book Used', ['data' => ''], $stack, $data['quantities'][$key])) {
                     for ($q = 0; $q < $data['quantities'][$key]; $q++) {
-                        $book = Book::find($stack->item->tag($data['tag'])->getData()['book_id']);
+                        $book = Book::visible()->find($stack->item->tag($data['tag'])->getData()['book_id']);
+
+                        if(!isset($book)){
+                            throw new \Exception('Invalid '.__('volumes.book').'.');
+                        }
 
                         if (!$book->volumes) {
                             throw new \Exception('This ' . __('volumes.book') . ' doesn\'t contain any ' . __('volumes.volumes') . '. Contact an admin.');

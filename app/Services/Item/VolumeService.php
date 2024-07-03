@@ -98,7 +98,11 @@ class VolumeService extends Service
                 // Next, try to delete the tag item. If successful, we can grant the volume.
                 if ((new InventoryManager)->debitStack($stack->user, 'Volume Used', ['data' => ''], $stack, $data['quantities'][$key])) {
                     for ($q = 0; $q < $data['quantities'][$key]; $q++) {
-                        $volume = Volume::find($stack->item->tag($data['tag'])->getData()['volume_id']);
+                        $volume = Volume::visible()->find($stack->item->tag($data['tag'])->getData()['volume_id']);
+
+                        if(!isset($volume)){
+                            throw new \Exception('Invalid '.__('volumes.volume').'.');
+                        }
 
                         if($user->volumes->contains($volume)) {
                             throw new \Exception('You already have this '.__('volumes.volume').'.');

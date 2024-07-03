@@ -12,9 +12,8 @@
     {!! breadcrumbs([
         'World' => 'world',
         __('volumes.library') => 'world/' . __('volumes.library'),
-        Auth::check() && Auth::user()->hasVolume($volume->id) ? $volume->name : '???' => $volume->idUrl,
+        $volume->volumeName(Auth::user() ?? null, $isAdmin ?? false) => $volume->idUrl,
     ]) !!}
 
-    @include('world.volumes._volume_page_entry', ['volume' => $volume, 'isAdmin' => false])
-
+    @include('world.volumes._volume_page_entry', ['volume' => $volume])
 @endsection

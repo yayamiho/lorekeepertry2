@@ -2,10 +2,9 @@
 
 namespace App\Models\Volume;
 
-use Config;
-use DB;
 use App\Models\Model;
 use App\Models\User\UserVolume;
+use Auth;
 
 class Volume extends Model
 {
@@ -15,7 +14,7 @@ class Volume extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'has_image','description', 'parsed_description', 'is_visible', 'book_id','summary','is_global'
+        'name', 'has_image', 'description', 'parsed_description', 'is_visible', 'book_id', 'summary', 'is_global', 'authors', 'character_authors',
     ];
 
     protected $appends = ['image_url'];
@@ -50,8 +49,8 @@ class Volume extends Model
     ];
 
     /**********************************************************************************************
-        RELATIONS
-    **********************************************************************************************/
+    RELATIONS
+     **********************************************************************************************/
 
     /**
      * Get the users who have this volume.
@@ -69,10 +68,9 @@ class Volume extends Model
         return $this->belongsTo('App\Models\Volume\Book', 'book_id');
     }
 
-
     /**********************************************************************************************
-        SCOPES
-    **********************************************************************************************/
+    SCOPES
+     **********************************************************************************************/
 
     /**
      * Scope a query to sort items in alphabetical order.
@@ -114,16 +112,18 @@ class Volume extends Model
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeVisible($query, $withHidden = 0)
+    public function scopeVisible($query, $user = null)
     {
-        if($withHidden) return $query;
+        if ($user && $user->hasPower('edit_data')) {
+            return $query;
+        }
+
         return $query->where('is_visible', 1);
     }
 
-
     /**********************************************************************************************
-        ACCESSORS
-    **********************************************************************************************/
+    ACCESSORS
+     **********************************************************************************************/
 
     /**
      * Gets the URL of the individual volume's page, by ID.
@@ -132,7 +132,7 @@ class Volume extends Model
      */
     public function getIdUrlAttribute()
     {
-        return url('world/'.__('volumes.library').'/'.__('volumes.volume').'/'.$this->id);
+        return url('world/' . __('volumes.library') . '/' . __('volumes.volume') . '/' . $this->id);
     }
 
     /**
@@ -142,7 +142,11 @@ class Volume extends Model
      */
     public function getDisplayNameAttribute()
     {
-        return '<a href="'.$this->idUrl.'" class="display-item">'.$this->name.'</a>';
+        if (!$this->is_visible) {
+            return '<i class="fas fa-eye-slash"></i> <a href="' . $this->idUrl . '" class="display-item">' . $this->name . '</a>';
+        }
+        return '<a href="' . $this->idUrl . '" class="display-item">' . $this->name . '</a>';
+
     }
 
     /**
@@ -182,7 +186,10 @@ class Volume extends Model
      */
     public function getImageUrlAttribute()
     {
-        if (!$this->has_image) return null;
+        if (!$this->has_image) {
+            return null;
+        }
+
         return asset($this->imageDirectory . '/' . $this->imageFileName);
     }
 
@@ -196,14 +203,78 @@ class Volume extends Model
         return 'volumes';
     }
 
-     /**
+    /**
      * global check for if any users have this volume
      *
      * @return bool
      */
     public function checkGlobal()
     {
-        $users = UserVolume::where('volume_id', $this->id)->count();
-        return $users;
+        if (!$this->is_global) {
+            return false;
+        } elseif ($this->is_global && UserVolume::where('volume_id', $this->id)->exists()) {
+            return true;
+        }
+        return false;
     }
+
+    public function prevNextVolume($type)
+    {
+        if (!$this->book_id) {
+            return null;
+        }
+        $query = Volume::visible(Auth::user() ?? null)->where('book_id', $this->book_id);
+
+        if ($query->count()) {
+            $query = $query->orderBy('sort', 'DESC')->get();
+
+            if ($type == 'next') {
+                $vol = $query->where('sort', '<', $this->sort)->first();
+            } else {
+                $vol = $query->where('sort', '>', $this->sort)->last();
+            }
+        }
+
+        if (!isset($vol)) {
+            return null;
+        }
+        return $vol ?? null;
+    }
+
+    public function volumeName($user, $isAdmin = false)
+    {
+        if ($this->isUnlocked($user, $isAdmin)) {
+            return $this->displayName;
+        }
+        return '<i>?????</i>';
+
+    }
+
+    public function volumeSummary($user, $isAdmin = false)
+    {
+        if ($this->isUnlocked($user, $isAdmin)) {
+            return $this->summary;
+        }
+        return '<i>?????</i>';
+
+    }
+
+    public function volumeDesc($user, $isAdmin = false)
+    {
+        if ($this->isUnlocked($user, $isAdmin)) {
+            return $this->parsed_description;
+        }
+        return '<i>?????</i>';
+
+    }
+
+    public function isUnlocked($user, $isAdmin = false)
+    {
+        if ($isAdmin || $user && $user->hasVolume($this->id) || $this->checkGlobal() || $this->book && $this->book->is_public) {
+            return true;
+        }
+        return false;
+
+    }
+
 }

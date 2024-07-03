@@ -30,4 +30,8 @@ return [
     'libraries' => 'libraries',               // use __
     'libraries_' => 'library|libraries',    // Use trans_choice instead of __
 
+    'bookshelf' => 'bookshelf',                         // use __
+    'bookshelves' => 'bookshelves',                       // use __
+    'bookshelves_' => 'bookshelf|bookshelves',                // Use trans_choice instead of __
+
 ];

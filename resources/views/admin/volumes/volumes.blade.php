@@ -9,9 +9,11 @@
 
 <p>This is a list of {{ __('volumes.volumes') }} in the game that users can find and collect.</p> 
 <p>
-<div class="text-right mb-3"><a class="btn btn-primary" href="{{ url('admin/data/volumes/books') }}"><i class="fas fa-folder"></i> {{ ucfirst(__('volumes.books')) }}</a></div>
-
-<div class="text-right mb-3"><a class="btn btn-primary" href="{{ url('admin/data/volumes/create') }}"><i class="fas fa-plus"></i> Create New {{ ucfirst(__('volumes.volume')) }}</a></div>
+<div class="text-right form-group">
+    <a class="btn btn-primary" href="{{ url('admin/data/volumes/bookshelves') }}"><i class="fas fa-folder"></i> {{ ucfirst(__('volumes.bookshelves')) }}</a>
+    <a class="btn btn-primary" href="{{ url('admin/data/volumes/books') }}"><i class="fas fa-folder"></i> {{ ucfirst(__('volumes.books')) }}</a>
+<a class="btn btn-primary" href="{{ url('admin/data/volumes/create') }}"><i class="fas fa-plus"></i> Create New {{ ucfirst(__('volumes.volume')) }}</a>
+</div>
 
 <div>
     {!! Form::open(['method' => 'GET', 'class' => 'form-inline justify-content-end']) !!}
@@ -38,9 +40,7 @@
         <thead>
             <tr>
                 <th>Name</th>
-                <th>Is Visible</th>
                 <th>{{ ucfirst(__('volumes.book')) }}</th>
-                <th>Is Global</th>
                 <th></th>
             </tr>
         </thead>
@@ -48,11 +48,9 @@
             @foreach($volumes as $volume)
                 <tr class="sort-item" data-id="{{ $volume->id }}">
                     <td>
-                        {{ $volume->name }}
+                        {!! $volume->displayName !!} @include('world.volumes._volume_icons', ['volume' => $volume])
                     </td>
-                    <td>{{ $volume->is_visible ? 'Active' : '' }}</td>
-                    <td> {{ $volume->book ? $volume->book->name : '' }} </td>
-                    <td>{{ $volume->is_global ? 'Global' : '' }}</td>
+                    <td> {!! $volume->book ? $volume->book->displayName : '' !!} </td>
                     <td class="text-right">
                         <a href="{{ url('admin/data/volumes/edit/'.$volume->id) }}" class="btn btn-primary">Edit</a>
                     </td>
@@ -64,3 +62,4 @@
 @endif
 
 @endsection
+
