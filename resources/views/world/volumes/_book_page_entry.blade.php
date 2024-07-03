@@ -18,6 +18,18 @@
                     </li>
                     <br>
                 @endif
+                @if ($book->authors->count())
+                    <li class="list-group-item">
+                        <strong>Authors:</strong>
+                        @foreach ($book->authors as $author)
+                            {!! $author->displayLink() !!}
+                            @if ($author->credit_type)
+                                ({{ $author->credit_type }})
+                            @endif
+                            {{ !$loop->last ? ',' : '' }}
+                        @endforeach
+                    </li>
+                @endif
                 <div class="world-entry-text">
                     {!! $book->parsed_description !!}
                 </div>
