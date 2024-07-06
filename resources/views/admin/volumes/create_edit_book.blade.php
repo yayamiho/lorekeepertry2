@@ -59,6 +59,26 @@
             </div>
         </div>
     </div>
+    <h5>{{ucfirst(__('volumes.volume'))}} Prefix</h5>
+    <p>You can set a prefix for this {{__('volumes.book')}}'s {{__('volumes.volumes')}}. It can be text, a number, or both. Example: "Chapter" for text, and "number" for numeric will output "Chapter 1", "Chapter 2", etc.</p>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                {!! Form::label('text_prefix', 'Text Prefix', ['class' => 'form-check-label ml-3']) !!} {!! add_help('Give this  ' . __('volumes.book') . '\'s  ' . __('volumes.volumes') . ' a prefix before their names.') !!}
+                {!! Form::text('text_prefix', $book->text_prefix, [
+                    'class' => 'form-control',
+                ]) !!}
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                {!! Form::label('numeric_prefix', 'Numeric Prefix', ['class' => 'form-check-label ml-3']) !!} {!! add_help('Give this  ' . __('volumes.book') . '\'s  ' . __('volumes.volumes') . ' a prefix before their names.') !!}
+                {!! Form::select('numeric_prefix', ['0' => 'No Prefix', '1' => 'Number (1, 2)', '2' => 'Roman Numeral (I, II)'], $book->numeric_prefix, [
+                    'class' => 'form-control',
+                ]) !!}
+            </div>
+        </div>
+    </div>
 
     <div class="form-group">
         {!! Form::label('World Page Image (Optional)') !!} {!! add_help('This image is used only on the world information pages.') !!}
@@ -104,7 +124,7 @@
 
 
     <div class="text-right">
-        {!! Form::submit($book->id ? 'Edit' : 'Create', ['class' => 'btn btn-primary']) !!}
+        {!! Form::submit($book->id ? 'Edit Book' : 'Create', ['class' => 'btn btn-primary']) !!}
     </div>
 
     {!! Form::close() !!}
@@ -210,7 +230,7 @@
         </table>
 
         <div class="text-right">
-            {!! Form::submit('Edit', ['class' => 'btn btn-primary']) !!}
+            {!! Form::submit('Edit Authors', ['class' => 'btn btn-primary']) !!}
         </div>
         {!! Form::close() !!}
 

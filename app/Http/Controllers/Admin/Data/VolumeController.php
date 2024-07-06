@@ -231,7 +231,7 @@ class VolumeController extends Controller
     {
         $id ? $request->validate(Book::$updateRules) : $request->validate(Book::$createRules);
         $data = $request->only([
-            'name', 'description', 'image', 'remove_image', 'summary', 'is_visible', 'bookshelf_id', 'next_image', 'remove_next_image', 'is_public', 'tags',
+            'name', 'description', 'image', 'remove_image', 'summary', 'is_visible', 'bookshelf_id', 'next_image', 'remove_next_image', 'is_public', 'tags','numeric_prefix','text_prefix'
         ]);
         if ($id && $service->updateBook(Book::find($id), $data, Auth::user())) {
             flash(ucfirst(__('volumes.book')) . ' updated successfully.')->success();

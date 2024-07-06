@@ -339,6 +339,10 @@ class VolumeService extends Service
             $data['is_public'] = 0;
         }
 
+        if (!isset($data['numeric_prefix'])) {
+            $data['numeric_prefix'] = 0;
+        }
+
         return $data;
     }
 
@@ -386,8 +390,8 @@ class VolumeService extends Service
         DB::beginTransaction();
 
         try {
-            // explode the sort array and reverse it since the order is inverted
-            $sort = array_reverse(explode(',', $data));
+            // explode the sort array
+            $sort = explode(',', $data);
 
             foreach ($sort as $key => $s) {
                 Volume::where('book_id', $book->id)->where('id', $s)->update(['sort' => $key]);

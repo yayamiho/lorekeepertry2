@@ -143,9 +143,9 @@ class Volume extends Model
     public function getDisplayNameAttribute()
     {
         if (!$this->is_visible) {
-            return '<i class="fas fa-eye-slash"></i> <a href="' . $this->idUrl . '" class="display-item">' . $this->name . '</a>';
+            return '<i class="fas fa-eye-slash"></i> <a href="' . $this->idUrl . '" class="display-item">' . $this->volumePrefix() . $this->name . '</a>';
         }
-        return '<a href="' . $this->idUrl . '" class="display-item">' . $this->name . '</a>';
+        return '<a href="' . $this->idUrl . '" class="display-item">' . $this->volumePrefix() . $this->name . '</a>';
 
     }
 
@@ -277,4 +277,60 @@ class Volume extends Model
 
     }
 
+    /**
+     * Get the chapter/number prefix
+     *
+     * @return string
+     */
+    public function volumePrefix()
+    {
+        if (!$this->book_id) {
+            return null;
+        }
+
+        $num = $this->sort + 1;
+        switch ($this->book->numeric_prefix) {
+            case '0':
+                $numeric = null;
+                break;
+            case '1':
+                $numeric = $num;
+                break;
+            case '2':
+                $numeric = $this->numberToRomanRepresentation($num);
+                break;
+        }
+        if (is_null($numeric) && !$this->book->text_prefix) {
+            return null;
+        }
+
+        if (!is_null($numeric) && $this->book->text_prefix) {
+            //just getting a space between the prefices
+            return $this->book->text_prefix . ' '. $numeric . ': ';
+        }
+
+        return $this->book->text_prefix . $numeric . ': ';
+    }
+
+    /**
+     * Get a roman numeral for the sort number
+     * https://stackoverflow.com/questions/14994941/numbers-to-roman-numbers-with-php
+     *
+     * @return string
+     */
+    public function numberToRomanRepresentation($number)
+    {
+        $map = array('M' => 1000, 'CM' => 900, 'D' => 500, 'CD' => 400, 'C' => 100, 'XC' => 90, 'L' => 50, 'XL' => 40, 'X' => 10, 'IX' => 9, 'V' => 5, 'IV' => 4, 'I' => 1);
+        $returnValue = '';
+        while ($number > 0) {
+            foreach ($map as $roman => $int) {
+                if ($number >= $int) {
+                    $number -= $int;
+                    $returnValue .= $roman;
+                    break;
+                }
+            }
+        }
+        return $returnValue;
+    }
 }

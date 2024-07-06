@@ -14,7 +14,7 @@ class Book extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'has_image', 'description', 'parsed_description', 'is_visible', 'summary', 'bookshelf_id', 'has_next', 'is_public', 'sort',
+        'name', 'has_image', 'description', 'parsed_description', 'is_visible', 'summary', 'bookshelf_id', 'has_next', 'is_public', 'sort','numeric_prefix','text_prefix'
     ];
 
     protected $appends = ['image_url'];
@@ -57,7 +57,7 @@ class Book extends Model
      */
     public function volumes()
     {
-        return $this->hasMany('App\Models\Volume\Volume')->where('book_id', $this->id)->visible(Auth::user() ?? null)->orderBy('sort', 'DESC');
+        return $this->hasMany('App\Models\Volume\Volume')->where('book_id', $this->id)->visible(Auth::user() ?? null)->orderBy('sort', 'ASC');
     }
 
     /**
