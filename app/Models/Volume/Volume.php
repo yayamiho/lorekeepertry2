@@ -228,7 +228,7 @@ class Volume extends Model
         if ($query->count()) {
             $query = $query->orderBy('sort', 'DESC')->get();
 
-            if ($type == 'next') {
+            if ($type == 'previous') {
                 $vol = $query->where('sort', '<', $this->sort)->first();
             } else {
                 $vol = $query->where('sort', '>', $this->sort)->last();
