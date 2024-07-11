@@ -13,9 +13,9 @@
 
     @if ($default->count())
         <h4>Default</h4>
-        <div class="row mb-3">
+        <div class="row">
             @foreach ($default as $border)
-                <div class="class="col-md-3 col-6 mb-3 text-center">
+                <div class="col-md-3 col-6 text-center">
                     <div class="shop-image">
                         {!! $border->preview($user->id) !!}
                     </div>
@@ -28,9 +28,9 @@
     @endif
     @if ($user->borders->count())
         <h4>Unlocked</h4>
-        <div class="row mb-3">
+        <div class="row">
             @foreach ($user->borders as $border)
-                <div class="class="col-md-3 col-6 mb-3 text-center">
+                <div class="col-md-3 col-6 text-center">
                     <div class="shop-image">
                         {!! $border->preview($user->id) !!}
                     </div>
@@ -45,9 +45,9 @@
         @if ($admin->count())
             <h4>Staff-Only</h4>
             <small>{!! $user->displayName !!} has access to these as a member of staff</small>
-            <div class="row mb-3">
+            <div class="row">
                 @foreach ($admin as $border)
-                    <div class="class="col-md-3 col-6 mb-3 text-center">
+                    <div class="col-md-3 col-6 text-center">
                         <div class="shop-image">
                             {!! $border->preview($user->id) !!}
                         </div>
