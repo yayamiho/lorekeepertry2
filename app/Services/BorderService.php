@@ -1,16 +1,12 @@
 <?php namespace App\Services;
 
-use App\Services\Service;
-
-use DB;
-use Config;
-use Image;
-use Carbon\Carbon;
-
-use App\Models\Border\BorderCategory;
 use App\Models\Border\Border;
-use App\Models\User\UserBorder;
+use App\Models\Border\BorderCategory;
 use App\Models\User\User;
+use App\Models\User\UserBorder;
+use App\Services\Service;
+use Carbon\Carbon;
+use DB;
 use Notifications;
 
 class BorderService extends Service
@@ -22,13 +18,13 @@ class BorderService extends Service
     |
     | Handles the creation and editing of border categories and borders.
     |
-    */
+     */
 
     /**********************************************************************************************
-        
-        BORDER CATEGORIES
 
-    **********************************************************************************************/
+    BORDER CATEGORIES
+
+     **********************************************************************************************/
 
     /**
      * Create a category.
@@ -46,19 +42,22 @@ class BorderService extends Service
             $data = $this->populateCategoryData($data);
 
             $image = null;
-            if(isset($data['image']) && $data['image']) {
+            if (isset($data['image']) && $data['image']) {
                 $data['has_image'] = 1;
                 $image = $data['image'];
                 unset($data['image']);
+            } else {
+                $data['has_image'] = 0;
             }
-            else $data['has_image'] = 0;
 
             $category = BorderCategory::create($data);
 
-            if ($image) $this->handleImage($image, $category->categoryImagePath, $category->categoryImageFileName);
+            if ($image) {
+                $this->handleImage($image, $category->categoryImagePath, $category->categoryImageFileName);
+            }
 
             return $this->commitReturn($category);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -78,24 +77,27 @@ class BorderService extends Service
 
         try {
             // More specific validation
-            if(BorderCategory::where('name', $data['name'])->where('id', '!=', $category->id)->exists()) throw new \Exception("The name has already been taken.");
+            if (BorderCategory::where('name', $data['name'])->where('id', '!=', $category->id)->exists()) {
+                throw new \Exception("The name has already been taken.");
+            }
 
             $data = $this->populateCategoryData($data, $category);
 
             $image = null;
-            if(isset($data['image']) && $data['image']) {
+            if (isset($data['image']) && $data['image']) {
                 $data['has_image'] = 1;
                 $image = $data['image'];
                 unset($data['image']);
             }
-            else $data['has_image'] = 0;
 
             $category->update($data);
 
-            if ($image) $this->handleImage($image, $category->categoryImagePath, $category->categoryImageFileName);
+            if ($image) {
+                $this->handleImage($image, $category->categoryImagePath, $category->categoryImageFileName);
+            }
 
             return $this->commitReturn($category);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -110,14 +112,14 @@ class BorderService extends Service
      */
     private function populateCategoryData($data, $category = null)
     {
-        if(isset($data['description']) && $data['description'])
+        if (isset($data['description']) && $data['description']) {
             $data['parsed_description'] = parse($data['description']);
-        else $data['parsed_description'] = null;
+        } else {
+            $data['parsed_description'] = null;
+        }
 
-        if(isset($data['remove_image']))
-        {
-            if($category && $category->has_image && $data['remove_image'])
-            {
+        if (isset($data['remove_image'])) {
+            if ($category && $category->has_image && $data['remove_image']) {
                 $data['has_image'] = 0;
                 $this->deleteImage($category->categoryImagePath, $category->categoryImageFileName);
             }
@@ -139,13 +141,18 @@ class BorderService extends Service
 
         try {
             // Check first if the category is currently in use
-            if(Border::where('border_category_id', $category->id)->exists()) throw new \Exception("An border with this category exists. Please change its category first.");
+            if (Border::where('border_category_id', $category->id)->exists()) {
+                throw new \Exception("An border with this category exists. Please change its category first.");
+            }
 
-            if($category->has_image) $this->deleteImage($category->categoryImagePath, $category->categoryImageFileName);
+            if ($category->has_image) {
+                $this->deleteImage($category->categoryImagePath, $category->categoryImageFileName);
+            }
+
             $category->delete();
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -165,22 +172,22 @@ class BorderService extends Service
             // explode the sort array and reverse it since the order is inverted
             $sort = array_reverse(explode(',', $data));
 
-            foreach($sort as $key => $s) {
+            foreach ($sort as $key => $s) {
                 BorderCategory::where('id', $s)->update(['sort' => $key]);
             }
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
     }
 
     /**********************************************************************************************
-     
-        BORDERS
 
-    **********************************************************************************************/
+    BORDERS
+
+     **********************************************************************************************/
 
     /**
      * Creates a new border.
@@ -194,26 +201,42 @@ class BorderService extends Service
         DB::beginTransaction();
 
         try {
-            if(isset($data['border_category_id']) && $data['border_category_id'] == 'none') $data['border_category_id'] = null;
+            if (isset($data['border_category_id']) && $data['border_category_id'] == 'none') {
+                $data['border_category_id'] = null;
+            }
 
-            if((isset($data['border_category_id']) && $data['border_category_id']) && !BorderCategory::where('id', $data['border_category_id'])->exists()) throw new \Exception("The selected border category is invalid.");
+            if ((isset($data['border_category_id']) && $data['border_category_id']) && !BorderCategory::where('id', $data['border_category_id'])->exists()) {
+                throw new \Exception("The selected border category is invalid.");
+            }
 
             $image = null;
-            if(isset($data['image']) && $data['image']) {
+            if (isset($data['image']) && $data['image']) {
                 $image = $data['image'];
                 unset($data['image']);
             }
 
+            $layer_image = null;
+            if (isset($data['layer_image']) && $data['layer_image']) {
+                $data['has_layer'] = 1;
+                $layer_image = $data['layer_image'];
+                unset($data['layer_image']);
+            } else {
+                $data['has_layer'] = 0;
+            }
+
             $data = $this->populateData($data);
-
-            $data['item_id'] = 1;
-
+            
             $border = Border::create($data);
 
-            if ($image) $this->handleImage($image, $border->imagePath, $border->imageFileName);
+            if ($image) {
+                $this->handleImage($image, $border->imagePath, $border->imageFileName);
+            }
+            if ($layer_image) {
+                $this->handleImage($layer_image, $border->imagePath, $border->layerFileName);
+            }
 
             return $this->commitReturn($border);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -232,29 +255,49 @@ class BorderService extends Service
         DB::beginTransaction();
 
         try {
-            if(isset($data['border_category_id']) && $data['border_category_id'] == 'none') $data['border_category_id'] = null;
+            if (isset($data['border_category_id']) && $data['border_category_id'] == 'none') {
+                $data['border_category_id'] = null;
+            }
 
             // More specific validation
-            if(Border::where('name', $data['name'])->where('id', '!=', $border->id)->exists()) throw new \Exception("The name has already been taken.");
-            if((isset($data['border_category_id']) && $data['border_category_id']) && !BorderCategory::where('id', $data['border_category_id'])->exists()) throw new \Exception("The selected border category is invalid.");
+            if (Border::where('name', $data['name'])->where('id', '!=', $border->id)->exists()) {
+                throw new \Exception("The name has already been taken.");
+            }
+
+            if ((isset($data['border_category_id']) && $data['border_category_id']) && !BorderCategory::where('id', $data['border_category_id'])->exists()) {
+                throw new \Exception("The selected border category is invalid.");
+            }
 
             $image = null;
-            if(isset($data['image']) && $data['image']) {
+            if (isset($data['image']) && $data['image']) {
                 $image = $data['image'];
+            }
+
+            $layer_image = null;
+            if (isset($data['layer_image']) && $data['layer_image']) {
+                $data['has_layer'] = 1;
+                $layer_image = $data['layer_image'];
+                unset($data['layer_image']);
             }
 
             $data = $this->populateData($data, $border);
 
-            // If either image is being reuploaded, process
-            if(isset($data['image'])) {
-                if ($image) $this->handleImage($image, $border->imagePath, $border->imageFileName);
+            if (isset($data['image'])) {
+                if ($image) {
+                    $this->handleImage($image, $border->imagePath, $border->imageFileName);
+                }
+
                 unset($data['image']);
+            }
+
+            if ($layer_image) {
+                $this->handleImage($layer_image, $border->imagePath, $border->layerFileName);
             }
 
             $border->update($data);
 
             return $this->commitReturn($border);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -269,20 +312,35 @@ class BorderService extends Service
      */
     private function populateData($data, $border = null)
     {
-        if(isset($data['description']) && $data['description'])
+        if (isset($data['description']) && $data['description']) {
             $data['parsed_description'] = parse($data['description']);
-        else $data['parsed_description'] = null;
+        } else {
+            $data['parsed_description'] = null;
+        }
 
         // Check toggle
-        if(!isset($data['is_default']))
+        if (!isset($data['is_default'])) {
             $data['is_default'] = 0;
+        }
 
-        if(!isset($data['is_active'])) $data['is_active'] = 0;
-        if(!isset($data['admin_only'])) $data['admin_only'] = 0;
+        if (!isset($data['is_active'])) {
+            $data['is_active'] = 0;
+        }
+
+        if (!isset($data['admin_only'])) {
+            $data['admin_only'] = 0;
+        }
+
+        if (isset($data['remove_layer_image'])) {
+            if ($border && $border->has_layer) {
+                $data['has_layer'] = 0;
+                $this->deleteImage($border->imagePath, $border->layerFileName);
+            }
+            unset($data['remove_layer_image']);
+        }
 
         return $data;
     }
-
 
     /**
      * Deletes a border.
@@ -296,29 +354,36 @@ class BorderService extends Service
 
         try {
             // Check first if the border is currently owned or if some other site feature uses it
-            if(UserBorder::where('border_id', $border->id)->exists()) throw new \Exception("At least one user currently owns this border. Please remove the border(s) before deleting it.");
+            if (UserBorder::where('border_id', $border->id)->exists()) {
+                throw new \Exception("At least one user currently owns this border. Please remove the border(s) before deleting it.");
+            }
 
             DB::table('user_borders')->where('border_id', $border->id)->delete();
 
             $this->deleteImage($border->imagePath, $border->imageFileName);
 
+            if ($border->has_layer) {
+                $this->deleteImage($border->imagePath, $border->layerFileName);
+            }
+
+            $border->variants()->delete();
+
             // Delete the border itself
             $border->delete();
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
     }
 
-     /**********************************************************************************************
-     
-        BORDER GRANTS
+    /**********************************************************************************************
 
-    **********************************************************************************************/
+    BORDER GRANTS
 
-    
+     **********************************************************************************************/
+
     /**
      * Admin function for granting borders to multiple users.
      *
@@ -333,31 +398,32 @@ class BorderService extends Service
         try {
             // Process names
             $users = User::find($data['names']);
-            if(count($users) != count($data['names'])) throw new \Exception("An invalid user was selected.");
+            if (count($users) != count($data['names'])) {
+                throw new \Exception("An invalid user was selected.");
+            }
 
             // Process borders
             $borders = Border::find($data['border_ids']);
-            if(!$borders) throw new \Exception("Invalid borders selected.");
+            if (!$borders) {
+                throw new \Exception("Invalid borders selected.");
+            }
 
-            foreach($users as $user) {
-                foreach($borders as $border) {   
-                    if($this->creditBorder($staff, $user, null, 'Staff Grant', array_only($data, ['data']), $border))
-                    {
+            foreach ($users as $user) {
+                foreach ($borders as $border) {
+                    if ($this->creditBorder($staff, $user, null, 'Staff Grant', array_only($data, ['data']), $border)) {
                         Notifications::create('BORDER_GRANT', $user, [
                             'border_name' => $border->name,
                             'sender_url' => $staff->url,
                             'sender_name' => $staff->name,
-                            'recipient_name' => $user->name
+                            'recipient_name' => $user->name,
                         ]);
-                    }
-                    else
-                    {
-                        throw new \Exception("Failed to credit borders to ".$user->name.".");
+                    } else {
+                        throw new \Exception("Failed to credit borders to " . $user->name . ".");
                     }
                 }
             }
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch (\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -369,7 +435,7 @@ class BorderService extends Service
      * @param  \App\Models\User\User                        $sender
      * @param  \App\Models\User\User                        $recipient
      * @param  \App\Models\Character\Character              $character
-     * @param  string                                       $type 
+     * @param  string                                       $type
      * @param  string                                       $data
      * @param  \App\Models\Border\Border                    $border
      * @param  int                                          $quantity
@@ -380,28 +446,31 @@ class BorderService extends Service
         DB::beginTransaction();
 
         try {
-            if(is_numeric($border)) $border = Border::find($border);
-            
+            if (is_numeric($border)) {
+                $border = Border::find($border);
+            }
+
             // if($recipient->borders->contains($border)) throw new \Exception($recipient->name." already has the border ".$border->displayName);
-            if($recipient->borders->contains($border)) {
-                flash($recipient->name." already has the border ".$border->displayName, 'warning');
+            if ($recipient->borders->contains($border)) {
+                flash($recipient->name . " already has the border " . $border->displayName, 'warning');
                 return $this->commitReturn(false);
             }
-            
+
             $record = UserBorder::where('user_id', $recipient->id)->where('border_id', $border->id)->first();
-            if($record) {
+            if ($record) {
                 // Laravel doesn't support composite primary keys, so directly updating the DB row here
                 DB::table('user_borders')->where('user_id', $recipient->id)->where('border_id', $border->id);
-            }
-            else {
+            } else {
                 $record = UserBorder::create(['user_id' => $recipient->id, 'border_id' => $border->id]);
             }
-            
-            if($type && !$this->createLog($sender ? $sender->id : null, $recipient ? $recipient->id : null,
-            $character ? $character->id : null, $type, $data['data'], $border->id)) throw new \Exception("Failed to create log.");
+
+            if ($type && !$this->createLog($sender ? $sender->id : null, $recipient ? $recipient->id : null,
+                $character ? $character->id : null, $type, $data['data'], $border->id)) {
+                throw new \Exception("Failed to create log.");
+            }
 
             return $this->commitReturn(true);
-        } catch(\Exception $e) { 
+        } catch (\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);
@@ -415,7 +484,7 @@ class BorderService extends Service
      * @param  int     $recipientId
      * @param  string  $recipientType
      * @param  int     $userBorderId
-     * @param  string  $type 
+     * @param  string  $type
      * @param  string  $data
      * @param  int     $borderId
      * @return  int
@@ -432,8 +501,149 @@ class BorderService extends Service
                 'log_type' => $type,
                 'data' => $data, // this should be just a string
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ]
         );
     }
+
+    /**********************************************************************************************
+
+    VARIANTS
+
+     **********************************************************************************************/
+
+    /**
+     * Creates a new variant for a border.
+     *
+     * @param mixed $border
+     * @param mixed $data
+     */
+    public function createVariant($border, $data)
+    {
+        DB::beginTransaction();
+
+        try {
+            // check name is unique
+            if (Border::where('name', $data['name'])->where('parent_id', $border->id)->exists()) {
+                throw new \Exception('The name has already been taken.');
+            }
+
+            if (isset($data['layer_image'])) {
+                if (!isset($data['layer_style'])) {
+                    throw new \Exception("The layer requires a style.");
+                }
+            }
+
+            $image = null;
+            if (isset($data['image']) && $data['image']) {
+                $image = $data['image'];
+                unset($data['image']);
+            }
+
+            $layer_image = null;
+            if (isset($data['layer_image']) && $data['layer_image']) {
+                $data['has_layer'] = 1;
+                $layer_image = $data['layer_image'];
+                unset($data['layer_image']);
+            } else {
+                $data['has_layer'] = 0;
+            }
+            
+
+            $data['parent_id'] = $border->id;
+
+            $data = $this->populateData($data);
+
+            $variant = Border::create($data);
+
+            if ($image) {
+                $this->handleImage($image, $variant->imagePath, $variant->imageFileName);
+            }
+
+            if ($layer_image) {
+                $this->handleImage($layer_image, $variant->imagePath, $variant->layerFileName);
+            }
+
+            return $this->commitReturn(true);
+        } catch (\Exception $e) {
+            $this->setError('error', $e->getMessage());
+        }
+
+        return $this->rollbackReturn(false);
+    }
+
+    /**
+     * Edits the variants on a border.
+     *
+     * @param mixed $variant
+     * @param mixed $data
+     */
+    public function editVariant($variant, $data)
+    {
+        DB::beginTransaction();
+
+        try {
+            // check name is unique
+            if (Border::where('name', $data['name'])->where('parent_id', $variant->parent->id)->where('id', '!=', $variant->id)->exists()) {
+                throw new \Exception('The name has already been taken.');
+            }
+
+            if (isset($data['layer_image'])) {
+                if (!isset($data['layer_style'])) {
+                    throw new \Exception("The layer requires a style.");
+                }
+            }
+
+            $image = null;
+            if (isset($data['image']) && $data['image']) {
+                $image = $data['image'];
+            }
+
+            $layer_image = null;
+            if (isset($data['layer_image']) && $data['layer_image']) {
+                $data['has_layer'] = 1;
+                $layer_image = $data['layer_image'];
+                unset($data['layer_image']);
+            }
+
+            $data = $this->populateData($data, $variant);
+
+            if (isset($data['image'])) {
+                if ($image) {
+                    $this->handleImage($image, $variant->imagePath, $variant->imageFileName);
+                }
+
+                unset($data['image']);
+            }
+
+            if ($layer_image) {
+                $this->handleImage($layer_image, $variant->imagePath, $variant->layerFileName);
+            }
+
+            $variant->update($data);
+
+            if (isset($data['delete']) && $data['delete']) {
+                // check that no user borders exist with this variant before deleting
+                if (User::where('border_id', $variant->id)->exists()) {
+                    throw new \Exception('At least one user has this variant as their border.');
+                }
+
+                $this->deleteImage($variant->imagePath, $variant->imageFileName);
+                if ($variant->has_layer) {
+                    $this->deleteImage($variant->imagePath, $variant->layerFileName);
+                }
+                $variant->delete();
+                flash('Variant deleted successfully.')->success();
+            } else {
+                flash('Variant updated successfully.')->success();
+            }
+
+            return $this->commitReturn(true);
+        } catch (\Exception $e) {
+            $this->setError('error', $e->getMessage());
+        }
+
+        return $this->rollbackReturn(false);
+    }
+
 }

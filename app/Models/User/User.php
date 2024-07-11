@@ -2,31 +2,27 @@
 
 namespace App\Models\User;
 
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Auth;
-use Config;
-use Carbon\Carbon;
-
+use App\Models\Border\Border;
 use App\Models\Character\Character;
+use App\Models\Character\CharacterBookmark;
 use App\Models\Character\CharacterImageCreator;
-use App\Models\Rank\RankPower;
 use App\Models\Currency\Currency;
 use App\Models\Currency\CurrencyLog;
-use App\Models\Item\ItemLog;
-use App\Models\Shop\ShopLog;
-use App\Models\User\UserCharacterLog;
-use App\Models\Submission\Submission;
-use App\Models\Submission\SubmissionCharacter;
-use App\Models\Character\CharacterBookmark;
-use App\Models\Gallery\GallerySubmission;
 use App\Models\Gallery\GalleryCollaborator;
-use App\Models\Gallery\GalleryFavorite;
-use App\Traits\Commenter;
-use App\Models\Border\Border;
+use App\Models\Item\ItemLog;
+use App\Models\Rank\RankPower;
+use App\Models\Shop\ShopLog;
+use App\Models\Submission\Submission;
 use App\Models\User\UserBorder;
 use App\Models\User\UserBorderLog;
+use App\Models\User\UserCharacterLog;
+use App\Traits\Commenter;
+use Auth;
+use Carbon\Carbon;
+use Config;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -38,7 +34,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $fillable = [
-        'name', 'alias', 'rank_id', 'email', 'password', 'is_news_unread', 'is_banned', 'has_alias', 'avatar', 'is_sales_unread', 'birthday','border_id'
+        'name', 'alias', 'rank_id', 'email', 'password', 'is_news_unread', 'is_banned', 'has_alias', 'avatar', 'is_sales_unread', 'birthday', 'border_id', 'border_variant_id', 'bottom_border_id',
     ];
 
     /**
@@ -72,7 +68,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $appends = [
-        'verified_name'
+        'verified_name',
     ];
 
     /**
@@ -84,9 +80,9 @@ class User extends Authenticatable implements MustVerifyEmail
 
     /**********************************************************************************************
 
-        RELATIONS
+    RELATIONS
 
-    **********************************************************************************************/
+     **********************************************************************************************/
 
     /**
      * Get user settings.
@@ -183,11 +179,11 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany('App\Models\Gallery\GalleryFavorite')->where('user_id', $this->id);
     }
-    
+
     /**
      * Get all of the user's character bookmarks.
      */
-    public function bookmarks() 
+    public function bookmarks()
     {
         return $this->hasMany('App\Models\Character\CharacterBookmark')->where('user_id', $this->id);
     }
@@ -195,23 +191,40 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Get user's unlocked borders.
      */
-    public function borders() {
+    public function borders()
+    {
         return $this->belongsToMany('App\Models\Border\Border', 'user_borders')->withPivot('id');
     }
 
     /**
      * Get the border associated with this user.
      */
-    public function border() 
+    public function border()
     {
         return $this->belongsTo('App\Models\Border\Border', 'border_id');
     }
 
+    /**
+     * Get the border associated with this user.
+     */
+    public function borderVariant()
+    {
+        return $this->belongsTo('App\Models\Border\Border', 'border_variant_id');
+    }
+
+    /**
+     * Get the border associated with this user.
+     */
+    public function borderLayer()
+    {
+        return $this->belongsTo('App\Models\Border\Border', 'bottom_border_id');
+    }
+
     /**********************************************************************************************
 
-        SCOPES
+    SCOPES
 
-    **********************************************************************************************/
+     **********************************************************************************************/
 
     /**
      * Scope a query to only include visible (non-banned) users.
@@ -226,9 +239,9 @@ class User extends Authenticatable implements MustVerifyEmail
 
     /**********************************************************************************************
 
-        ACCESSORS
+    ACCESSORS
 
-    **********************************************************************************************/
+     **********************************************************************************************/
 
     /**
      * Get the user's alias.
@@ -297,7 +310,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function getUrlAttribute()
     {
-        return url('user/'.$this->name);
+        return url('user/' . $this->name);
     }
 
     /**
@@ -307,7 +320,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function getAdminUrlAttribute()
     {
-        return url('admin/users/'.$this->name.'/edit');
+        return url('admin/users/' . $this->name . '/edit');
     }
 
     /**
@@ -317,17 +330,17 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function getDisplayNameAttribute()
     {
-        return ($this->is_banned ? '<strike>' : '') . '<a href="'.$this->url.'" class="display-user" '.($this->rank->color ? 'style="color: #'.$this->rank->color.';"' : '').'>'.$this->name.'</a>' . ($this->is_banned ? '</strike>' : '');
+        return ($this->is_banned ? '<strike>' : '') . '<a href="' . $this->url . '" class="display-user" ' . ($this->rank->color ? 'style="color: #' . $this->rank->color . ';"' : '') . '>' . $this->name . '</a>' . ($this->is_banned ? '</strike>' : '');
     }
 
-        /**
+    /**
      * Displays the user's name, linked to their profile page.
      *
      * @return string
      */
     public function getCommentDisplayNameAttribute()
     {
-        return '<small><a href="'. $this->url .'" class="btn btn-primary btn-sm"'.($this->rank->color ? 'style="background-color: #'.$this->rank->color.'!important;color:#000!important;"' : '').'><i class="'.($this->rank->icon ? $this->rank->icon : 'fas fa-user').' mr-1" style="opacity: 50%;"></i>'. $this->name .'</a></small>';
+        return '<small><a href="' . $this->url . '" class="btn btn-primary btn-sm"' . ($this->rank->color ? 'style="background-color: #' . $this->rank->color . '!important;color:#000!important;"' : '') . '><i class="' . ($this->rank->icon ? $this->rank->icon : 'fas fa-user') . ' mr-1" style="opacity: 50%;"></i>' . $this->name . '</a></small>';
     }
 
     /**
@@ -337,7 +350,10 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function getDisplayAliasAttribute()
     {
-        if (!$this->hasAlias) return '(Unverified)';
+        if (!$this->hasAlias) {
+            return '(Unverified)';
+        }
+
         return $this->primaryAlias->displayAlias;
     }
 
@@ -369,23 +385,31 @@ class User extends Authenticatable implements MustVerifyEmail
         //
         $icon = null;
         $bday = $this->birthday;
-        if(!isset($bday)) return 'N/A';
+        if (!isset($bday)) {
+            return 'N/A';
+        }
 
-        if($bday->format('d M') == carbon::now()->format('d M')) $icon = '<i class="fas fa-birthday-cake ml-1"></i>';
+        if ($bday->format('d M') == carbon::now()->format('d M')) {
+            $icon = '<i class="fas fa-birthday-cake ml-1"></i>';
+        }
+
         //
-        switch($this->settings->birthday_setting) {
+        switch ($this->settings->birthday_setting) {
             case 0:
                 return null;
-            break;
+                break;
             case 1:
-                if(Auth::check()) return $bday->format('d M') . $icon;
-            break;
+                if (Auth::check()) {
+                    return $bday->format('d M') . $icon;
+                }
+
+                break;
             case 2:
                 return $bday->format('d M') . $icon;
-            break;
+                break;
             case 3:
                 return $bday->format('d M Y') . $icon;
-            break;
+                break;
         }
     }
 
@@ -394,15 +418,19 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function getcheckBirthdayAttribute()
     {
-        $bday = $this->birthday; 
-        if(!$bday || $bday->diffInYears(carbon::now()) < 13) return false;
-        else return true;
+        $bday = $this->birthday;
+        if (!$bday || $bday->diffInYears(carbon::now()) < 13) {
+            return false;
+        } else {
+            return true;
+        }
+
     }
     /**********************************************************************************************
 
-        OTHER FUNCTIONS
+    OTHER FUNCTIONS
 
-    **********************************************************************************************/
+     **********************************************************************************************/
 
     /**
      * Checks if the user can edit the given rank.
@@ -429,14 +457,17 @@ class User extends Authenticatable implements MustVerifyEmail
         $owned = UserCurrency::where('user_id', $this->id)->pluck('quantity', 'currency_id')->toArray();
 
         $currencies = Currency::where('is_user_owned', 1);
-        if($showAll) $currencies->where(function($query) use($owned) {
-            $query->where('is_displayed', 1)->orWhereIn('id', array_keys($owned));
-        });
-        else $currencies = $currencies->where('is_displayed', 1);
+        if ($showAll) {
+            $currencies->where(function ($query) use ($owned) {
+                $query->where('is_displayed', 1)->orWhereIn('id', array_keys($owned));
+            });
+        } else {
+            $currencies = $currencies->where('is_displayed', 1);
+        }
 
         $currencies = $currencies->orderBy('sort_user', 'DESC')->get();
 
-        foreach($currencies as $currency) {
+        foreach ($currencies as $currency) {
             $currency->quantity = isset($owned[$currency->id]) ? $owned[$currency->id] : 0;
         }
 
@@ -451,7 +482,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getCurrencySelect($isTransferrable = false)
     {
         $query = UserCurrency::query()->where('user_id', $this->id)->leftJoin('currencies', 'user_currencies.currency_id', '=', 'currencies.id')->orderBy('currencies.sort_user', 'DESC');
-        if($isTransferrable) $query->where('currencies.allow_user_to_user', 1);
+        if ($isTransferrable) {
+            $query->where('currencies.allow_user_to_user', 1);
+        }
+
         return $query->get()->pluck('name_with_quantity', 'currency_id')->toArray();
     }
 
@@ -464,13 +498,17 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getCurrencyLogs($limit = 10)
     {
         $user = $this;
-        $query = CurrencyLog::with('currency')->where(function($query) use ($user) {
+        $query = CurrencyLog::with('currency')->where(function ($query) use ($user) {
             $query->with('sender')->where('sender_type', 'User')->where('sender_id', $user->id)->whereNotIn('log_type', ['Staff Grant', 'Prompt Rewards', 'Claim Rewards', 'Gallery Submission Reward']);
-        })->orWhere(function($query) use ($user) {
+        })->orWhere(function ($query) use ($user) {
             $query->with('recipient')->where('recipient_type', 'User')->where('recipient_id', $user->id)->where('log_type', '!=', 'Staff Removal');
         })->orderBy('id', 'DESC');
-        if($limit) return $query->take($limit)->get();
-        else return $query->paginate(30);
+        if ($limit) {
+            return $query->take($limit)->get();
+        } else {
+            return $query->paginate(30);
+        }
+
     }
 
     /**
@@ -482,13 +520,17 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getItemLogs($limit = 10)
     {
         $user = $this;
-        $query = ItemLog::with('item')->where(function($query) use ($user) {
+        $query = ItemLog::with('item')->where(function ($query) use ($user) {
             $query->with('sender')->where('sender_type', 'User')->where('sender_id', $user->id)->whereNotIn('log_type', ['Staff Grant', 'Prompt Rewards', 'Claim Rewards']);
-        })->orWhere(function($query) use ($user) {
+        })->orWhere(function ($query) use ($user) {
             $query->with('recipient')->where('recipient_type', 'User')->where('recipient_id', $user->id)->where('log_type', '!=', 'Staff Removal');
         })->orderBy('id', 'DESC');
-        if($limit) return $query->take($limit)->get();
-        else return $query->paginate(30);
+        if ($limit) {
+            return $query->take($limit)->get();
+        } else {
+            return $query->paginate(30);
+        }
+
     }
 
     /**
@@ -501,8 +543,12 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         $user = $this;
         $query = ShopLog::where('user_id', $this->id)->with('character')->with('shop')->with('item')->with('currency')->orderBy('id', 'DESC');
-        if($limit) return $query->take($limit)->get();
-        else return $query->paginate(30);
+        if ($limit) {
+            return $query->take($limit)->get();
+        } else {
+            return $query->paginate(30);
+        }
+
     }
 
     /**
@@ -513,9 +559,9 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getOwnershipLogs()
     {
         $user = $this;
-        $query = UserCharacterLog::with('sender.rank')->with('recipient.rank')->with('character')->where(function($query) use ($user) {
+        $query = UserCharacterLog::with('sender.rank')->with('recipient.rank')->with('character')->where(function ($query) use ($user) {
             $query->where('sender_id', $user->id)->whereNotIn('log_type', ['Character Created', 'MYO Slot Created', 'Character Design Updated', 'MYO Design Approved']);
-        })->orWhere(function($query) use ($user) {
+        })->orWhere(function ($query) use ($user) {
             $query->where('recipient_id', $user->id);
         })->orderBy('id', 'DESC');
         return $query->paginate(30);
@@ -526,20 +572,30 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function updateCharacters()
     {
-        if(!$this->hasAlias) return;
+        if (!$this->hasAlias) {
+            return;
+        }
 
         // Pluck alias from url and check for matches
-        $urlCharacters = Character::whereNotNull('owner_url')->pluck('owner_url','id');
-        $matches = []; $count = 0;
-        foreach($this->aliases as $alias) {
+        $urlCharacters = Character::whereNotNull('owner_url')->pluck('owner_url', 'id');
+        $matches = [];
+        $count = 0;
+        foreach ($this->aliases as $alias) {
             // Find all urls from the same site as this alias
-            foreach($urlCharacters as $key=>$character) preg_match_all(Config::get('lorekeeper.sites.'.$alias->site.'.regex'), $character, $matches[$key]);
+            foreach ($urlCharacters as $key => $character) {
+                preg_match_all(Config::get('lorekeeper.sites.' . $alias->site . '.regex'), $character, $matches[$key]);
+            }
+
             // Find all alias matches within those, and update the character's owner
-            foreach($matches as $key=>$match) if($match[1] != [] && strtolower($match[1][0]) == strtolower($alias->alias)) {Character::find($key)->update(['owner_url' => null, 'user_id' => $this->id]); $count += 1;}
+            foreach ($matches as $key => $match) {
+                if ($match[1] != [] && strtolower($match[1][0]) == strtolower($alias->alias)) {Character::find($key)->update(['owner_url' => null, 'user_id' => $this->id]);
+                    $count += 1;}
+            }
+
         }
 
         //
-        if($count > 0) {
+        if ($count > 0) {
             $this->settings->is_fto = 0;
         }
         $this->settings->save();
@@ -550,16 +606,26 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function updateArtDesignCredits()
     {
-        if(!$this->hasAlias) return;
+        if (!$this->hasAlias) {
+            return;
+        }
 
         // Pluck alias from url and check for matches
-        $urlCreators = CharacterImageCreator::whereNotNull('url')->pluck('url','id');
+        $urlCreators = CharacterImageCreator::whereNotNull('url')->pluck('url', 'id');
         $matches = [];
-        foreach($this->aliases as $alias) {
+        foreach ($this->aliases as $alias) {
             // Find all urls from the same site as this alias
-            foreach($urlCreators as $key=>$creator) preg_match_all(Config::get('lorekeeper.sites.'.$alias->site.'.regex'), $creator, $matches[$key]);
+            foreach ($urlCreators as $key => $creator) {
+                preg_match_all(Config::get('lorekeeper.sites.' . $alias->site . '.regex'), $creator, $matches[$key]);
+            }
+
             // Find all alias matches within those, and update the relevant CharacterImageCreator
-            foreach($matches as $key=>$match) if($match[1] != [] && strtolower($match[1][0]) == strtolower($alias->alias)) CharacterImageCreator::find($key)->update(['url' => null, 'user_id' => $this->id]);
+            foreach ($matches as $key => $match) {
+                if ($match[1] != [] && strtolower($match[1][0]) == strtolower($alias->alias)) {
+                    CharacterImageCreator::find($key)->update(['url' => null, 'user_id' => $this->id]);
+                }
+            }
+
         }
     }
 
@@ -584,7 +650,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return CharacterBookmark::where('user_id', $this->id)->where('character_id', $character->id)->first();
     }
 
-     /**
+    /**
      * Get the user's border logs.
      *
      * @param  int  $limit
@@ -593,16 +659,20 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getBorderLogs($limit = 10)
     {
         $user = $this;
-        $query = UserBorderLog::with('border')->where(function($query) use ($user) {
+        $query = UserBorderLog::with('border')->where(function ($query) use ($user) {
             $query->with('sender')->where('sender_id', $user->id)->whereNotIn('log_type', ['Staff Grant', 'Prompt Rewards', 'Claim Rewards']);
-        })->orWhere(function($query) use ($user) {
+        })->orWhere(function ($query) use ($user) {
             $query->with('recipient')->where('recipient_id', $user->id)->where('log_type', '!=', 'Staff Removal');
         })->orderBy('id', 'DESC');
-        if($limit) return $query->take($limit)->get();
-        else return $query->paginate(30);
+        if ($limit) {
+            return $query->take($limit)->get();
+        } else {
+            return $query->paginate(30);
+        }
+
     }
 
-   /**
+    /**
      * Checks if the user has the named border
      *
      * @return bool
@@ -617,72 +687,89 @@ class User extends Authenticatable implements MustVerifyEmail
 
     /**
      * Gets the display URL for a user's avatar, or the default avatar if they don't have one.
-     * 
+     *
      * @return url
      */
     public function getAvatarUrlAttribute()
     {
-        // Yoinking a bit of this from develop, just to future proof it a bit. 
+        // Yoinking a bit of this from develop, just to future proof it a bit.
         //and plus it simplifies the user icons which is good for this ext
         //just replace this with the full bit when develop is the new main, it wont change anything
-        if ($this->avatar == 'default.jpg') return url('images/avatars/default.jpg');
-        return url('images/avatars/'.$this->avatar);
+        if ($this->avatar == 'default.jpg') {
+            return url('images/avatars/default.jpg');
+        }
+
+        return url('images/avatars/' . $this->avatar);
     }
 
     /**
      * display the user's icon and border styling
      *
      */
-    public function getUserBorderAttribute()
+    public function UserBorder()
     {
         //basically just an ugly ass string of html for copypasting use
         //would you want to keep posting this everywhere? yeah i thought so. me neither
         //there's probably a less hellish way to do this but it beats having to paste this over everywhere... EVERY SINGLE TIME.
         //especially with the checks
 
+        $height = '125px';
+
+        //get some fun variables for later
+        $avatar = '<!-- avatar -->
+        <img class="avatar" src="' .
+        $this->avatarUrl .
+        '" style="position: absolute; border-radius:50%; width:' . $height . '; height:' . $height . ';" alt="' .
+        $this->name .
+            '">';
+
+        $styling = '<div style="width:' . $height . '; height:' . $height . '; border-radius:50%; margin-right:25px;">
+    ';
+
         //if the user has a border, we apply it
-        if ($this->border_id) {
-            //but first check the frame style
+        if (isset($this->border) || isset($this->borderLayer) || isset($this->borderVariant)) {
 
-            //under style
-            if ($this->border->border_style) {
-                return '<div style="width:125px; height:125px; float:left; border-radius:50%; margin-right:25px;">
-                    <!-- avatar -->
-                    <img class="avatar" src="' .
-                    $this->avatarUrl .
-                    '" style="position: absolute; border-radius:50%; width:125px; height:125px;" alt="' .
-                    $this->name .
-                    '">
-                    <!-- frame -->
-                    <img src="' .
-                    $this->border->imageUrl .
-                    '" style="position: absolute;width:125px; height:125px;"  alt="avatar frame">
-                </div>';
+            //layers supersede variants
+            //variants supersede regular borders
+            if (isset($this->borderLayer)) {
+                //parent's layer image
+                $mainframe = '<img src="' . $this->borderLayer->parent->layerUrl .
+                    '" style="position: absolute;width:' . $height . '; height:' . $height . ';">';
+                //chosen layer's image
+                $secondframe = '<img src="' . $this->borderLayer->layerUrl .
+                    '" style="position: absolute;width:' . $height . '; height:' . $height . ';">';
 
-                //then over style
+                //under...
+                if ($this->borderLayer->layer_style) {
+                    return $styling . $mainframe . $avatar . $secondframe . '</div>';
+                } else {
+                    //over...
+                    return $styling . $mainframe . $secondframe . $avatar . '</div>';
+                }
+            } elseif (isset($this->borderVariant)) {
+                $mainframe = '<img src="' . $this->borderVariant->imageUrl .
+                    '" style="position: absolute;width:' . $height . '; height:' . $height . ';">';
+                $borderstyle = $this->borderVariant;
             } else {
-                return '<div style="width:125px; height:125px; float:left; border-radius:50%; margin-right:25px;">
-                    <!-- frame -->
-                    <img src="' .
-                    $this->border->imageUrl .
-                    '" style="position: absolute;width:125px; height:125px;"  alt="avatar frame">
-                    <!-- avatar -->
-                    <img class="avatar" src="' .
-                    $this->avatarUrl .
-                    '" style="position: absolute; border-radius:50%; width:125px; height:125px;" alt="' .
-                    $this->name .
-                    '">
-                </div>';
+                $mainframe = '<img src="' . $this->border->imageUrl .
+                    '" style="position: absolute;width:' . $height . '; height:' . $height . ';">';
+                $borderstyle = $this->border;
             }
+
+            if (!isset($this->borderLayer)) {
+                //under...
+                if ($borderstyle->border_style) {
+                    return $styling . $avatar . $mainframe . '</div>';
+                } else {
+                    return $styling . $mainframe . $avatar . '</div>';
+                }
+            }
+
             //if no border return standard avatar style
-        } else {
-            return '<div style="width:125px; height:125px; float:left; border-radius:50%; margin-right:25px;">
-        <img src="' .
-                $this->avatarUrl .
-                '" style="position: absolute; border-radius:50%; width:125px; height:125px;" alt="' .
-                $this->name .
-                '"> </div>';
         }
+        return $styling.$avatar .
+            '
+        </div>';
     }
 
 }

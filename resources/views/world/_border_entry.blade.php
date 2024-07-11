@@ -1,8 +1,6 @@
 <div class="row world-entry">
 
-    <div class="col-md-3 world-entry-image"><a href="{{ $border->imageUrl }}" data-lightbox="entry"
-            data-title="{{ $border->name }}"><img src="{{ $border->imageUrl }}" class="world-entry-image"
-                alt="{{ $border->name }}" /></a>
+    <div class="col-md-3 world-entry-image"><a href="{{ $border->imageUrl }}" data-lightbox="entry" data-title="{{ $border->name }}"><img src="{{ $border->imageUrl }}" class="world-entry-image" alt="{{ $border->name }}" /></a>
         {!! $border->preview(Auth::check() ? Auth::user()->id : '') !!}</div>
     <div class="{{ $border->imageUrl ? 'col-md-9' : 'col-12' }}">
         <h3>
@@ -10,19 +8,16 @@
                 <a href="{{ $border->idUrl }}" class="world-entry-search text-muted"><i class="fas fa-search"></i></a>
             @endif
             @if ($border->admin_only)
-                <i class="fas fa-user-lock text-warning" data-toggle="tooltip"
-                    title="This border is exclusive to staff members."></i>
+                <i class="fas fa-user-lock text-warning" data-toggle="tooltip" title="This border is exclusive to staff members."></i>
             @else
                 @if (!$border->is_default)
                     @if (Auth::check() && Auth::user()->hasBorder($border->id))
                         <i class="fas fa-lock-open" data-toggle="tooltip" title="You have this border!"></i>
                     @else
-                        <i class="fas fa-lock" style="opacity:0.5" data-toggle="tooltip"
-                            title="You do not have this border."></i>
+                        <i class="fas fa-lock" style="opacity:0.5" data-toggle="tooltip" title="You do not have this border."></i>
                     @endif
                 @else
-                    <i class="fas fa-user" data-toggle="tooltip"
-                        title="This border is automatically available to all users."></i>
+                    <i class="fas fa-user" data-toggle="tooltip" title="This border is automatically available to all users."></i>
                 @endif
             @endif
         </h3>
@@ -33,6 +28,29 @@
                 </div>
             @endif
             {!! $border->parsed_description !!}
+            <div class="container mt-2">
+                @if ($border->variants->count())
+                    <hr />
+                    <h2 class="h4 pl-2">Variants</h2>
+                    <div class="row">
+                        @foreach ($border->variants as $variant)
+                            <div class="col-md-3 col-6 text-center">
+                                <div class="shop-image">
+                                    {!! $variant->preview() !!}
+                                </div>
+                                <div class="shop-name mt-1 text-center">
+                                    <h5>
+                                        @if (!$variant->is_active)
+                                            <i class="fas fa-eye-slash"></i>
+                                        @endif
+                                        {!! $variant->name !!}
+                                    </h5>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
         </div>
     </div>
 </div>

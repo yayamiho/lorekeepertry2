@@ -31,7 +31,7 @@ class BorderService extends Service
     public function getEditData()
     {
         return [
-            'borders' => Border::orderBy('name')
+            'borders' => Border::base()->orderBy('name')
                 ->where('is_default', 0)->where('admin_only', 0)
                 ->pluck('name', 'id'),
         ];
@@ -122,11 +122,11 @@ class BorderService extends Service
         try {
             $firstData = $stacks->first()->item->tag('border')->data;
             if (isset($firstData['all_borders']) && $firstData['all_borders']) {
-                $borderOptions = Border::where('is_active', 1)->where('is_default', 0)->where('admin_only', 0)
+                $borderOptions = Border::base()->where('is_active', 1)->where('is_default', 0)->where('admin_only', 0)
                     ->whereNotIn('id', $user->borders->pluck('id')->toArray())
                     ->get();
             } elseif (isset($firstData['borders']) && count($firstData['borders'])) {
-                $borderOptions = Border::find(array_keys($firstData['borders']))
+                $borderOptions = Border::base()->find(array_keys($firstData['borders']))
                     ->where('is_active', 1)->where('is_default', 0)->where('admin_only', 0)
                     ->whereNotIn('id', $user->borders->pluck('id')->toArray());
             }

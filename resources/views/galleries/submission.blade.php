@@ -53,7 +53,7 @@
 <div class="row mx-md-2 mb-4">
     <div class="col-md mb-4">
         <div class="row mb-4 no-gutters">
-                <a href="/user/{{ $submission->user->name }}">{!! $submission->user->userBorder !!}</a>
+            <a href="/user/{{ $submission->user->name }}">{!! $submission->user->userBorder() !!}</a>
             <div class="col-md ml-md-2">
                 <div class="card">
                     <div class="card-header">

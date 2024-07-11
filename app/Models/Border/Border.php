@@ -2,11 +2,10 @@
 
 namespace App\Models\Border;
 
-use Config;
-use App\Models\Model;
 use App\Models\Border\BorderCategory;
-use Auth;
+use App\Models\Model;
 use App\Models\User\User;
+use Auth;
 
 class Border extends Model
 {
@@ -17,7 +16,7 @@ class Border extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'description', 'parsed_description', 'is_default', 'border_category_id','is_active','border_style','admin_only'
+        'name', 'description', 'parsed_description', 'is_default', 'border_category_id', 'is_active', 'border_style', 'admin_only', 'layer_style', 'parent_id','has_layer'
     ];
 
     /**
@@ -52,8 +51,8 @@ class Border extends Model
     ];
 
     /**********************************************************************************************
-        SCOPES
-    **********************************************************************************************/
+    SCOPES
+     **********************************************************************************************/
 
     /**
      * Scope a query to sort borders in alphabetical order.
@@ -75,7 +74,10 @@ class Border extends Model
      */
     public function scopeSortCategory($query)
     {
-        if(BorderCategory::all()->count()) return $query->orderBy(BorderCategory::select('sort')->whereColumn('borders.border_category_id', 'border_categories.id'), 'DESC');
+        if (BorderCategory::all()->count()) {
+            return $query->orderBy(BorderCategory::select('sort')->whereColumn('borders.border_category_id', 'border_categories.id'), 'DESC');
+        }
+
         return $query;
     }
 
@@ -102,25 +104,51 @@ class Border extends Model
     }
 
     /**
-     * Scope a query to show only active borders.
+     * Scope a query to show only visible borders.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param mixed|null                            $user
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeActive($query, $withHidden = 0)
+    public function scopeActive($query, $user = null)
     {
-        if ($withHidden) {
+        if ($user && $user->hasPower('edit_data')) {
             return $query;
         }
+
         return $query->where('is_active', 1);
     }
 
+    /**
+     * Scope a query to show only non-variant borders.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param mixed|null                            $user
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeBase($query)
+    {
+        return $query->whereNull('parent_id');
+    }
 
-
+    /**
+     * Scope a query to show only non-variant borders.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param mixed|null                            $user
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeLayers($query)
+    {
+        return $query->where('has_layer', 1);
+    }
 
     /**********************************************************************************************
-        RELATIONS
-    **********************************************************************************************/
+    RELATIONS
+     **********************************************************************************************/
 
     /**
      * Get the category the border belongs to.
@@ -130,10 +158,25 @@ class Border extends Model
         return $this->belongsTo('App\Models\Border\BorderCategory', 'border_category_id');
     }
 
+    /**
+     * Get the parent the border belongs to.
+     */
+    public function parent()
+    {
+        return $this->belongsTo('App\Models\Border\Border', 'parent_id');
+    }
+
+    /**
+     * Get all the border's variants.
+     */
+    public function variants()
+    {
+        return $this->hasMany('App\Models\Border\Border', 'parent_id')->active(Auth::user() ?? null);
+    }
 
     /**********************************************************************************************
-        ACCESSORS
-    **********************************************************************************************/
+    ACCESSORS
+     **********************************************************************************************/
 
     /**
      * Displays the model's name, linked to its encyclopedia page.
@@ -142,10 +185,12 @@ class Border extends Model
      */
     public function getDisplayNameAttribute()
     {
-        return '<a href="'.$this->url.'" class="display-item">'.$this->name.'</a>';
+        if (!$this->is_active) {
+            return '<i class="fas fa-eye-slash"></i> <a href="' . $this->url . '" class="display-item">' . $this->name . '</a>';
+        }
+        return '<a href="' . $this->url . '" class="display-item">' . $this->name . '</a>';
     }
 
-    
     /**
      * get the name if default or not
      *
@@ -153,9 +198,15 @@ class Border extends Model
      */
     public function getSettingsNameAttribute()
     {
-        if($this->admin_only) return $this->name . ' (Staff)';
-        if($this->is_default) return $this->name . ' (Default)';
-        else return $this->name ;
+        if ($this->admin_only) {
+            return $this->name . ' (Staff)';
+        }
+
+        if ($this->is_default) {
+            return $this->name . ' (Default)';
+        } else {
+            return $this->name;
+        }
     }
 
     /**
@@ -198,6 +249,25 @@ class Border extends Model
         return asset($this->imageDirectory . '/' . $this->imageFileName);
     }
 
+    /**
+     * Gets the file name of the model's image.
+     *
+     * @return string
+     */
+    public function getLayerFileNameAttribute()
+    {
+        return $this->id . '-layer-image.png';
+    }
+
+    /**
+     * Gets the URL of the model's image.
+     *
+     * @return string
+     */
+    public function getLayerUrlAttribute()
+    {
+        return asset($this->imageDirectory . '/' . $this->layerFileName);
+    }
 
     /**
      * Gets the URL of the model's encyclopedia page.
@@ -206,17 +276,17 @@ class Border extends Model
      */
     public function getUrlAttribute()
     {
-        return url('world/borders?name='.$this->name);
+        return url('world/borders?name=' . $this->name);
     }
 
-        /**
+    /**
      * Gets the URL of the individual item's page, by ID.
      *
      * @return string
      */
     public function getIdUrlAttribute()
     {
-        return url('world/borders/'.$this->id);
+        return url('world/borders/' . $this->id);
     }
 
     /**
@@ -224,7 +294,8 @@ class Border extends Model
      *
      * @return string
      */
-    public function getAssetTypeAttribute() {
+    public function getAssetTypeAttribute()
+    {
         return 'borders';
     }
 
@@ -237,15 +308,15 @@ class Border extends Model
         //we will preview the border on various site pages for purposes of fun :}
         //and so people can "test" their look without having to unlock one
         //if we pass $id, return the avatar of that user
-       
-        if($id){
+
+        if ($id) {
             $user = User::find($id)->avatarUrl;
 
-        //else, check if logged in
-        //if logged in, return the user avatar to preview
-        }elseif(Auth::check()) {
+            //else, check if logged in
+            //if logged in, return the user avatar to preview
+        } elseif (Auth::check()) {
             $user = Auth::user()->avatarUrl;
-            
+
             //finally if not either of these, return default avatar
         } else {
             $user = url('images/avatars/default.jpg');
@@ -254,31 +325,44 @@ class Border extends Model
         //would you want to keep posting this everywhere? yeah i thought so. me neither
         //there's probably a less hellish way to do this but it beats having to paste this over everywhere... EVERY SINGLE TIME.
         //especially with the checks
+
+        //get some fun variables for later
+        $avatar = '<!-- avatar -->
+        <img class="avatar" src="' .
+            $user .
+            '" style="position: absolute; border-radius:50%; width:125px; height:125px;">';
+
+        $styling = '<div style="width:125px; height:125px; border-radius:50%; margin-right:25px;">
+    ';
+
+        $frame = '<!-- frame -->
+                    <img src="' .
+        $this->imageUrl .
+            '" style="position: absolute;width:125px; height:125px;"  alt="avatar frame">';
+
         //first check the frame style
 
         //under style
         if ($this->border_style) {
-            return '<div style="width:125px; height:125px;border-radius:50%;">
-                    <!-- avatar -->
-                    <img class="avatar" src="' .
-                $user .
-                '" style="position: absolute; border-radius:50%; width:125px; height:125px;">
-                    <!-- frame -->
-                    <img src="' .
-                $this->imageUrl .
-                '" style="position: absolute;width:125px; height:125px;"  alt="avatar frame"></div>';
+            return $styling .
+                '' .
+                $avatar .
+                '
+           ' .
+                $frame .
+                '
+        </div>';
 
-        //then over style
+            //then over style
         } else {
-            return '<div style="width:125px; height:125px;border-radius:50%;">
-                    <!-- frame -->
-                    <img src="' .
-                $this->imageUrl .
-                '" style="position: absolute;width:125px; height:125px;"  alt="avatar frame">
-                    <!-- avatar -->
-                    <img class="avatar" src="' .
-                $user .
-                '" style="position: absolute; border-radius:50%; width:125px; height:125px;"></div>';
+            return $styling .
+                '' .
+                $frame .
+                '
+           ' .
+                $avatar .
+                '
+        </div>';
         }
     }
 

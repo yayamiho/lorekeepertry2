@@ -1,0 +1,1 @@
+{!! Form::select('border_variant', $bottom_layers, Auth::user()->bottom_border_id, ['class' => 'form-control', 'id' => 'layeredborder']) !!}

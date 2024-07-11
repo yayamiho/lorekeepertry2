@@ -136,7 +136,7 @@ class GrantController extends Controller
     {
         return view('admin.grants.borders', [
             'users' => User::orderBy('id')->pluck('name', 'id'),
-            'borders' => Border::where('is_default', 0)->where('admin_only', 0)->orderBy('name')->pluck('name', 'id')
+            'borders' => Border::base()->where('is_default', 0)->where('admin_only', 0)->orderBy('name')->pluck('name', 'id')
         ]);
     }
 

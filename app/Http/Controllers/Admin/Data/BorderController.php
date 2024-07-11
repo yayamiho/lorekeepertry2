@@ -2,19 +2,13 @@
 
 namespace App\Http\Controllers\Admin\Data;
 
-use Illuminate\Http\Request;
-
-use Auth;
-use Config;
-
-use App\Models\Border\BorderCategory;
-use App\Models\Border\Border;
-use App\Models\User\User;
-
-
-use App\Services\BorderService;
-
 use App\Http\Controllers\Controller;
+use App\Models\Border\Border;
+use App\Models\Border\BorderCategory;
+use App\Models\User\User;
+use App\Services\BorderService;
+use Auth;
+use Illuminate\Http\Request;
 
 class BorderController extends Controller
 {
@@ -25,11 +19,11 @@ class BorderController extends Controller
     |
     | Handles creation/editing of borders.
     |
-    */
+     */
 
     /**********************************************************************************************
-        Border CATEGORIES
-    **********************************************************************************************/
+    Border CATEGORIES
+     **********************************************************************************************/
 
     /**
      * Shows the border category index.
@@ -39,7 +33,7 @@ class BorderController extends Controller
     public function getIndex()
     {
         return view('admin.borders.border_categories', [
-            'categories' => BorderCategory::orderBy('sort', 'DESC')->get()
+            'categories' => BorderCategory::orderBy('sort', 'DESC')->get(),
         ]);
     }
 
@@ -51,7 +45,7 @@ class BorderController extends Controller
     public function getCreateBorderCategory()
     {
         return view('admin.borders.create_edit_border_category', [
-            'category' => new BorderCategory
+            'category' => new BorderCategory,
         ]);
     }
 
@@ -64,9 +58,12 @@ class BorderController extends Controller
     public function getEditBorderCategory($id)
     {
         $category = BorderCategory::find($id);
-        if(!$category) abort(404);
+        if (!$category) {
+            abort(404);
+        }
+
         return view('admin.borders.create_edit_border_category', [
-            'category' => $category
+            'category' => $category,
         ]);
     }
 
@@ -82,17 +79,18 @@ class BorderController extends Controller
     {
         $id ? $request->validate(BorderCategory::$updateRules) : $request->validate(BorderCategory::$createRules);
         $data = $request->only([
-            'name', 'description', 'image', 'remove_image'
+            'name', 'description', 'image', 'remove_image',
         ]);
-        if($id && $service->updateBorderCategory(BorderCategory::find($id), $data, Auth::user())) {
+        if ($id && $service->updateBorderCategory(BorderCategory::find($id), $data, Auth::user())) {
             flash('Category updated successfully.')->success();
-        }
-        else if (!$id && $category = $service->createBorderCategory($data, Auth::user())) {
+        } else if (!$id && $category = $service->createBorderCategory($data, Auth::user())) {
             flash('Category created successfully.')->success();
-            return redirect()->to('admin/data/border-categories/edit/'.$category->id);
-        }
-        else {
-            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+            return redirect()->to('admin/data/border-categories/edit/' . $category->id);
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
+
         }
         return redirect()->back();
     }
@@ -121,11 +119,13 @@ class BorderController extends Controller
      */
     public function postDeleteBorderCategory(Request $request, BorderService $service, $id)
     {
-        if($id && $service->deleteBorderCategory(BorderCategory::find($id))) {
+        if ($id && $service->deleteBorderCategory(BorderCategory::find($id))) {
             flash('Category deleted successfully.')->success();
-        }
-        else {
-            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
+
         }
         return redirect()->to('admin/data/border-categories');
     }
@@ -139,18 +139,20 @@ class BorderController extends Controller
      */
     public function postSortBorderCategory(Request $request, BorderService $service)
     {
-        if($service->sortBorderCategory($request->get('sort'))) {
+        if ($service->sortBorderCategory($request->get('sort'))) {
             flash('Category order updated successfully.')->success();
-        }
-        else {
-            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
+
         }
         return redirect()->back();
     }
 
     /**********************************************************************************************
-        BorderS
-    **********************************************************************************************/
+    BorderS
+     **********************************************************************************************/
 
     /**
      * Shows the border index.
@@ -160,19 +162,19 @@ class BorderController extends Controller
      */
     public function getBorderIndex(Request $request)
     {
-        $query = Border::query();
+        $query = Border::base();
         $data = $request->only(['name', 'border_category_id']);
-        if(isset($data['border_category_id']) && $data['border_category_id'] != 'none')
+        if (isset($data['border_category_id']) && $data['border_category_id'] != 'none') {
             $query->where('border_category_id', $data['border_category_id']);
-        if(isset($data['name']))
-            $query->where('name', 'LIKE', '%'.$data['name'].'%');
+        }
 
+        if (isset($data['name'])) {
+            $query->where('name', 'LIKE', '%' . $data['name'] . '%');
+        }
 
         return view('admin.borders.borders', [
             'borders' => $query->paginate(20)->appends($request->query()),
             'categories' => ['none' => 'Any Category'] + BorderCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'defaultBorder' => Border::where('is_default', 1)->first() ? 1 : 0,
-            'sizes' => isset($sizeArray) ? $sizeArray : [],
         ]);
     }
 
@@ -198,7 +200,9 @@ class BorderController extends Controller
     public function getEditBorder($id)
     {
         $border = Border::find($id);
-        if(!$border) abort(404);
+        if (!$border) {
+            abort(404);
+        }
 
         return view('admin.borders.create_edit_border', [
             'border' => $border,
@@ -218,17 +222,18 @@ class BorderController extends Controller
     {
         $id ? $request->validate(Border::$updateRules) : $request->validate(Border::$createRules);
         $data = $request->only([
-            'name', 'description', 'border_category_id', 'is_default', 'image', 'is_active', 'border_style','admin_only'
+            'name', 'description', 'border_category_id', 'is_default', 'image', 'is_active', 'border_style', 'admin_only','layer_image','remove_layer_image'
         ]);
-        if($id && $service->updateBorder(Border::find($id), $data, Auth::user())) {
+        if ($id && $service->updateBorder(Border::find($id), $data, Auth::user())) {
             flash('Border updated successfully.')->success();
-        }
-        else if (!$id && $border = $service->createBorder($data, Auth::user())) {
+        } else if (!$id && $border = $service->createBorder($data, Auth::user())) {
             flash('Border created successfully.')->success();
-            return redirect()->to('admin/data/borders/edit/'.$border->id);
-        }
-        else {
-            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+            return redirect()->to('admin/data/borders/edit/' . $border->id);
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
+
         }
         return redirect()->back();
     }
@@ -257,12 +262,58 @@ class BorderController extends Controller
      */
     public function postDeleteBorder(Request $request, BorderService $service, $id)
     {
-        if($id && $service->deleteBorder(Border::find($id))) {
+        if ($id && $service->deleteBorder(Border::find($id))) {
             flash('Border deleted successfully.')->success();
-        }
-        else {
-            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
+
         }
         return redirect()->to('admin/data/borders');
+    }
+
+    /**********************************************************************************************
+
+    VARIANTS
+
+     **********************************************************************************************/
+
+    /**
+     * Gets the create / edit border variant page.
+     *
+     * @param mixed      $border_id
+     * @param mixed|null $id
+     */
+    public function getCreateEditVariant($border_id, $id = null)
+    {
+        return view('admin.borders._create_edit_border_variant', [
+            'border' => Border::find($border_id),
+            'variant' => $id ? Border::find($id) : new Border,
+        ]);
+    }
+
+    /**
+     * Edits border variants.
+     *
+     * @param App\Services\BorderService $service
+     * @param int                     $id
+     * @param mixed                   $border_id
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postCreateEditVariant(Request $request, BorderService $service, $border_id, $id = null)
+    {
+        $data = $request->only(['name', 'image', 'is_active', 'border_style','delete','layer_image','remove_layer_image','layer_style']);
+        if ($id && $service->editVariant(Border::findOrFail($id), $data)) {
+        } elseif (!$id && $service->createVariant(Border::find($border_id), $data)) {
+            flash('Variant created successfully.')->success();
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
+        }
+
+        return redirect()->back();
     }
 }

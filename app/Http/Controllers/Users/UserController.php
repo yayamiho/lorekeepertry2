@@ -349,8 +349,8 @@ class UserController extends Controller
      */
     public function getUserBorders($name)
     {
-        $default =  Border::where('is_active', 1)->where('is_default', 1)->get();
-        $admin = Border::where('admin_only', 1)->get();
+        $default =  Border::base()->active(Auth::user() ?? null)->where('is_default', 1)->get();
+        $admin = Border::base()->where('admin_only', 1)->get();
         
         return view('user.borders', [
             'user' => $this->user,

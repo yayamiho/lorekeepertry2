@@ -22,6 +22,7 @@ use App\Models\User\User;
 
 use App\Models\Border\BorderCategory;
 use App\Models\Border\Border;
+use Auth;
 
 class WorldController extends Controller
 {
@@ -418,7 +419,7 @@ class WorldController extends Controller
      */
     public function getBorders(Request $request)
     {
-        $query = Border::active();
+        $query = Border::base()->active(Auth::user() ?? null);
         $data = $request->only(['border_category_id', 'name', 'sort','is_default']);
         if(isset($data['border_category_id']) && $data['border_category_id'] != 'none')
             $query->where('border_category_id', $data['border_category_id']);
@@ -464,7 +465,7 @@ class WorldController extends Controller
      */
     public function getBorder($id)
     {
-        $border = Border::where('id', $id)->active()->first();
+        $border = Border::base()->where('id', $id)->active()->first();
         if(!$border) abort(404);
 
         return view('world._border_page', [

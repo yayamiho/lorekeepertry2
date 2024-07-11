@@ -9,7 +9,7 @@
 @endif
 <div class="media-body row mw-100 mx-0" style="flex:1;flex-wrap:wrap;">
     <div class="d-none d-md-block">
-        {!!  $comment->commenter->userBorder !!}
+        {!!  $comment->commenter->userBorder() !!}
     </div>
     <div class="d-block" style="flex:1">
         <div class="row mx-0 px-0 align-items-md-end">
