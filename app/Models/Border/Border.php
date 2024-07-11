@@ -16,7 +16,7 @@ class Border extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'description', 'parsed_description', 'is_default', 'border_category_id', 'is_active', 'border_style', 'admin_only', 'layer_style', 'parent_id','has_layer'
+        'name', 'description', 'parsed_description', 'is_default', 'border_category_id', 'is_active', 'border_style', 'admin_only', 'parent_id', 'border_type', 'artist_id','artist_url'
     ];
 
     /**
@@ -133,19 +133,6 @@ class Border extends Model
         return $query->whereNull('parent_id');
     }
 
-    /**
-     * Scope a query to show only non-variant borders.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param mixed|null                            $user
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeLayers($query)
-    {
-        return $query->where('has_layer', 1);
-    }
-
     /**********************************************************************************************
     RELATIONS
      **********************************************************************************************/
@@ -171,7 +158,31 @@ class Border extends Model
      */
     public function variants()
     {
-        return $this->hasMany('App\Models\Border\Border', 'parent_id')->active(Auth::user() ?? null);
+        return $this->hasMany('App\Models\Border\Border', 'parent_id')->active(Auth::user() ?? null)->where('border_type', 'variant');
+    }
+
+    /**
+     * Get all the border's top layers.
+     */
+    public function topLayers()
+    {
+        return $this->hasMany('App\Models\Border\Border', 'parent_id')->active(Auth::user() ?? null)->where('border_type', 'top');
+    }
+
+    /**
+     * Get all the border's bottom layers.
+     */
+    public function bottomLayers()
+    {
+        return $this->hasMany('App\Models\Border\Border', 'parent_id')->active(Auth::user() ?? null)->where('border_type', 'bottom');
+    }
+
+    /**
+     * Get the user that drew the border art.
+     */
+    public function artist()
+    {
+        return $this->belongsTo('App\Models\User\User', 'artist_id');
     }
 
     /**********************************************************************************************
@@ -363,6 +374,85 @@ class Border extends Model
                 $avatar .
                 '
         </div>';
+        }
+    }
+
+    /**
+     * display the user's icon and border styling
+     *
+     */
+    public function previewLayers($top, $bottom, $id = null)
+    {
+        //we will preview the border on various site pages for purposes of fun :}
+        //and so people can "test" their look without having to unlock one
+        //if we pass $id, return the avatar of that user
+
+        if ($id) {
+            $user = User::find($id)->avatarUrl;
+
+            //else, check if logged in
+            //if logged in, return the user avatar to preview
+        } elseif (Auth::check()) {
+            $user = Auth::user()->avatarUrl;
+
+            //finally if not either of these, return default avatar
+        } else {
+            $user = url('images/avatars/default.jpg');
+        }
+        //basically just an ugly ass string of html for copypasting use
+        //would you want to keep posting this everywhere? yeah i thought so. me neither
+        //there's probably a less hellish way to do this but it beats having to paste this over everywhere... EVERY SINGLE TIME.
+        //especially with the checks
+
+        $height = '125px';
+
+        //get some fun variables for later
+        $avatar = '<!-- avatar -->
+        <img class="avatar" src="' .
+            $user .
+            '" style="position: absolute; border-radius:50%; width:' . $height . '; height:' . $height . ';" >';
+
+        $styling = '<div style="width:' . $height . '; height:' . $height . '; border-radius:50%; margin-right:25px;">';
+
+        //top's layer image
+        $mainframe = '<img src="' . $top->imageUrl .
+            '" style="position: absolute;width:' . $height . '; height:' . $height . ';">';
+        //bottom layer's image
+        $secondframe = '<img src="' . $bottom->imageUrl .
+            '" style="position: absolute;width:' . $height . '; height:' . $height . ';">';
+
+        if ($top->border_style && $bottom->border_style) {
+            return $styling . $avatar . $secondframe . $mainframe . '</div>';
+        } elseif ($top->border_style && !$bottom->border_style) {
+            return $styling . $secondframe . $avatar . $mainframe . '</div>';
+        } else {
+            return $styling . $secondframe . $mainframe . $avatar . '</div>';
+        }
+    }
+
+    /**
+     * Get the artist of the border's image.
+     *
+     * @return string
+     */
+    public function getBorderArtistAttribute()
+    {
+        if (!$this->artist_url && !$this->artist_id) {
+            return null;
+        }
+
+        // Check to see if the artist exists on site
+        $artist = checkAlias($this->artist_url, false);
+        if (is_object($artist)) {
+            $this->artist_id = $artist->id;
+            $this->artist_url = null;
+            $this->save();
+        }
+
+        if ($this->artist_id) {
+            return $this->artist->displayName;
+        } else if ($this->artist_url) {
+            return prettyProfileLink($this->artist_url);
         }
     }
 

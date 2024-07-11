@@ -14,14 +14,16 @@ class AddExtraBorders extends Migration
     public function up()
     {
         Schema::table('borders', function (Blueprint $table) {
-            $table->boolean('layer_style')->default(0); // 0 = under 1 = over the user icon
             $table->integer('parent_id')->unsigned()->nullable()->default(null);
-            $table->boolean('has_layer')->default(0);
+            $table->string('border_type')->default('Default');
+            $table->string('artist_id')->nullable();
+            $table->string('artist_url')->nullable();
         });
 
         Schema::table('users', function (Blueprint $table) {
             $table->integer('border_variant_id')->unsigned()->nullable()->default(null);
             $table->integer('bottom_border_id')->unsigned()->nullable()->default(null);
+            $table->integer('top_border_id')->unsigned()->nullable()->default(null);
         });
     }
 
@@ -35,10 +37,13 @@ class AddExtraBorders extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('border_variant_id');
             $table->dropColumn('bottom_border_id');
+            $table->dropColumn('top_border_id');
         });
         Schema::table('borders', function (Blueprint $table) {
-            $table->dropColumn('layer_style');
             $table->dropColumn('parent_id'); 
+            $table->dropColumn('border_type'); 
+            $table->dropColumn('artist_alias'); 
+            $table->dropColumn('artist_url'); 
         });
     }
 }

@@ -188,6 +188,7 @@ class BorderController extends Controller
         return view('admin.borders.create_edit_border', [
             'border' => new Border,
             'categories' => ['none' => 'No category'] + BorderCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'userOptions' => User::query()->orderBy('name')->pluck('name', 'id')->toArray()
         ]);
     }
 
@@ -207,6 +208,7 @@ class BorderController extends Controller
         return view('admin.borders.create_edit_border', [
             'border' => $border,
             'categories' => ['none' => 'No category'] + BorderCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'userOptions' => User::query()->orderBy('name')->pluck('name', 'id')->toArray()
         ]);
     }
 
@@ -222,7 +224,7 @@ class BorderController extends Controller
     {
         $id ? $request->validate(Border::$updateRules) : $request->validate(Border::$createRules);
         $data = $request->only([
-            'name', 'description', 'border_category_id', 'is_default', 'image', 'is_active', 'border_style', 'admin_only','layer_image','remove_layer_image'
+            'name', 'description', 'border_category_id', 'is_default', 'image', 'is_active', 'border_style', 'admin_only','layer_image','remove_layer_image','artist_id','artist_url'
         ]);
         if ($id && $service->updateBorder(Border::find($id), $data, Auth::user())) {
             flash('Border updated successfully.')->success();
@@ -285,11 +287,13 @@ class BorderController extends Controller
      * @param mixed      $border_id
      * @param mixed|null $id
      */
-    public function getCreateEditVariant($border_id, $id = null)
+    public function getCreateEditVariant($border_id, $type, $id = null)
     {
         return view('admin.borders._create_edit_border_variant', [
             'border' => Border::find($border_id),
             'variant' => $id ? Border::find($id) : new Border,
+            'type' => $type,
+            'userOptions' => User::query()->orderBy('name')->pluck('name', 'id')->toArray()
         ]);
     }
 
@@ -302,12 +306,12 @@ class BorderController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postCreateEditVariant(Request $request, BorderService $service, $border_id, $id = null)
+    public function postCreateEditVariant(Request $request, BorderService $service, $border_id, $type, $id = null)
     {
-        $data = $request->only(['name', 'image', 'is_active', 'border_style','delete','layer_image','remove_layer_image','layer_style']);
-        if ($id && $service->editVariant(Border::findOrFail($id), $data)) {
-        } elseif (!$id && $service->createVariant(Border::find($border_id), $data)) {
-            flash('Variant created successfully.')->success();
+        $data = $request->only(['name', 'image', 'is_active', 'border_style','delete','artist_id','artist_url']);
+        if ($id && $service->editVariant(Border::findOrFail($id), $data, $type)) {
+        } elseif (!$id && $service->createVariant(Border::find($border_id), $data, $type)) {
+            flash($type.' created successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
                 flash($error)->error();
@@ -316,4 +320,5 @@ class BorderController extends Controller
 
         return redirect()->back();
     }
+
 }

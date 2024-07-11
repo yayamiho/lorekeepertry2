@@ -245,10 +245,10 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
      Route::post('borders/edit/{id?}', 'BorderController@postCreateEditBorder');
      Route::post('borders/delete/{id}', 'BorderController@postDeleteBorder');
 
-    Route::get('borders/edit/{border_id}/variants/create', 'BorderController@getCreateEditVariant');
-    Route::get('borders/edit/{border_id}/variants/edit/{id}', 'BorderController@getCreateEditVariant');
-    Route::post('borders/edit/{border_id}/variants/create', 'BorderController@postCreateEditVariant');
-    Route::post('borders/edit/{border_id}/variants/edit/{id}', 'BorderController@postCreateEditVariant');
+    Route::get('borders/edit/{border_id}/{type}s/create', 'BorderController@getCreateEditVariant');
+    Route::get('borders/edit/{border_id}/{type}s/edit/{id}', 'BorderController@getCreateEditVariant');
+    Route::post('borders/edit/{border_id}/{type}s/create', 'BorderController@postCreateEditVariant');
+    Route::post('borders/edit/{border_id}/{type}s/edit/{id}', 'BorderController@postCreateEditVariant');
 });
 
 

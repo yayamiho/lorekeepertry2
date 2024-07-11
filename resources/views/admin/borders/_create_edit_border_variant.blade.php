@@ -1,4 +1,4 @@
-{!! Form::open(['url' => 'admin/data/borders/edit/' . $border->id . '/variants/' . ($variant->id ? 'edit/' . $variant->id : 'create'), 'files' => true]) !!}
+{!! Form::open(['url' => 'admin/data/borders/edit/' . $border->id . '/' . $type . 's/' . ($variant->id ? 'edit/' . $variant->id : 'create'), 'files' => true]) !!}
 
 <h3>Basic Information</h3>
 
@@ -22,6 +22,24 @@
             'data-toggle' => 'toggle',
         ]) !!}
         {!! Form::label('is_active', 'Active?', ['class' => 'form-check-label ml-3']) !!} {!! add_help('Users can\'t see or select this border if it isn\'t visible.') !!}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md">
+        {!! Form::label('Border Artist (Optional)') !!} {!! add_help('Provide the artist\'s username if they are on site or, failing that, a link.') !!}
+        <div class="row">
+            <div class="col-md">
+                <div class="form-group">
+                    {!! Form::select('artist_id', $userOptions, $variant && $variant->artist_id ? $variant->artist_id : null, ['class' => 'form-control mr-2 selectize', 'placeholder' => 'Select a User']) !!}
+                </div>
+            </div>
+            <div class="col-md">
+                <div class="form-group">
+                    {!! Form::text('artist_url', $variant && $variant->artist_url ? $variant->artist_url : '', ['class' => 'form-control mr-2', 'placeholder' => 'Artist URL']) !!}
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -52,33 +70,6 @@
         <div class="form-group">
             {!! Form::label('Border Style (Required)') !!}{!! add_help('Choose how the border will display around an icon. It can display over or under the user\'s icon.') !!}
             {!! Form::select('border_style', ['0' => 'Under', '1' => 'Over'], $variant->border_style, [
-                'class' => 'form-control',
-                'placeholder' => 'Select a Type',
-            ]) !!}
-        </div>
-    </div>
-</div>
-<h5>Second Layer</h5>
-<p>You can layer a second image here.</p>
-<div class="row">
-    @if ($variant->has_layer)
-        <div class="col-md-2">
-            <div class="form-group">
-                <h5>Image</h5>
-                <img src="{{ $variant->layerUrl }}" class="mw-100" style="width:125px; height:125px;" />
-                <br>
-            </div>
-        </div>
-    @endif
-    <div class="col-md-6">
-        <div class="form-group">
-            {!! Form::label('Layer Image') !!}
-            <div>{!! Form::file('layer_image') !!}</div>
-            <div class="text-muted">Supports .png and .gif</div>
-        </div>
-        <div class="form-group">
-            {!! Form::label('Layer Style (Required)') !!}{!! add_help('Choose how the layer will display around an icon. It can display over or under the user\'s icon.') !!}
-            {!! Form::select('layer_style', ['0' => 'Under', '1' => 'Over'], $variant->layer_style, [
                 'class' => 'form-control',
                 'placeholder' => 'Select a Type',
             ]) !!}

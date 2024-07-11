@@ -22,6 +22,9 @@
             <div class="form-group ml-3 mb-3">
                 {!! Form::select('is_default', $is_default, Request::get('is_default'), ['class' => 'form-control']) !!}
             </div>
+            <div class="form-group ml-3 mb-3">
+                {!! Form::select('artist', $artists, Request::get('artist'), ['class' => 'form-control']) !!}
+            </div>
         </div>
         <div class="form-inline justify-content-end">
             <div class="form-group ml-3 mb-3">

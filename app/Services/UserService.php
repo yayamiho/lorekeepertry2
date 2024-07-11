@@ -383,13 +383,16 @@ class UserService extends Service
                     }
                 }
             }
-
+            if (!$data['bottom_border_id'] && $data['top_border_id'] || $data['bottom_border_id'] && !$data['top_border_id']) {
+                abort(404);
+            }
             if ($data['bottom_border_id'] > 0) {
-                $layer = Border::where('id', $data['bottom_border_id'])->whereNotNull('parent_id')->where('has_layer', 1)->first();
+                $layer = Border::where('id', $data['bottom_border_id'])->whereNotNull('parent_id')->where('border_type', 'bottom')->first();
                 if (!$layer) {
                     abort(404);
                 }
-                if (!$layer->parent->has_layer) {
+                $toplayer = Border::where('id', $data['top_border_id'])->whereNotNull('parent_id')->where('border_type', 'top')->first();
+                if (!$toplayer) {
                     abort(404);
                 }
                 //do some validation...
@@ -411,6 +414,7 @@ class UserService extends Service
             $user->border_id = $data['border'];
             $user->border_variant_id = $data['border_variant_id'];
             $user->bottom_border_id = $data['bottom_border_id'];
+            $user->top_border_id = $data['top_border_id'];
             $user->save();
 
             return $this->commitReturn(true);

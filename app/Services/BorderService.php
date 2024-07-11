@@ -215,14 +215,6 @@ class BorderService extends Service
                 unset($data['image']);
             }
 
-            $layer_image = null;
-            if (isset($data['layer_image']) && $data['layer_image']) {
-                $data['has_layer'] = 1;
-                $layer_image = $data['layer_image'];
-                unset($data['layer_image']);
-            } else {
-                $data['has_layer'] = 0;
-            }
 
             $data = $this->populateData($data);
             
@@ -230,9 +222,6 @@ class BorderService extends Service
 
             if ($image) {
                 $this->handleImage($image, $border->imagePath, $border->imageFileName);
-            }
-            if ($layer_image) {
-                $this->handleImage($layer_image, $border->imagePath, $border->layerFileName);
             }
 
             return $this->commitReturn($border);
@@ -273,13 +262,6 @@ class BorderService extends Service
                 $image = $data['image'];
             }
 
-            $layer_image = null;
-            if (isset($data['layer_image']) && $data['layer_image']) {
-                $data['has_layer'] = 1;
-                $layer_image = $data['layer_image'];
-                unset($data['layer_image']);
-            }
-
             $data = $this->populateData($data, $border);
 
             if (isset($data['image'])) {
@@ -288,10 +270,6 @@ class BorderService extends Service
                 }
 
                 unset($data['image']);
-            }
-
-            if ($layer_image) {
-                $this->handleImage($layer_image, $border->imagePath, $border->layerFileName);
             }
 
             $border->update($data);
@@ -331,14 +309,6 @@ class BorderService extends Service
             $data['admin_only'] = 0;
         }
 
-        if (isset($data['remove_layer_image'])) {
-            if ($border && $border->has_layer) {
-                $data['has_layer'] = 0;
-                $this->deleteImage($border->imagePath, $border->layerFileName);
-            }
-            unset($data['remove_layer_image']);
-        }
-
         return $data;
     }
 
@@ -362,11 +332,9 @@ class BorderService extends Service
 
             $this->deleteImage($border->imagePath, $border->imageFileName);
 
-            if ($border->has_layer) {
-                $this->deleteImage($border->imagePath, $border->layerFileName);
-            }
-
             $border->variants()->delete();
+            $border->topLayers()->delete();
+            $border->bottomLayers()->delete();
 
             // Delete the border itself
             $border->delete();
@@ -518,20 +486,14 @@ class BorderService extends Service
      * @param mixed $border
      * @param mixed $data
      */
-    public function createVariant($border, $data)
+    public function createVariant($border, $data, $type)
     {
         DB::beginTransaction();
 
         try {
             // check name is unique
-            if (Border::where('name', $data['name'])->where('parent_id', $border->id)->exists()) {
+            if (Border::where('name', $data['name'])->where('parent_id', $border->id)->where('border_type', $type)->exists()) {
                 throw new \Exception('The name has already been taken.');
-            }
-
-            if (isset($data['layer_image'])) {
-                if (!isset($data['layer_style'])) {
-                    throw new \Exception("The layer requires a style.");
-                }
             }
 
             $image = null;
@@ -540,17 +502,8 @@ class BorderService extends Service
                 unset($data['image']);
             }
 
-            $layer_image = null;
-            if (isset($data['layer_image']) && $data['layer_image']) {
-                $data['has_layer'] = 1;
-                $layer_image = $data['layer_image'];
-                unset($data['layer_image']);
-            } else {
-                $data['has_layer'] = 0;
-            }
-            
-
             $data['parent_id'] = $border->id;
+            $data['border_type'] = $type;
 
             $data = $this->populateData($data);
 
@@ -558,10 +511,6 @@ class BorderService extends Service
 
             if ($image) {
                 $this->handleImage($image, $variant->imagePath, $variant->imageFileName);
-            }
-
-            if ($layer_image) {
-                $this->handleImage($layer_image, $variant->imagePath, $variant->layerFileName);
             }
 
             return $this->commitReturn(true);
@@ -578,34 +527,20 @@ class BorderService extends Service
      * @param mixed $variant
      * @param mixed $data
      */
-    public function editVariant($variant, $data)
+    public function editVariant($variant, $data, $type)
     {
         DB::beginTransaction();
 
         try {
             // check name is unique
-            if (Border::where('name', $data['name'])->where('parent_id', $variant->parent->id)->where('id', '!=', $variant->id)->exists()) {
+            if (Border::where('name', $data['name'])->where('parent_id', $variant->parent->id)->where('id', '!=', $variant->id)->where('border_type', $variant->border_type)->exists()) {
                 throw new \Exception('The name has already been taken.');
-            }
-
-            if (isset($data['layer_image'])) {
-                if (!isset($data['layer_style'])) {
-                    throw new \Exception("The layer requires a style.");
-                }
             }
 
             $image = null;
             if (isset($data['image']) && $data['image']) {
                 $image = $data['image'];
             }
-
-            $layer_image = null;
-            if (isset($data['layer_image']) && $data['layer_image']) {
-                $data['has_layer'] = 1;
-                $layer_image = $data['layer_image'];
-                unset($data['layer_image']);
-            }
-
             $data = $this->populateData($data, $variant);
 
             if (isset($data['image'])) {
@@ -614,10 +549,6 @@ class BorderService extends Service
                 }
 
                 unset($data['image']);
-            }
-
-            if ($layer_image) {
-                $this->handleImage($layer_image, $variant->imagePath, $variant->layerFileName);
             }
 
             $variant->update($data);
@@ -629,13 +560,10 @@ class BorderService extends Service
                 }
 
                 $this->deleteImage($variant->imagePath, $variant->imageFileName);
-                if ($variant->has_layer) {
-                    $this->deleteImage($variant->imagePath, $variant->layerFileName);
-                }
                 $variant->delete();
-                flash('Variant deleted successfully.')->success();
+                flash($type.' deleted successfully.')->success();
             } else {
-                flash('Variant updated successfully.')->success();
+                flash($type.' updated successfully.')->success();
             }
 
             return $this->commitReturn(true);

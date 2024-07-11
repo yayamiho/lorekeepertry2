@@ -122,11 +122,7 @@
                 {!! Form::select('border_variant_id', $border_variants, Auth::user()->border_variant_id, ['class' => 'form-control', 'id' => 'bordervariant']) !!}
             </div>
         </div>
-        <div class="form-group row">
-            <label class="col-md-2 col-form-label">Layered Border</label>
-            <div class="col-md-10">
-                {!! Form::select('bottom_border_id', $bottom_layers, Auth::user()->bottom_border_id, ['class' => 'form-control', 'id' => 'layeredborder']) !!}
-            </div>
+        <div id="layers">
         </div>
         <div class="text-right">
             {!! Form::submit('Edit', ['class' => 'btn btn-primary']) !!}
@@ -219,7 +215,7 @@
                 url: "{{ url('account/check-layers') }}?border=" + border,
                 dataType: "text"
             }).done(function(res) {
-                $("#layeredborder").html(res);
+                $("#layers").html(res);
             }).fail(function(jqXHR, textStatus, errorThrown) {
                 alert("AJAX call failed: " + textStatus + ", " + errorThrown);
             });

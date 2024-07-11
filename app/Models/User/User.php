@@ -34,7 +34,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $fillable = [
-        'name', 'alias', 'rank_id', 'email', 'password', 'is_news_unread', 'is_banned', 'has_alias', 'avatar', 'is_sales_unread', 'birthday', 'border_id', 'border_variant_id', 'bottom_border_id',
+        'name', 'alias', 'rank_id', 'email', 'password', 'is_news_unread', 'is_banned', 'has_alias', 'avatar', 'is_sales_unread', 'birthday', 'border_id', 'border_variant_id', 'bottom_border_id', 'top_border_id',
     ];
 
     /**
@@ -215,7 +215,15 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Get the border associated with this user.
      */
-    public function borderLayer()
+    public function borderTopLayer()
+    {
+        return $this->belongsTo('App\Models\Border\Border', 'top_border_id');
+    }
+
+    /**
+     * Get the border associated with this user.
+     */
+    public function borderBottomLayer()
     {
         return $this->belongsTo('App\Models\Border\Border', 'bottom_border_id');
     }
@@ -727,24 +735,24 @@ class User extends Authenticatable implements MustVerifyEmail
     ';
 
         //if the user has a border, we apply it
-        if (isset($this->border) || isset($this->borderLayer) || isset($this->borderVariant)) {
+        if (isset($this->border) || isset($this->borderBottomLayer) && isset($this->borderTopLayer) || isset($this->borderVariant)) {
 
             //layers supersede variants
             //variants supersede regular borders
-            if (isset($this->borderLayer)) {
-                //parent's layer image
-                $mainframe = '<img src="' . $this->borderLayer->parent->layerUrl .
+            if (isset($this->borderBottomLayer) && isset($this->borderTopLayer)) {
+                //top's layer image
+                $mainframe = '<img src="' . $this->borderTopLayer->imageUrl .
                     '" style="position: absolute;width:' . $height . '; height:' . $height . ';">';
-                //chosen layer's image
-                $secondframe = '<img src="' . $this->borderLayer->layerUrl .
+                //bottom layer's image
+                $secondframe = '<img src="' . $this->borderBottomLayer->imageUrl .
                     '" style="position: absolute;width:' . $height . '; height:' . $height . ';">';
 
-                //under...
-                if ($this->borderLayer->layer_style) {
-                    return $styling . $mainframe . $avatar . $secondframe . '</div>';
+                if ($this->borderTopLayer->border_style && $this->borderBottomLayer->border_style) {
+                    return $styling . $avatar . $secondframe . $mainframe . '</div>';
+                } elseif ($this->borderTopLayer->border_style && !$this->borderBottomLayer->border_style) {
+                    return $styling . $secondframe . $avatar . $mainframe . '</div>';
                 } else {
-                    //over...
-                    return $styling . $mainframe . $secondframe . $avatar . '</div>';
+                    return $styling . $secondframe . $mainframe . $avatar . '</div>';
                 }
             } elseif (isset($this->borderVariant)) {
                 $mainframe = '<img src="' . $this->borderVariant->imageUrl .
@@ -756,7 +764,7 @@ class User extends Authenticatable implements MustVerifyEmail
                 $borderstyle = $this->border;
             }
 
-            if (!isset($this->borderLayer)) {
+            if (!isset($this->borderBottomLayer) && !isset($this->borderTopLayer)) {
                 //under...
                 if ($borderstyle->border_style) {
                     return $styling . $avatar . $mainframe . '</div>';
@@ -767,7 +775,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
             //if no border return standard avatar style
         }
-        return $styling.$avatar .
+        return $styling . $avatar .
             '
         </div>';
     }
