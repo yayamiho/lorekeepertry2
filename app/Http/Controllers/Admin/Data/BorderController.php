@@ -224,7 +224,7 @@ class BorderController extends Controller
     {
         $id ? $request->validate(Border::$updateRules) : $request->validate(Border::$createRules);
         $data = $request->only([
-            'name', 'description', 'border_category_id', 'is_default', 'image', 'is_active', 'border_style', 'admin_only','layer_image','remove_layer_image','artist_id','artist_url'
+            'name', 'description', 'border_category_id', 'is_default', 'image', 'is_active', 'border_style', 'admin_only','artist_id','artist_url'
         ]);
         if ($id && $service->updateBorder(Border::find($id), $data, Auth::user())) {
             flash('Border updated successfully.')->success();

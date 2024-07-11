@@ -72,31 +72,6 @@
             </div>
         </div>
     </div>
-    <h5>Second Layer</h5>
-    <p>You can layer a second image here.</p>
-    <p>This image always layers over the avatar.</p>
-    <div class="row">
-        @if ($border->has_layer)
-            <div class="col-md-2">
-                <div class="form-group">
-                    <h5>Image</h5>
-                    <img src="{{ $border->layerUrl }}" class="mw-100" style="width:125px; height:125px;" />
-                    <br>
-                </div>
-            </div>
-            <div class="form-check">
-                {!! Form::checkbox('remove_layer_image', 1, false, ['class' => 'form-check-input']) !!}
-                {!! Form::label('remove_layer_image', 'Remove current layer image', ['class' => 'form-check-label']) !!}
-            </div>
-        @endif
-        <div class="col-md-6">
-            <div class="form-group">
-                {!! Form::label('Layer Image') !!}
-                <div>{!! Form::file('layer_image') !!}</div>
-                <div class="text-muted">Supports .png and .gif</div>
-            </div>
-        </div>
-    </div>
     <br>
     <div class="row">
         <div class="col-md-3">

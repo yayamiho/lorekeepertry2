@@ -261,26 +261,6 @@ class Border extends Model
     }
 
     /**
-     * Gets the file name of the model's image.
-     *
-     * @return string
-     */
-    public function getLayerFileNameAttribute()
-    {
-        return $this->id . '-layer-image.png';
-    }
-
-    /**
-     * Gets the URL of the model's image.
-     *
-     * @return string
-     */
-    public function getLayerUrlAttribute()
-    {
-        return asset($this->imageDirectory . '/' . $this->layerFileName);
-    }
-
-    /**
      * Gets the URL of the model's encyclopedia page.
      *
      * @return string
