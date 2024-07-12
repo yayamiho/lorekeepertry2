@@ -553,26 +553,30 @@ class BorderService extends Service
 
             $variant->update($data);
 
+            if($type == 'top'){
+                $check = 'top_border_id';
+                $name = 'Top Layer';
+            }elseif($type == 'bottom'){
+                $check = 'bottom_border_id';
+                $name = 'Bottom Layer';
+            }else{
+                $check = 'border_variant_id';
+                $name = 'Variant';
+            }
+
             if (isset($data['delete']) && $data['delete']) {
 
                 // check that no user borders exist with this variant before deleting
 
-                if($type == 'top'){
-                    $check = 'top_border_id';
-                }elseif($type == 'bottom'){
-                    $check = 'bottom_border_id';
-                }else{
-                    $check = 'border_variant_id';
-                }
                 if (User::where($type, $variant->id)->exists()) {
                     throw new \Exception('At least one user has this variant as their border.');
                 }
 
                 $this->deleteImage($variant->imagePath, $variant->imageFileName);
                 $variant->delete();
-                flash($type.' deleted successfully.')->success();
+                flash($name.' deleted successfully.')->success();
             } else {
-                flash($type.' updated successfully.')->success();
+                flash($name.' updated successfully.')->success();
             }
 
             return $this->commitReturn(true);
