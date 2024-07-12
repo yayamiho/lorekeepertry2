@@ -81,3 +81,8 @@
 </div>
 
 {!! Form::close() !!}
+<script>
+    $(document).ready(function() {
+        $('.selectize').selectize();
+    });
+</script>

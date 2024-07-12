@@ -249,7 +249,7 @@ class BorderService extends Service
             }
 
             // More specific validation
-            if (Border::where('name', $data['name'])->where('id', '!=', $border->id)->exists()) {
+            if (Border::where('name', $data['name'])->where('id', '!=', $border->id)->where('border_type', 'Default')->exists()) {
                 throw new \Exception("The name has already been taken.");
             }
 
@@ -554,8 +554,17 @@ class BorderService extends Service
             $variant->update($data);
 
             if (isset($data['delete']) && $data['delete']) {
+
                 // check that no user borders exist with this variant before deleting
-                if (User::where('border_id', $variant->id)->exists()) {
+
+                if($type == 'top'){
+                    $check = 'top_border_id';
+                }elseif($type == 'bottom'){
+                    $check = 'bottom_border_id';
+                }else{
+                    $check = 'border_variant_id';
+                }
+                if (User::where($type, $variant->id)->exists()) {
                     throw new \Exception('At least one user has this variant as their border.');
                 }
 
