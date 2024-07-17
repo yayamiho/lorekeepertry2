@@ -488,7 +488,7 @@ class PetController extends Controller {
     public function getDeleteDrop($id) {
         $drop = PetDropData::find($id);
 
-        return view('admin.pets._delete_drop', [
+        return view('admin.pets._delete_pet_drop', [
             'drop' => $drop,
         ]);
     }
@@ -502,7 +502,7 @@ class PetController extends Controller {
      * @return \Illuminate\Http\RedirectResponse
      */
     public function postDeleteDrop(Request $request, SpeciesService $service, $id) {
-        if ($id && $service->deleteDropData(PetDropData::find($id))) {
+        if ($id && $service->deletePetDrop(PetDropData::find($id))) {
             flash('Drop data deleted successfully.')->success();
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
@@ -690,7 +690,7 @@ class PetController extends Controller {
 
     /**
      * Gets the pet level deletion modal.
-     * 
+     *
      * @param mixed $id
      */
     public function getDeleteLevel($id) {
@@ -703,7 +703,7 @@ class PetController extends Controller {
 
     /**
      * Deletes a pet level.
-     * 
+     *
      * @param mixed $id
      */
     public function postDeleteLevel(Request $request, PetService $service, $id) {
