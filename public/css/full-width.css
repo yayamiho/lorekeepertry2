@@ -1,0 +1,27 @@
+
+/***
+Makes the following changes to the lorekeeper layout:
+
+- removes the header image
+- uses the header image as a background image instead
+- adds some top margin to the content + sidebar
+
+Use STRG+SHIFT+R to hard refresh and reload the css or you may be unable to see the changes.
+
+*/
+
+
+main {
+    background-color: white;
+}
+
+.main-content {
+    box-shadow: none;
+}
+
+.sidebar ul li {
+    margin-right: 10px;
+    margin-top: 30px;
+    box-shadow: 1px -1px 10px 0px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
