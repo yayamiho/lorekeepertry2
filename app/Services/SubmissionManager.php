@@ -237,9 +237,9 @@ class SubmissionManager extends Service {
                     'staff_id'              => $user->id,
                     'status'                => 'Draft',
                     'data'                  => json_encode([
-                        'user'      => $userAssets,
-                        'rewards'   => getDataReadyAssets($promptRewards),
-                        'criterion' => $assets['criterion'] ?? null,
+                        'user'                  => $userAssets,
+                        'rewards'               => getDataReadyAssets($promptRewards),
+                        'criterion'             => $assets['criterion'] ?? null,
                         'gallery_submission_id' => $submission->data['gallery_submission_id'] ?? null,
                     ]), // list of rewards and addons
                 ]);
@@ -255,9 +255,9 @@ class SubmissionManager extends Service {
                     'status'     => 'Draft',
                     'updated_at' => Carbon::now(),
                     'data'       => json_encode([
-                        'user'      => $userAssets,
-                        'rewards'   => getDataReadyAssets($promptRewards),
-                        'criterion' => $assets['criterion'] ?? null,
+                        'user'                  => $userAssets,
+                        'rewards'               => getDataReadyAssets($promptRewards),
+                        'criterion'             => $assets['criterion'] ?? null,
                         'gallery_submission_id' => $submission->data['gallery_submission_id'] ?? null,
                     ]), // list of rewards and addons
                 ]);
@@ -520,9 +520,9 @@ class SubmissionManager extends Service {
                 'staff_id'              => $user->id,
                 'status'                => 'Approved',
                 'data'                  => json_encode([
-                    'user'      => $addonData,
-                    'rewards'   => getDataReadyAssets($rewards),
-                    'criterion' => $data['criterion'] ?? null,
+                    'user'                  => $addonData,
+                    'rewards'               => getDataReadyAssets($rewards),
+                    'criterion'             => $data['criterion'] ?? null,
                     'gallery_submission_id' => $submission->data['gallery_submission_id'] ?? null,
                 ]), // list of rewards
             ]);

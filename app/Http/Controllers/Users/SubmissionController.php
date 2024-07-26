@@ -92,7 +92,7 @@ class SubmissionController extends Controller {
 
         $prompt = $request->all()['prompt_id'] ?? null;
         $promptCriteria = $prompt ? PromptCriterion::where('prompt_id', $prompt)->pluck('criterion_id')->toArray() : null;
-        
+
         if (config('lorekeeper.settings.allow_gallery_submissions_on_prompts')) {
             $collaboratorIds = GalleryCollaborator::where('user_id', Auth::user()->id)->where('has_approved', 1)->pluck('gallery_submission_id')->toArray();
 
@@ -109,18 +109,18 @@ class SubmissionController extends Controller {
             'closed'  => $closed,
             'isClaim' => false,
         ] + ($closed ? [] : [
-            'submission'          => new Submission,
-            'prompts'             => Prompt::active()->sortAlphabetical()->pluck('name', 'id')->toArray(),
-            'characterCurrencies' => Currency::where('is_character_owned', 1)->orderBy('sort_character', 'DESC')->pluck('name', 'id'),
-            'categories'          => ItemCategory::visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->get(),
-            'item_filter'         => Item::orderBy('name')->released()->get()->keyBy('id'),
-            'items'               => Item::orderBy('name')->released()->pluck('name', 'id'),
-            'character_items'     => Item::whereIn('item_category_id', ItemCategory::where('is_character_owned', 1)->pluck('id')->toArray())->orderBy('name')->released()->pluck('name', 'id'),
-            'currencies'          => Currency::where('is_user_owned', 1)->orderBy('name')->pluck('name', 'id'),
-            'inventory'           => $inventory,
-            'page'                => 'submission',
-            'expanded_rewards'    => config('lorekeeper.extensions.character_reward_expansion.expanded'),
-            'criteria'            => $prompt ? Criterion::active()->whereIn('id', $promptCriteria)->orderBy('name')->pluck('name', 'id') : null,
+            'submission'             => new Submission,
+            'prompts'                => Prompt::active()->sortAlphabetical()->pluck('name', 'id')->toArray(),
+            'characterCurrencies'    => Currency::where('is_character_owned', 1)->orderBy('sort_character', 'DESC')->pluck('name', 'id'),
+            'categories'             => ItemCategory::visible(Auth::check() ? Auth::user() : null)->orderBy('sort', 'DESC')->get(),
+            'item_filter'            => Item::orderBy('name')->released()->get()->keyBy('id'),
+            'items'                  => Item::orderBy('name')->released()->pluck('name', 'id'),
+            'character_items'        => Item::whereIn('item_category_id', ItemCategory::where('is_character_owned', 1)->pluck('id')->toArray())->orderBy('name')->released()->pluck('name', 'id'),
+            'currencies'             => Currency::where('is_user_owned', 1)->orderBy('name')->pluck('name', 'id'),
+            'inventory'              => $inventory,
+            'page'                   => 'submission',
+            'expanded_rewards'       => config('lorekeeper.extensions.character_reward_expansion.expanded'),
+            'criteria'               => $prompt ? Criterion::active()->whereIn('id', $promptCriteria)->orderBy('name')->pluck('name', 'id') : null,
             'userGallerySubmissions' => $gallerySubmissions,
         ]));
     }
@@ -141,7 +141,7 @@ class SubmissionController extends Controller {
         }
 
         $promptCriteria = PromptCriterion::where('prompt_id', $submission->prompt_id)->pluck('criterion_id')->toArray();
-        
+
         if (config('lorekeeper.settings.allow_gallery_submissions_on_prompts')) {
             $gallerySubmissions = GallerySubmission::where('user_id', Auth::user()->id)->where('status', 'Accepted')->orderBy('id', 'DESC')->get()->pluck('title', 'id');
             $gallerySubmissions = $gallerySubmissions->map(function ($item, $key) {
@@ -155,20 +155,20 @@ class SubmissionController extends Controller {
             'closed'              => $closed,
             'isClaim'             => false,
         ] + ($closed ? [] : [
-            'submission'          => $submission,
-            'prompts'             => Prompt::active()->sortAlphabetical()->pluck('name', 'id')->toArray(),
-            'characterCurrencies' => Currency::where('is_character_owned', 1)->orderBy('sort_character', 'DESC')->pluck('name', 'id'),
-            'categories'          => ItemCategory::orderBy('sort', 'DESC')->get(),
-            'item_filter'         => Item::orderBy('name')->released()->get()->keyBy('id'),
-            'items'               => Item::orderBy('name')->released()->pluck('name', 'id'),
-            'character_items'     => Item::whereIn('item_category_id', ItemCategory::where('is_character_owned', 1)->pluck('id')->toArray())->orderBy('name')->released()->pluck('name', 'id'),
-            'currencies'          => Currency::where('is_user_owned', 1)->orderBy('name')->pluck('name', 'id'),
-            'inventory'           => $inventory,
-            'page'                => 'submission',
-            'expanded_rewards'    => config('lorekeeper.extensions.character_reward_expansion.expanded'),
-            'selectedInventory'   => isset($submission->data['user']) ? parseAssetData($submission->data['user']) : null,
-            'count'               => Submission::where('prompt_id', $submission->prompt_id)->where('status', 'Approved')->where('user_id', $submission->user_id)->count(),
-            'criteria'            => Criterion::active()->whereIn('id', $promptCriteria)->orderBy('name')->pluck('name', 'id'),
+            'submission'             => $submission,
+            'prompts'                => Prompt::active()->sortAlphabetical()->pluck('name', 'id')->toArray(),
+            'characterCurrencies'    => Currency::where('is_character_owned', 1)->orderBy('sort_character', 'DESC')->pluck('name', 'id'),
+            'categories'             => ItemCategory::orderBy('sort', 'DESC')->get(),
+            'item_filter'            => Item::orderBy('name')->released()->get()->keyBy('id'),
+            'items'                  => Item::orderBy('name')->released()->pluck('name', 'id'),
+            'character_items'        => Item::whereIn('item_category_id', ItemCategory::where('is_character_owned', 1)->pluck('id')->toArray())->orderBy('name')->released()->pluck('name', 'id'),
+            'currencies'             => Currency::where('is_user_owned', 1)->orderBy('name')->pluck('name', 'id'),
+            'inventory'              => $inventory,
+            'page'                   => 'submission',
+            'expanded_rewards'       => config('lorekeeper.extensions.character_reward_expansion.expanded'),
+            'selectedInventory'      => isset($submission->data['user']) ? parseAssetData($submission->data['user']) : null,
+            'count'                  => Submission::where('prompt_id', $submission->prompt_id)->where('status', 'Approved')->where('user_id', $submission->user_id)->count(),
+            'criteria'               => Criterion::active()->whereIn('id', $promptCriteria)->orderBy('name')->pluck('name', 'id'),
             'userGallerySubmissions' => $gallerySubmissions,
         ]));
     }
