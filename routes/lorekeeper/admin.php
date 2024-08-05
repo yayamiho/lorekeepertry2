@@ -243,6 +243,9 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('carousel/create', 'CarouselController@postUploadCarousel');
     Route::get('carousel/delete/{id}', 'CarouselController@getDeleteCarousel');
     Route::post('carousel/delete/{id}', 'CarouselController@postDeleteCarousel');
+    Route::post('carousel/sort', 'CarouselController@postSortCarousel');
+    Route::get('carousel/edit/{id}', 'CarouselController@getEditCarousel');
+    Route::post('carousel/edit/{id}', 'CarouselController@postEditCarousel');
 });
 
 // PAGES

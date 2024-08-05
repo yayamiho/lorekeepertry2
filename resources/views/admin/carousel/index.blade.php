@@ -45,10 +45,11 @@
                 <th></th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="sortable" class="sortable">
             @foreach ($carousels as $carousel)
-                <tr>
+                <tr class="sort-item" data-id="{{ $carousel->id }}">
                     <td>
+                    <a class="fas fa-arrows-alt-v handle mr-3" href="#"></a>
                         <a href="">{{ $carousel->image }}</a>
                     </td>
                     <td>
@@ -58,12 +59,19 @@
                         <a href="">{{ $carousel->alt_text }}</a>
                     </td>
                     <td class="text-right">
-                        <a href="#" class="btn btn-outline-danger btn-sm delete-carousel" data-name="{{ $carousel }}">Delete</a>
+                        <a href="#" class="btn btn-outline-primary btn-sm edit-carousel" data-id="{{ $carousel->id }}">Edit</a>
+                        <a href="#" class="btn btn-outline-danger btn-sm delete-carousel" data-id="{{ $carousel->id }}">Delete</a>
                     </td>
                 </tr>
             @endforeach
         </tbody>
     </table>
+    <div class="mb-4">
+            {!! Form::open(['url' => 'admin/data/carousel/sort']) !!}
+            {!! Form::hidden('sort', '', ['id' => 'sortableOrder']) !!}
+            {!! Form::submit('Save Order', ['class' => 'btn btn-primary']) !!}
+            {!! Form::close() !!}
+        </div>
 @endsection
 
 @section('scripts')
@@ -73,8 +81,30 @@
             $(document).ready(function() {
                 $('.delete-carousel').on('click', function(e) {
                     e.preventDefault();
-                    loadModal("{{ url('admin/data/carousel/delete') }}/{{ $carousel->id }}", 'Delete Carousel');
+                    loadModal("{{ url('admin/data/carousel/delete/') }}" + "/" + this.getAttribute('data-id'), 'Delete Carousel');
                 });
+
+                $('.edit-carousel').on('click', function(e) {
+                    e.preventDefault();
+                    loadModal("{{ url('admin/data/carousel/edit/') }}" + "/" + this.getAttribute('data-id'), 'Edit Carousel');
+                });
+
+                $("#sortable").sortable({
+                items: '.sort-item',
+                handle: ".handle",
+                placeholder: "sortable-placeholder",
+                stop: function(event, ui) {
+                    $('#sortableOrder').val($(this).sortable("toArray", {
+                        attribute: "data-id"
+                    }));
+                },
+                create: function() {
+                    $('#sortableOrder').val($(this).sortable("toArray", {
+                        attribute: "data-id"
+                    }));
+                }
+                });
+                $("#sortable").disableSelection();
             });
         </script>
     @endif

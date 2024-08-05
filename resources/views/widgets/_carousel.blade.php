@@ -1,6 +1,6 @@
 <div id="carouselDashboard" class="carousel slide" data-ride="carousel" data-interval="{{ Settings::get('carousel_speed') }}">
     <div class="carousel-inner">
-        @foreach (\App\Models\Carousel\Carousel::all() as $carousel)
+        @foreach (\App\Models\Carousel\Carousel::where('is_visible', 1)->orderBy('sort', 'DESC')->get() as $carousel)
             @if ($loop->first)
                 <div class="carousel-item active"><a href="{{ $carousel->link }}"><img class="d-block w-100" src="{{ $carousel->imageURL }}" alt="{{ $carousel->alt_text }}"></a></div>
             @else
