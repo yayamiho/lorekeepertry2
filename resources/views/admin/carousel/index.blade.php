@@ -49,7 +49,7 @@
             @foreach ($carousels as $carousel)
                 <tr class="sort-item" data-id="{{ $carousel->id }}">
                     <td>
-                    <a class="fas fa-arrows-alt-v handle mr-3" href="#"></a>
+                        <a class="fas fa-arrows-alt-v handle mr-3" href="#"></a>
                         <a href="">{{ $carousel->image }}</a>
                     </td>
                     <td>
@@ -67,11 +67,11 @@
         </tbody>
     </table>
     <div class="mb-4">
-            {!! Form::open(['url' => 'admin/data/carousel/sort']) !!}
-            {!! Form::hidden('sort', '', ['id' => 'sortableOrder']) !!}
-            {!! Form::submit('Save Order', ['class' => 'btn btn-primary']) !!}
-            {!! Form::close() !!}
-        </div>
+        {!! Form::open(['url' => 'admin/data/carousel/sort']) !!}
+        {!! Form::hidden('sort', '', ['id' => 'sortableOrder']) !!}
+        {!! Form::submit('Save Order', ['class' => 'btn btn-primary']) !!}
+        {!! Form::close() !!}
+    </div>
 @endsection
 
 @section('scripts')
@@ -90,19 +90,19 @@
                 });
 
                 $("#sortable").sortable({
-                items: '.sort-item',
-                handle: ".handle",
-                placeholder: "sortable-placeholder",
-                stop: function(event, ui) {
-                    $('#sortableOrder').val($(this).sortable("toArray", {
-                        attribute: "data-id"
-                    }));
-                },
-                create: function() {
-                    $('#sortableOrder').val($(this).sortable("toArray", {
-                        attribute: "data-id"
-                    }));
-                }
+                    items: '.sort-item',
+                    handle: ".handle",
+                    placeholder: "sortable-placeholder",
+                    stop: function(event, ui) {
+                        $('#sortableOrder').val($(this).sortable("toArray", {
+                            attribute: "data-id"
+                        }));
+                    },
+                    create: function() {
+                        $('#sortableOrder').val($(this).sortable("toArray", {
+                            attribute: "data-id"
+                        }));
+                    }
                 });
                 $("#sortable").disableSelection();
             });
