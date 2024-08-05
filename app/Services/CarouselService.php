@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Models\Carousel\Carousel;
 use Illuminate\Support\Facades\DB;
-use Log;
 
 class CarouselService extends Service {
     /*
@@ -54,12 +53,12 @@ class CarouselService extends Service {
         return $this->rollbackReturn(false);
     }
 
-        /**
+    /**
      * Updates a carousel.
      *
-     * @param \App\Models\Carousel\Carousel $shop
      * @param array                 $data
      * @param \App\Models\User\User $user
+     * @param mixed                 $carousel
      *
      * @return \App\Models\Carousel\Carousel|bool
      */
@@ -121,7 +120,7 @@ class CarouselService extends Service {
         return $this->rollbackReturn(false);
     }
 
-        /**
+    /**
      * Sorts carousel order.
      *
      * @param array $data

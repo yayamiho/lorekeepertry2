@@ -7,7 +7,6 @@ use App\Models\Carousel\Carousel;
 use App\Services\CarouselService;
 use Auth;
 use Illuminate\Http\Request;
-use Log;
 
 class CarouselController extends Controller {
     /**
@@ -87,7 +86,7 @@ class CarouselController extends Controller {
      * Creates or edits a carousel.
      *
      * @param App\Services\CarouselService $service
-     * @param int|null                 $id
+     * @param int|null                     $id
      *
      * @return \Illuminate\Http\RedirectResponse
      */

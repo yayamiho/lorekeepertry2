@@ -11,7 +11,7 @@ class Carousel extends Model {
      * @var array
      */
     protected $fillable = [
-        'alt_text', 'link', 'extension', 'image', 'sort', 'is_visible'
+        'alt_text', 'link', 'extension', 'image', 'sort', 'is_visible',
     ];
 
     /**
