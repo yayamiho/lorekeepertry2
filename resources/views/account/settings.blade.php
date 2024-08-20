@@ -132,7 +132,8 @@
         <h3 class="text-center">Your Borders</h3>
         <div class="card p-3 mb-2 image-info-box">
             @if ($default->count())
-                <h4>Default</h4>
+                <h4 class="mb-0">Default</h4>
+                <hr class="mt-0">
                 <div class="row">
                     @foreach ($default as $border)
                         <div class="col-md-3 col-6 text-center">
@@ -147,7 +148,8 @@
                 </div>
             @endif
             @if (Auth::user()->borders->count())
-                <h4>Unlocked</h4>
+                <h4 class="mb-0">Unlocked</h4>
+                <hr class="mt-0">
                 <div class="row">
                     @foreach (Auth::user()->borders as $border)
                         <div class="col-md-3 col-6 text-center">
@@ -163,7 +165,8 @@
             @endif
             @if (Auth::user()->isStaff)
                 @if ($admin->count())
-                    <h4>Staff-Only</h4>
+                    <h4 class="mb-0">Staff-Only</h4>
+                    <hr class="mt-0">
                     <small>You can see these as a member of staff</small>
                     <div class="row">
                         @foreach ($admin as $border)
