@@ -19,7 +19,7 @@
     {!! breadcrumbs(['World' => 'world', 'User Borders' => 'world/borders', $border->name => $border->idUrl]) !!}
 
     <div class="card mb-3">
-        <div class="card-body">
+        <div class="card-body p-2 p-md-3">
             @include('world._border_entry', [
                 'imageUrl' => $border->imageUrl,
                 'name' => $border->displayName,

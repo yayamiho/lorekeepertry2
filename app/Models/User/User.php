@@ -721,63 +721,61 @@ class User extends Authenticatable implements MustVerifyEmail
         //there's probably a less hellish way to do this but it beats having to paste this over everywhere... EVERY SINGLE TIME.
         //especially with the checks
 
-        $height = '125px';
-
         //get some fun variables for later
         $avatar = '<!-- avatar -->
-        <img class="avatar" src="' .
-        $this->avatarUrl .
-        '" style="position: absolute; border-radius:50%; width:' . $height . '; height:' . $height . ';" alt="' .
-        $this->name .
-            '">';
+                <img class="avatar" src="' . $this->avatarUrl . '" alt="Avatar of ' . $this->name . '">';
 
-        $styling = '<div style="width:' . $height . '; height:' . $height . '; border-radius:50%; margin-right:25px;">
-    ';
+        // Check if variant border or regular border is under or over
+        if (isset($this->borderVariant) && $this->borderVariant->border_style == 0) {
+            $layer = 'under';
+        } elseif (isset($this->border) && $this->border->border_style == 0) {
+            $layer = 'under';
+        } else {
+            $layer = null;
+        }
+
+        $styling = '<div class="user-avatar">';
 
         //if the user has a border, we apply it
         if (isset($this->border) || isset($this->borderBottomLayer) && isset($this->borderTopLayer) || isset($this->borderVariant)) {
-
             //layers supersede variants
             //variants supersede regular borders
             if (isset($this->borderBottomLayer) && isset($this->borderTopLayer)) {
-                //top's layer image
-                $mainframe = '<img src="' . $this->borderTopLayer->imageUrl .
-                    '" style="position: absolute;width:' . $height . '; height:' . $height . ';">';
-                //bottom layer's image
-                $secondframe = '<img src="' . $this->borderBottomLayer->imageUrl .
-                    '" style="position: absolute;width:' . $height . '; height:' . $height . ';">';
-
-                if ($this->borderTopLayer->border_style && $this->borderBottomLayer->border_style) {
-                    return $styling . $avatar . $secondframe . $mainframe . '</div>';
-                } elseif ($this->borderTopLayer->border_style && !$this->borderBottomLayer->border_style) {
-                    return $styling . $secondframe . $avatar . $mainframe . '</div>';
+                if ($this->borderTopLayer->border_style == 0 && $this->borderBottomLayer->border_style == 0) {
+                    // If both layers are UNDER layers
+                    // top layer's image
+                    $mainframe = '<img src="' . $this->borderTopLayer->imageUrl . '" class="avatar-border under" alt="' . $this->borderTopLayer->name . ' Avatar Frame">';
+                    // bottom layer's image
+                    $secondframe = '<img src="' . $this->borderBottomLayer->imageUrl . '" class="avatar-border bottom" alt="' . $this->borderBottomLayer->name . ' Avatar Frame">';
+                } elseif ($this->borderTopLayer->border_style == 1 && $this->borderBottomLayer->border_style == 1) {
+                    // If both layers are OVER layers
+                    // top layer's image
+                    $mainframe = '<img src="' . $this->borderTopLayer->imageUrl . '" class="avatar-border top" alt="' . $this->borderTopLayer->name . ' Avatar Frame">';
+                    // bottom layer's image
+                    $secondframe = '<img src="' . $this->borderBottomLayer->imageUrl . '" class="avatar-border" alt="' . $this->borderBottomLayer->name . ' Avatar Frame">';
                 } else {
-                    return $styling . $secondframe . $mainframe . $avatar . '</div>';
+                    // If one layer is UNDER and one is OVER
+                    $mainlayer = ($this->borderTopLayer->border_style == 0 ? 'under' : ' ');
+                    $secondlayer = ($this->borderBottomLayer->border_style == 0 ? 'under' : ' ');
+
+                    // top layer's image
+                    $mainframe = '<img src="' . $this->borderTopLayer->imageUrl . '" class="avatar-border ' . $mainlayer . '" alt="' . $this->borderTopLayer->name . ' Avatar Frame">';
+                    // bottom layer's image
+                    $secondframe = '<img src="' . $this->borderBottomLayer->imageUrl . '" class="avatar-border ' . $secondlayer . '" alt="' . $this->borderBottomLayer->name . ' Avatar Frame">';
                 }
+                return $styling . $avatar . $mainframe . $secondframe . '</div>';
             } elseif (isset($this->borderVariant)) {
-                $mainframe = '<img src="' . $this->borderVariant->imageUrl .
-                    '" style="position: absolute;width:' . $height . '; height:' . $height . ';">';
-                $borderstyle = $this->borderVariant;
+                $mainframe = '<img src="' . $this->borderVariant->imageUrl . '" class="avatar-border ' . $layer . '" alt="' . $this->borderVariant->name . ' ' . $this->border->name . ' Avatar Frame">';
             } else {
-                $mainframe = '<img src="' . $this->border->imageUrl .
-                    '" style="position: absolute;width:' . $height . '; height:' . $height . ';">';
-                $borderstyle = $this->border;
+                $mainframe = '<img src="' . $this->border->imageUrl . '" class="avatar-border '. $layer .'" alt="' . $this->border->name . ' Avatar Frame">';
             }
 
             if (!isset($this->borderBottomLayer) && !isset($this->borderTopLayer)) {
-                //under...
-                if ($borderstyle->border_style) {
-                    return $styling . $avatar . $mainframe . '</div>';
-                } else {
-                    return $styling . $mainframe . $avatar . '</div>';
-                }
+                return $styling . $avatar . $mainframe . '</div>';
             }
-
-            //if no border return standard avatar style
         }
-        return $styling . $avatar .
-            '
-        </div>';
+        //if no border return standard avatar style
+        return $styling . $avatar . '</div>';
     }
 
 }

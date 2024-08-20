@@ -1,11 +1,22 @@
 <div class="row world-entry">
-
-    <div class="col-md-3 world-entry-image"><a href="{{ $border->imageUrl }}" data-lightbox="entry" data-title="{{ $border->name }}"><img src="{{ $border->imageUrl }}" class="world-entry-image" alt="{{ $border->name }}" /></a>
-        <div id="test-{{ $border->id }}">
-            {!! $border->preview(Auth::check() ? Auth::user()->id : '') !!}
+    <div class="col-md-3 world-entry-image">
+        <div class="row no-gutters">
+            <div class="col-6 col-md-12">
+                <div class="user-avatar">
+                    <a href="{{ $border->imageUrl }}" data-lightbox="entry" data-title="{{ $border->name }}" class=>
+                        <img src="{{ $border->imageUrl }}" class="world-entry-image" alt="{{ $border->name }}" />
+                    </a>
+                </div>
+            </div>
+            <hr class="w-75 d-none d-md-block">
+            <div class="col-6 col-md-12">
+                <div id="test-{{ $border->id }}">
+                    {!! $border->preview(Auth::check() ? Auth::user()->id : '') !!}
+                </div>
+            </div>
         </div>
         @if ($border->topLayers->count() && $border->bottomLayers->count())
-            <hr class="w-75" />
+            <hr class="w-75">
             <h5>Layer Preview</h5>
             <div class="form-group">
                 {!! Form::label('Top Layer') !!}
@@ -17,6 +28,7 @@
             </div>
         @endif
     </div>
+
     <div class="{{ $border->imageUrl ? 'col-md-9' : 'col-12' }}">
         <h3>
             {!! $border->displayName !!}@if (isset($border->idUrl) && $border->idUrl)
@@ -84,13 +96,13 @@
 @if ($border->topLayers->count() && $border->bottomLayers->count())
     <script>
         $('#top-{{ $border->id }}').change(function() {
-            refreshBorder();
+            refreshBorder{{ $border->id }}();
         });
         $('#bottom-{{ $border->id }}').change(function() {
-            refreshBorder();
+            refreshBorder{{ $border->id }}();
         });
 
-        function refreshBorder() {
+        function refreshBorder{{ $border->id }}() {
             var top = $('#top-{{ $border->id }}').val();
             var bottom = $('#bottom-{{ $border->id }}').val();
             var border = {{ $border->id }};

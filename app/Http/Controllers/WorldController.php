@@ -542,7 +542,7 @@ class WorldController extends Controller
         $bottom = Border::find($request->input('bottom'));
 
         if (!$border || !$top || !$bottom) {
-            return response('<hr class="w-75" />Select a valid combination to preview.');
+            return response('<hr class="w-75 d-none d-md-block"/>Select a valid combination to preview.');
         }
 
         return view('world._border_ajax', [
