@@ -299,18 +299,18 @@ class Border extends Model
         //we will preview the border on various site pages for purposes of fun :}
         //and so people can "test" their look without having to unlock one
         //if we pass $id, return the avatar of that user
-
         if ($id) {
             $user = User::find($id)->avatarUrl;
-
+            $name = 'Avatar of ' . User::find($id)->name;
             //else, check if logged in
             //if logged in, return the user avatar to preview
         } elseif (Auth::check()) {
             $user = Auth::user()->avatarUrl;
-
+            $name = 'Avatar of ' . Auth::user()->name;
             //finally if not either of these, return default avatar
         } else {
             $user = url('images/avatars/default.jpg');
+            $name = 'Default Avatar';
         }
         //basically just an ugly ass string of html for copypasting use
         //would you want to keep posting this everywhere? yeah i thought so. me neither
@@ -319,42 +319,15 @@ class Border extends Model
 
         //get some fun variables for later
         $avatar = '<!-- avatar -->
-        <img class="avatar" src="' .
-            $user .
-            '" style="position: absolute; border-radius:50%; width:125px; height:125px;">';
+                <img class="avatar" src="' . $user . '" alt="' . $name . '">';
 
-        $styling = '<div style="width:125px; height:125px; border-radius:50%; margin-right:25px;">
-    ';
+        $styling = '<div class="user-avatar">';
+        $layer = ($this->border_style == 0 ? 'under' : ' ');
 
         $frame = '<!-- frame -->
-                    <img src="' .
-        $this->imageUrl .
-            '" style="position: absolute;width:125px; height:125px;"  alt="avatar frame">';
+                <img src="' . $this->imageUrl . '" class="avatar-border ' . $layer . '" alt="' . $this->name . ' Avatar Frame">';
 
-        //first check the frame style
-
-        //under style
-        if ($this->border_style) {
-            return $styling .
-                '' .
-                $avatar .
-                '
-           ' .
-                $frame .
-                '
-        </div>';
-
-            //then over style
-        } else {
-            return $styling .
-                '' .
-                $frame .
-                '
-           ' .
-                $avatar .
-                '
-        </div>';
-        }
+        return $styling . $avatar . $frame . '</div>';
     }
 
     /**
@@ -366,48 +339,54 @@ class Border extends Model
         //we will preview the border on various site pages for purposes of fun :}
         //and so people can "test" their look without having to unlock one
         //if we pass $id, return the avatar of that user
-
         if ($id) {
             $user = User::find($id)->avatarUrl;
-
+            $name = 'Avatar of ' . User::find($id)->name;
             //else, check if logged in
             //if logged in, return the user avatar to preview
         } elseif (Auth::check()) {
             $user = Auth::user()->avatarUrl;
-
+            $name = 'Avatar of ' . Auth::user()->name;
             //finally if not either of these, return default avatar
         } else {
             $user = url('images/avatars/default.jpg');
+            $name = 'Default Avatar';
         }
         //basically just an ugly ass string of html for copypasting use
         //would you want to keep posting this everywhere? yeah i thought so. me neither
         //there's probably a less hellish way to do this but it beats having to paste this over everywhere... EVERY SINGLE TIME.
         //especially with the checks
 
-        $height = '125px';
-
         //get some fun variables for later
         $avatar = '<!-- avatar -->
-        <img class="avatar" src="' .
-            $user .
-            '" style="position: absolute; border-radius:50%; width:' . $height . '; height:' . $height . ';" >';
+                <img class="avatar" src="' . $user . '" alt="' . $name . '">';
 
-        $styling = '<div style="width:' . $height . '; height:' . $height . '; border-radius:50%; margin-right:25px;">';
+        $styling = '<div class="user-avatar">';
 
-        //top's layer image
-        $mainframe = '<img src="' . $top->imageUrl .
-            '" style="position: absolute;width:' . $height . '; height:' . $height . ';">';
-        //bottom layer's image
-        $secondframe = '<img src="' . $bottom->imageUrl .
-            '" style="position: absolute;width:' . $height . '; height:' . $height . ';">';
-
-        if ($top->border_style && $bottom->border_style) {
-            return $styling . $avatar . $secondframe . $mainframe . '</div>';
-        } elseif ($top->border_style && !$bottom->border_style) {
-            return $styling . $secondframe . $avatar . $mainframe . '</div>';
+        if ($top->border_style == 0 && $bottom->border_style == 0) {
+            // If both layers are UNDER the avatar
+            //top's layer image
+            $mainframe = '<img src="' . $top->imageUrl . '" class="avatar-border under" alt="' . $this->name . ' Avatar Frame">';
+            //bottom layer's image
+            $secondframe = '<img src="' . $bottom->imageUrl . '" class="avatar-border bottom" alt="' . $this->name . ' Avatar Frame">';
+        } elseif ($top->border_style == 1 && $bottom->border_style == 1) {
+            // If both layers are OVER the avatar
+            //top's layer image
+            $mainframe = '<img src="' . $top->imageUrl . '" class="avatar-border top" alt="' . $this->name . ' Avatar Frame">';
+            //bottom layer's image
+            $secondframe = '<img src="' . $bottom->imageUrl . '" class="avatar-border" alt="' . $this->name . ' Avatar Frame">';
         } else {
-            return $styling . $secondframe . $mainframe . $avatar . '</div>';
+            // If one layer is UNDER and one is OVER the avatar
+            $mainlayer = ($top->border_style == 0 ? 'under' : ' ');
+            $secondlayer = ($bottom->border_style == 0 ? 'under' : ' ');
+
+            //top's layer image
+            $mainframe = '<img src="' . $top->imageUrl . '" class="avatar-border ' . $mainlayer . '" alt="' . $this->name . ' Avatar Frame">';
+            //bottom layer's image
+            $secondframe = '<img src="' . $bottom->imageUrl . '" class="avatar-border ' . $secondlayer . '" alt="' . $this->name . ' Avatar Frame">';
         }
+
+        return $styling . $avatar . $mainframe . $secondframe . '</div>';
     }
 
     /**
