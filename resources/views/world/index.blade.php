@@ -37,10 +37,6 @@
                     <li class="list-group-item"><a href="{{ url('world/currencies') }}">Currencies</a></li>
                 </ul>
             </div>
-<<<<<<< HEAD
-        </div>
-    </div>
-=======
             <ul class="list-group list-group-flush">
                 <li class="list-group-item"><a href="{{ url('world/'.__('lorekeeper.specieses')) }}">{{ ucfirst(__('lorekeeper.specieses')) }}</a></li>
 				<li class="list-group-item"><a href="{{ url('world/'.__('lorekeeper.subtypes')) }}">{{ ucfirst(__('lorekeeper.subtypes')) }}</a></li>
@@ -68,5 +64,4 @@
     </div>
 </div>
 
->>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
 @endsection

@@ -18,13 +18,8 @@
             @endif Staff will not be able to modify these traits for you during approval, so if in doubt, please communicate with them beforehand to make sure that your design is acceptable.</p>
         {!! Form::open(['url' => 'designs/' . $request->id . '/traits']) !!}
         <div class="form-group">
-<<<<<<< HEAD
-            {!! Form::label('species_id', 'Species') !!}
-            @if ($request->character->is_myo_slot && $request->character->image->species_id)
-=======
             {!! Form::label('species_id',  ucfirst(__('lorekeeper.species'))) !!}
             @if($request->character->is_myo_slot && $request->character->image->species_id)
->>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
                 <div class="alert alert-secondary">{!! $request->character->image->species->displayName !!}</div>
             @else
                 {!! Form::select('species_id', $specieses, $request->species_id, ['class' => 'form-control', 'id' => 'species']) !!}
@@ -33,13 +28,8 @@
         </div>
 
         <div class="form-group">
-<<<<<<< HEAD
-            {!! Form::label('subtype_id', 'Species Subtype') !!}
-            @if ($request->character->is_myo_slot && $request->character->image->subtype_id)
-=======
             {!! Form::label('subtype_id', 'Species '.ucfirst(__('lorekeeper.subtype'))) !!}
             @if($request->character->is_myo_slot && $request->character->image->subtype_id)
->>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
                 <div class="alert alert-secondary">{!! $request->character->image->subtype->displayName !!}</div>
             @else
                 <div id="subtypes">
@@ -93,30 +83,6 @@
         <div class="text-right">
             {!! Form::submit('Save', ['class' => 'btn btn-primary']) !!}
         </div>
-<<<<<<< HEAD
-        {!! Form::close() !!}
-    @else
-        <div class="mb-1">
-            <div class="row">
-                <div class="col-md-2 col-4">
-                    <h5>Species</h5>
-                </div>
-                <div class="col-md-10 col-8">{!! $request->species ? $request->species->displayName : 'None Selected' !!}</div>
-            </div>
-            @if ($request->subtype_id)
-                <div class="row">
-                    <div class="col-md-2 col-4">
-                        <h5>Subtype</h5>
-                    </div>
-                    <div class="col-md-10 col-8">
-                        @if ($request->character->is_myo_slot && $request->character->image->subtype_id)
-                            {!! $request->character->image->subtype->displayName !!}
-                        @else
-                            {!! $request->subtype_id ? $request->subtype->displayName : 'None Selected' !!}
-                        @endif
-                    </div>
-                </div>
-=======
     {!! Form::close() !!}
 @else
     <div class="mb-1">
@@ -132,7 +98,6 @@
                 {!! $request->character->image->subtype->displayName !!}
             @else
                 {!! $request->subtype_id ? $request->subtype->displayName : 'None Selected' !!}
->>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
             @endif
             <div class="row">
                 <div class="col-md-2 col-4">

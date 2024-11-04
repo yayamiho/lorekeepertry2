@@ -59,10 +59,7 @@ Route::group(['prefix' => 'user', 'namespace' => 'Users'], function () {
     Route::get('{name}/myos', 'UserController@getUserMyoSlots');
     Route::get('{name}/inventory', 'UserController@getUserInventory');
     Route::get('{name}/bank', 'UserController@getUserBank');
-<<<<<<< HEAD
-=======
     Route::get('{name}/'.__('awards.awardcase'), 'UserController@getUserAwardCase');
->>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
 
     Route::get('{name}/currency-logs', 'UserController@getUserCurrencyLogs');
     Route::get('{name}/item-logs', 'UserController@getUserItemLogs');
@@ -85,10 +82,7 @@ Route::group(['prefix' => 'character', 'namespace' => 'Characters'], function ()
     Route::get('{slug}/inventory', 'CharacterController@getCharacterInventory');
     Route::get('{slug}/images', 'CharacterController@getCharacterImages');
 
-<<<<<<< HEAD
-=======
     Route::get('{slug}/'.__('awards.award').'-logs', 'CharacterController@getCharacterAwardLogs');
->>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
     Route::get('{slug}/currency-logs', 'CharacterController@getCharacterCurrencyLogs');
     Route::get('{slug}/item-logs', 'CharacterController@getCharacterItemLogs');
     Route::get('{slug}/ownership', 'CharacterController@getCharacterOwnershipLogs');
@@ -114,14 +108,8 @@ Route::group(['prefix' => 'world'], function () {
     Route::get('currencies', 'WorldController@getCurrencies');
     Route::get('rarities', 'WorldController@getRarities');
     Route::get('species', 'WorldController@getSpecieses');
-<<<<<<< HEAD
-    Route::get('subtypes', 'WorldController@getSubtypes');
-    Route::get('species/{id}/traits', 'WorldController@getSpeciesFeatures');
-    Route::get('species/{speciesId}/trait/{id}', 'WorldController@getSpeciesFeatureDetail')->where(['id' => '[0-9]+', 'speciesId' => '[0-9]+']);
-=======
     Route::get(__('lorekeeper.subtypes'), 'WorldController@getSubtypes');
     Route::get(__('lorekeeper.specieses').'/{id}/traits', 'WorldController@getSpeciesFeatures');
->>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
     Route::get('item-categories', 'WorldController@getItemCategories');
     Route::get('items', 'WorldController@getItems');
     Route::get(__('awards.award').'-categories', 'WorldController@getAwardCategories');

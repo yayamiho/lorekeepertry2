@@ -10,9 +10,5 @@
 
     {!! Form::close() !!}
 @else
-<<<<<<< HEAD
-    Invalid subtype selected.
-=======
     Invalid {{ __('lorekeeper.subtype') }} selected.
->>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
 @endif

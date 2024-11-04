@@ -37,10 +37,6 @@ return [
         'description' => 'The bank graphic on the front page. PNG format, default size of 200px x 200px (no restriction).',
         'filename'    => 'currency.png',
     ],
-<<<<<<< HEAD
-    'myo'             => [
-        'name'        => 'MYO Default Image',
-=======
     'awards' => [
         'name' => 'Awards Icon',
         'description' => 'The awards graphic on the front page. PNG format, default size of 200px x 200px (no restriction).',
@@ -48,7 +44,6 @@ return [
     ],
     'myo' => [
         'name' => 'MYO Default Image',
->>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
         'description' => 'The default image used for MYO slots when no image is uploaded. PNG format, no size restriction.',
         'filename'    => 'myo.png',
     ],

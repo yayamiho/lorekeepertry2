@@ -29,24 +29,6 @@
         </div>
         <div class="form-inline justify-content-end">
             <div class="form-group ml-3 mb-3">
-<<<<<<< HEAD
-                {!! Form::select(
-                    'sort',
-                    [
-                        'alpha' => 'Sort Alphabetically (A-Z)',
-                        'alpha-reverse' => 'Sort Alphabetically (Z-A)',
-                        'category' => 'Sort by Category',
-                        'rarity-reverse' => 'Sort by Rarity (Common to Rare)',
-                        'rarity' => 'Sort by Rarity (Rare to Common)',
-                        'species' => 'Sort by Species',
-                        'subtypes' => 'Sort by Subtype',
-                        'newest' => 'Newest First',
-                        'oldest' => 'Oldest First',
-                    ],
-                    Request::get('sort') ?: 'category',
-                    ['class' => 'form-control'],
-                ) !!}
-=======
                 {!! Form::select('sort', [
                     'alpha'          => 'Sort Alphabetically (A-Z)',
                     'alpha-reverse'  => 'Sort Alphabetically (Z-A)',
@@ -57,7 +39,6 @@
                     'newest'         => 'Newest First',
                     'oldest'         => 'Oldest First'
                 ], Request::get('sort') ? : 'category', ['class' => 'form-control']) !!}
->>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
             </div>
             <div class="form-group ml-3 mb-3">
                 {!! Form::submit('Search', ['class' => 'btn btn-primary']) !!}

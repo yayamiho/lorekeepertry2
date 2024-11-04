@@ -225,11 +225,6 @@ class UserController extends Controller {
     }
 
     /**
-<<<<<<< HEAD
-     * Shows a user's Bank.
-     *
-     * @param string $name
-=======
      * Shows a user's awardcase.
      *
      * @param  string  $name
@@ -265,7 +260,6 @@ class UserController extends Controller {
 
     /**
      * Shows a user's profile.
->>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */

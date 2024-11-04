@@ -5,13 +5,8 @@
 @endsection
 
 @section('content')
-<<<<<<< HEAD
-    {!! breadcrumbs(['World' => 'world', 'Species' => 'world/species', $species->name => $species->url, 'Traits' => 'world/species/' . $species->id . 'traits']) !!}
-    <h1>{{ $species->name }} Traits</h1>
-=======
 {!! breadcrumbs(['World' => 'world',  ucfirst(__('lorekeeper.species')) => 'world/species', $species->name => $species->url, 'Traits' => 'world/species/'.$species->id.'traits']) !!}
 <h1>{{ $species->name }} Traits</h1>
->>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
 
     <p>This is a visual index of all {!! $species->displayName !!}-specific traits. Click a trait to view more info on it!</p>
 

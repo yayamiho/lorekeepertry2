@@ -7,13 +7,8 @@
     </div>
 
     <h5>Item Variations</h5>
-<<<<<<< HEAD
-    @if ($user && $user->hasPower('edit_inventories'))
-        <p class="alert alert-warning my-2">Note: Your rank allows you to transfer character-bound items.</p>
-=======
     @if($user && $user->hasPower('edit_inventories'))
         <p class="alert alert-warning my-2">Note: Your rank allows you to transfer {{__('lorekeeper.character')}}-bound items.</p>
->>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
     @endif
 
     {!! Form::open(['url' => 'character/' . $character->slug . '/inventory/edit']) !!}

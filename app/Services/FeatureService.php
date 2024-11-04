@@ -261,18 +261,10 @@ class FeatureService extends Service {
     /**
      * Updates a feature.
      *
-<<<<<<< HEAD
-     * @param \App\Models\Feature\Feature $feature
-     * @param array                       $data
-     * @param \App\Models\User\User       $user
-     *
-     * @return \App\Models\Feature\Feature|bool
-=======
      * @param  \App\Models\Feature\Feature  $feature
      * @param  array                        $data
      * @param  \App\Models\User\User        $user
      * @return bool|\App\Models\Feature\Feature
->>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
      */
     public function updateFeature($feature, $data, $user) {
         DB::beginTransaction();

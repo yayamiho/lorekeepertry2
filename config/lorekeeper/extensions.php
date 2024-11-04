@@ -49,17 +49,6 @@ return [
     ],
 
     // Group Traits By Category - Uri
-<<<<<<< HEAD
-    'traits_by_category'                   => 0,
-
-    // Scroll To Top - Uri
-    'scroll_to_top'                        => 0, // 1 - On, 0 - off
-
-    // Character Reward Expansion - Uri
-    'character_reward_expansion'           => [
-        'expanded'          => 1,
-        'default_recipient' => 0, // 0 to default to the character's owner (if a user), 1 to default to the submission user.
-=======
     'traits_by_category'            => 0,
 
     // Character Reward Expansion - Uri
@@ -72,7 +61,6 @@ return [
     'awards' => [
         'user_featured'             => 1,   // Number of awards displayed prominently on the user profile
         'character_featured'        => 1,   // Number of awards displayed prominently on the character page
->>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
     ],
 
     // MYO Image Hide/Remove - Mercury

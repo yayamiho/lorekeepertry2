@@ -11,14 +11,6 @@
 @section('profile-content')
     {!! breadcrumbs(['Users' => 'users', $user->name => $user->url]) !!}
 
-<<<<<<< HEAD
-    @if (mb_strtolower($user->name) != mb_strtolower($name))
-        <div class="alert alert-info">This user has changed their name to <strong>{{ $user->name }}</strong>.</div>
-    @endif
-
-    @if ($user->is_banned)
-        <div class="alert alert-danger">This user has been banned.</div>
-=======
 @include('widgets._awardcase_feature', ['target' => $user, 'count' => Config::get('lorekeeper.extensions.awards.user_featured'), 'float' => false])
 
 @if($user->is_banned)
@@ -133,7 +125,6 @@
         @foreach($sublists as $sublist)
         / <a href="{{ $user->url.'/sublist/'.$sublist->key }}">{{ $sublist->name }}</a>
         @endforeach
->>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
     @endif
 
     @if ($user->is_deactivated)

@@ -12,33 +12,6 @@
     <p>Bookmarks allow you to keep track of characters that other users own without notifying them in any way. You can add new bookmarks by visiting the character's page and clicking the Bookmark button. You cannot bookmark your own characters, but
         characters you have bookmarked that are transferred to you will preserve the bookmarks until you delete them. Bookmarks on characters you own will not give you notifications.</p>
 
-<<<<<<< HEAD
-    {!! Form::open(['method' => 'GET']) !!}
-    <div class="form-inline justify-content-end mb-3">
-        <div class="form-group mr-3">
-            {!! Form::label('sort', 'Sort: ', ['class' => 'mr-2']) !!}
-            {!! Form::select(
-                'sort',
-                [
-                    'number_desc' => 'Number Descending',
-                    'number_asc' => 'Number Ascending',
-                    'id_desc' => 'Newest Characters First',
-                    'id_asc' => 'Oldest Characters First',
-                    'sale_value_desc' => 'Highest Sale Value',
-                    'sale_value_asc' => 'Lowest Sale Value',
-                    'species_asc' => 'Species',
-                    'species_desc' => 'Species (Reverse)',
-                    'trade_asc' => 'Trade Status',
-                    'trade_desc' => 'Trade Status (Reverse)',
-                    'gift_art_asc' => 'Gift Art Status',
-                    'gift_art_desc' => 'Gift Art Status (Reverse)',
-                    'gift_write_asc' => 'Gift Writing Status',
-                    'gift_write_desc' => 'Gift Writing Status (Reverse)',
-                ],
-                Request::get('sort'),
-                ['class' => 'form-control'],
-            ) !!}
-=======
 {!! Form::open(['method' => 'GET']) !!}
         <div class="form-inline justify-content-end mb-3">
             <div class="form-group mr-3">
@@ -46,7 +19,6 @@
                 {!! Form::select('sort', ['number_desc' => 'Number Descending', 'number_asc' => 'Number Ascending', 'id_desc' => 'Newest Characters First', 'id_asc' => 'Oldest Characters First', 'sale_value_desc' => 'Highest Sale Value', 'sale_value_asc' => 'Lowest Sale Value', 'species_asc' =>  ucfirst(__('lorekeeper.species')), 'species_desc' => 'Species (Reverse)', 'trade_asc' => 'Trade Status', 'trade_desc' => 'Trade Status (Reverse)', 'gift_art_asc' => 'Gift Art Status', 'gift_art_desc' => 'Gift Art Status (Reverse)', 'gift_write_asc' => 'Gift Writing Status', 'gift_write_desc' => 'Gift Writing Status (Reverse)'], Request::get('sort'), ['class' => 'form-control']) !!}
             </div>
             {!! Form::submit('Search', ['class' => 'btn btn-primary']) !!}
->>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
         </div>
         {!! Form::submit('Search', ['class' => 'btn btn-primary']) !!}
     </div>
@@ -64,13 +36,6 @@
         <table class="table table-sm bookmark-table mb-0">
             <thead>
                 <tr>
-<<<<<<< HEAD
-                    <th class="thumbnail-hide bookmark-thumbnail"></th>
-                    <th class="bookmark-info">Info</th>
-                    <th class="bookmark-comment">Comment</th>
-                    <th class="bookmark-notifications">Notify When...</th>
-                    <th class="bookmark-actions"></th>
-=======
                     <td class="thumbnail-hide">
                         <div>
                             <a href="{{ $bookmark->character->url }}"><img src="{{ $bookmark->character->image->thumbnailUrl }}" class="img-thumbnail" alt="{{ $bookmark->character->fullName }}" /></a>
@@ -105,7 +70,6 @@
                         <a href="#" class="btn btn-outline-primary btn-sm edit-bookmark-button" data-id="{{ Auth::user()->bookmarks()->where('character_id', $bookmark->character_id)->first()->id }}">Edit</a>
                         <a href="#" class="btn btn-outline-danger btn-sm delete-bookmark-button" data-id="{{ Auth::user()->bookmarks()->where('character_id', $bookmark->character_id)->first()->id }}">Delete</a>
                     </td>
->>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
                 </tr>
             </thead>
             <tbody>

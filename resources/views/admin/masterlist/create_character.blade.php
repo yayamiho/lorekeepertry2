@@ -260,8 +260,6 @@
         {!! Form::close() !!}
     @endif
 
-<<<<<<< HEAD
-=======
     <h3>Traits</h3>
 
     <div class="form-group">
@@ -297,7 +295,6 @@
     {!! Form::close() !!}
 @endif
 
->>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
 @endsection
 
 @section('scripts')

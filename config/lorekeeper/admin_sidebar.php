@@ -112,15 +112,11 @@ return [
                 'name' => 'Item Grants',
                 'url'  => 'admin/grants/items',
             ],
-<<<<<<< HEAD
-        ],
-=======
             [
                 'name' => 'Award Grants',
                 'url' => 'admin/grants/awards'
             ],
         ]
->>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
     ],
     'Masterlist' => [
         'power' => 'manage_characters',

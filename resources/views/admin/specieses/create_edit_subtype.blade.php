@@ -1,19 +1,5 @@
 @extends('admin.layout')
 
-<<<<<<< HEAD
-@section('admin-title')
-    {{ $subtype->id ? 'Edit' : 'Create' }} Subtype
-@endsection
-
-@section('admin-content')
-    {!! breadcrumbs(['Admin Panel' => 'admin', 'Subtypes' => 'admin/data/subtypes', ($subtype->id ? 'Edit' : 'Create') . ' Subtype' => $subtype->id ? 'admin/data/subtypes/edit/' . $subtype->id : 'admin/data/subtypes/create']) !!}
-
-    <h1>{{ $subtype->id ? 'Edit' : 'Create' }} Subtype
-        @if ($subtype->id)
-            <a href="#" class="btn btn-danger float-right delete-subtype-button">Delete Subtype</a>
-        @endif
-    </h1>
-=======
 @section('admin-title') {{ ucfirst(__('lorekeeper.subtype')) }} @endsection
 
 @section('admin-content')
@@ -24,17 +10,11 @@
         <a href="#" class="btn btn-danger float-right delete-subtype-button">Delete {{ ucfirst(__('lorekeeper.subtype')) }}</a>
     @endif
 </h1>
->>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
 
     {!! Form::open(['url' => $subtype->id ? 'admin/data/subtypes/edit/' . $subtype->id : 'admin/data/subtypes/create', 'files' => true]) !!}
 
     <h3>Basic Information</h3>
 
-<<<<<<< HEAD
-    <div class="form-group">
-        {!! Form::label('Name') !!}
-        {!! Form::text('name', $subtype->name, ['class' => 'form-control']) !!}
-=======
 <div class="form-group">
     {!! Form::label('Name') !!}
     {!! Form::text('name', $subtype->name, ['class' => 'form-control']) !!}
@@ -74,7 +54,6 @@
         <div class="card-body">
             @include('world._subtype_entry', ['subtype' => $subtype])
         </div>
->>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
     </div>
 
     <div class="form-group">
@@ -120,17 +99,6 @@
 @endsection
 
 @section('scripts')
-<<<<<<< HEAD
-    @parent
-    <script>
-        $(document).ready(function() {
-            $('.delete-subtype-button').on('click', function(e) {
-                e.preventDefault();
-                loadModal("{{ url('admin/data/subtypes/delete') }}/{{ $subtype->id }}", 'Delete Subtype');
-            });
-        });
-    </script>
-=======
 @parent
 <script>
 $( document ).ready(function() {
@@ -141,5 +109,4 @@ $( document ).ready(function() {
 });
 
 </script>
->>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
 @endsection

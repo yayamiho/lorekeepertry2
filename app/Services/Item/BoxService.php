@@ -3,16 +3,13 @@
 namespace App\Services\Item;
 
 use App\Models\Item\Item;
-<<<<<<< HEAD
 use App\Services\InventoryManager;
 use App\Services\Service;
 use Illuminate\Support\Facades\DB;
-=======
 use App\Models\Currency\Currency;
 use App\Models\Award\Award;
 use App\Models\Loot\LootTable;
 use App\Models\Raffle\Raffle;
->>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
 
 class BoxService extends Service {
     /*
@@ -29,10 +26,6 @@ class BoxService extends Service {
      *
      * @return array
      */
-<<<<<<< HEAD
-    public function getEditData() {
-        return [];
-=======
     public function getEditData()
     {
         return [
@@ -43,7 +36,6 @@ class BoxService extends Service {
             'tables' => LootTable::orderBy('name')->pluck('name', 'id'),
             'raffles' => Raffle::where('rolled_at', null)->where('is_active', 1)->orderBy('name')->pluck('name', 'id'),
         ];
->>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
     }
 
     /**

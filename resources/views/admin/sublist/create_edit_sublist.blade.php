@@ -51,11 +51,9 @@
         {!! Form::label('show_main', 'Show on Main', ['class' => 'form-check-label ml-3']) !!} {!! add_help('Turn on to include these characters in the main masterlist as well. Turn off to entirely seperate them into the sub masterlist.') !!}
     </div>
 
-<<<<<<< HEAD
     <div class="text-right">
         {!! Form::submit($sublist->id ? 'Edit' : 'Create', ['class' => 'btn btn-primary']) !!}
     </div>
-=======
 <div class="form-group">
     {!! Form::label('species[]',  ucfirst(__('lorekeeper.species'))) !!}
     {!! Form::select('species[]', $species, $subSpecies, ['id' => 'speciesList', 'class' => 'form-control', 'multiple']) !!}
@@ -71,28 +69,17 @@
 </div>
 
 {!! Form::close() !!}
->>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
 
     {!! Form::close() !!}
 @endsection
 
 @section('scripts')
-<<<<<<< HEAD
-    @parent
-    <script>
-        $(document).ready(function() {
-            $('.delete-sublist-button').on('click', function(e) {
-                e.preventDefault();
-                loadModal("{{ url('admin/data/sublists/delete') }}/{{ $sublist->id }}", 'Delete Sub Masterlist');
-            });
-=======
 @parent
 <script>
     $( document ).ready(function() {
         $('.delete-sublist-button').on('click', function(e) {
             e.preventDefault();
             loadModal("{{ url('admin/data/sublists/delete') }}/{{ $sublist->id }}", 'Delete Sub Masterlist');
->>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
         });
 
         $(document).ready(function() {
@@ -144,7 +131,6 @@
                 removeItemRow($(this));
             })
 
-<<<<<<< HEAD
             function addItemRow() {
                 var $rows = $("#itemList > div")
                 if ($rows.length === 1) {
@@ -170,7 +156,5 @@
             }
         });
     </script>
-=======
 </script>
->>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
 @endsection

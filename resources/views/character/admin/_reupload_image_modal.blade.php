@@ -1,16 +1,9 @@
 {!! Form::open(['url' => 'admin/character/image/' . $image->id . '/reupload', 'files' => true]) !!}
 <div class="form-group">
-<<<<<<< HEAD
-    {!! Form::label('Character Image') !!} {!! add_help('This is the full masterlist image. Note that the image is not protected in any way, so take precautions to avoid art/design theft.') !!}
-    <div>{!! Form::file('image', ['id' => 'mainImage']) !!}</div>
-</div>
-@if (config('lorekeeper.settings.masterlist_image_automation') === 1)
-=======
         {!! Form::label(ucfirst(__('lorekeeper.character')).' Image') !!} {!! add_help('This is the full masterlist image. Note that the image is not protected in any way, so take precautions to avoid art/design theft.') !!}
         <div>{!! Form::file('image', ['id' => 'mainImage']) !!}</div>
     </div>
 @if (Config::get('lorekeeper.settings.masterlist_image_automation') === 1)
->>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
     <div class="form-group">
         {!! Form::checkbox('use_cropper', 1, 1, ['class' => 'form-check-input', 'data-toggle' => 'toggle', 'id' => 'useCropper']) !!}
         {!! Form::label('use_cropper', 'Use Thumbnail Automation', ['class' => 'form-check-label ml-3']) !!} {!! add_help('A thumbnail is required for the upload (used for the masterlist). You can use the Thumbnail Automation, or upload a custom thumbnail.') !!}

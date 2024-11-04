@@ -291,37 +291,6 @@ return [
         'url'     => 'account/bookmarks',
     ],
 
-<<<<<<< HEAD
-    // USER_REACTIVATED
-    103 => [
-        'name'      => 'User Reactivated',
-        'message'   => '<a href="{user_url}">{user_name}\'s</a> account has been reactivated by <a href="{staff_url}">{staff_name}</a>.',
-        'url'       => '',
-    ],
-
-    // USER_DEACTIVATED
-    104 => [
-        'name'      => 'User Deactivated',
-        'message'   => '<a href="{user_url}">{user_name}\'s</a> account has been deactivated by <a href="{staff_url}">{staff_name}</a>.',
-        'url'       => '',
-    ],
-
-    // SUBMISSION_CANCELLED
-    108 => [
-        'name'    => 'Submission Cancelled',
-        'message' => 'Your submission (#{submission_id}) was cancelled and sent back to drafts by <a href="{staff_url}">{staff_name}</a>. (<a href="{url}">View Submission</a>)',
-        'url'     => 'submissions/view/{submission_id}',
-    ],
-
-    // CLAIM_CANCELLED
-    109 => [
-        'name'    => 'Claim Cancelled',
-        'message' => 'Your claim (#{submission_id}) was cancelled and sent back to drafts by <a href="{staff_url}">{staff_name}</a>. (<a href="{url}">View Claim</a>)',
-        'url'     => 'claims/view/{submission_id}',
-    ],
-
-=======
->>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
     // REPORT_ASSIGNED
     220 => [
         'name'    => 'Report Assigned',

@@ -88,39 +88,6 @@
             </div>
         </div>
     @endif
-<<<<<<< HEAD
-@endsection
-
-@section('scripts')
-    @parent
-    <script>
-        $(document).ready(function() {
-            $('.delete-feature-button').on('click', function(e) {
-                e.preventDefault();
-                loadModal("{{ url('admin/data/traits/delete') }}/{{ $feature->id }}", 'Delete Trait');
-            });
-            refreshSubtype();
-        });
-
-        $("#species").change(function() {
-            refreshSubtype();
-        });
-
-        function refreshSubtype() {
-            var species = $('#species').val();
-            var subtype_id = {{ $feature->subtype_id ?: 'null' }};
-            $.ajax({
-                type: "GET",
-                url: "{{ url('admin/data/traits/check-subtype') }}?species=" + species + "&subtype_id=" + subtype_id,
-                dataType: "text"
-            }).done(function(res) {
-                $("#subtypes").html(res);
-            }).fail(function(jqXHR, textStatus, errorThrown) {
-                alert("AJAX call failed: " + textStatus + ", " + errorThrown);
-            });
-        };
-    </script>
-=======
 </div>
 
 <div class="row">
@@ -176,5 +143,4 @@ $( document ).ready(function() {
 });
 
 </script>
->>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
 @endsection
