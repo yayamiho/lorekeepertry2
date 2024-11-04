@@ -62,7 +62,11 @@
 </div>
 
 <div class="form-group">
+<<<<<<< HEAD
     {!! Form::label(ucfirst(__('lorekeeper.character')).' Rarity') !!} {!! add_help('This will lock the slot into a particular rarity. Leave it blank if you would like to give the user more choices.') !!}
+=======
+    {!! Form::label('Character Rarity') !!} {!! add_help('This will lock the slot into a particular rarity. Leave it blank if you would like to give the user more choices.') !!}
+>>>>>>> e0608c76f83157195646781941d9f9227838e0eb
     {!! Form::select('rarity_id', $rarities, $tag->getData()['rarity_id'], ['class' => 'form-control']) !!}
 </div>
 
