@@ -17,6 +17,8 @@ use App\Models\User\UserAward;
 use App\Models\Award\Award;
 use App\Models\Award\AwardCategory;
 use App\Models\Submission\SubmissionCharacter;
+use App\Models\Recipe\Recipe;
+use App\Models\Prompt\Prompt;
 
 use App\Services\SubmissionManager;
 use Illuminate\Http\Request;
@@ -109,7 +111,7 @@ class SubmissionController extends Controller {
             'characterAwards' => Award::orderBy('name')->released()->where('is_character_owned',1)->pluck('name', 'id'),
             'inventory' => $inventory,
             'page' => 'submission',
-            'expanded_rewards' => Config::get('lorekeeper.extensions.character_reward_expansion.expanded')
+            'expanded_rewards' => Config::get('lorekeeper.extensions.character_reward_expansion.expanded'),
         ]));
     }
 
@@ -339,8 +341,9 @@ class SubmissionController extends Controller {
             'awards' => Award::orderBy('name')->released()->where('is_user_owned',1)->pluck('name', 'id'),
             'characterAwards' => Award::orderBy('name')->released()->where('is_character_owned',1)->pluck('name', 'id'),
             'raffles' => Raffle::where('rolled_at', null)->where('is_active', 1)->orderBy('name')->pluck('name', 'id'),
+            'recipes'=> Recipe::orderBy('name')->pluck('name', 'id'),
             'page' => 'submission',
-            'expanded_rewards' => Config::get('lorekeeper.extensions.character_reward_expansion.expanded')
+            'expanded_rewards' => Config::get('lorekeeper.extensions.character_reward_expansion.expanded'),
         ]));
     }
 

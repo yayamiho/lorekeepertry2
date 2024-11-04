@@ -72,7 +72,7 @@ function calculateGroupCurrency($data) {
  */
 function getAssetKeys($isCharacter = false)
 {
-    if(!$isCharacter) return ['items', 'awards', 'currencies', 'raffle_tickets', 'loot_tables', 'user_items', 'user_awards', 'characters'];
+    if(!$isCharacter) return ['items', 'awards', 'currencies', 'raffle_tickets', 'loot_tables', 'user_items', 'recipes', 'user_awards', 'characters'];
     else return ['currencies', 'items', 'character_items', 'loot_tables', 'awards'];
 }
 
@@ -143,6 +143,11 @@ function getAssetModelString($type, $namespaced = true) {
             } else {
                 return 'Character';
             }
+            break;
+
+        case 'recipes':
+            if($namespaced) return '\App\Models\Recipe\Recipe';
+            else return 'Recipe';
             break;
 
         case 'character_items':
@@ -348,6 +353,12 @@ function fillUserAssets($assets, $sender, $recipient, $logType, $data) {
                     return false;
                 }
             }
+        }
+        if($key == 'recipes' && count($contents))
+        {
+            $service = new \App\Services\RecipeService;
+            foreach($contents as $asset)
+                if(!$service->creditRecipe($sender, $recipient, null, $logType, $data, $asset['asset'])) return false;
         }
     }
 
