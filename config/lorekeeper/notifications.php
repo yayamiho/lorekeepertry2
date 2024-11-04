@@ -291,6 +291,7 @@ return [
         'url'     => 'account/bookmarks',
     ],
 
+<<<<<<< HEAD
     // USER_REACTIVATED
     103 => [
         'name'      => 'User Reactivated',
@@ -319,6 +320,8 @@ return [
         'url'     => 'claims/view/{submission_id}',
     ],
 
+=======
+>>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
     // REPORT_ASSIGNED
     220 => [
         'name'    => 'Report Assigned',
@@ -332,6 +335,7 @@ return [
         'message' => 'Your report (#{report_id}) was closed by <a href="{staff_url}">{staff_name}</a>. (<a href="{url}">View Report</a>)',
         'url'     => 'reports/view/{report_id}',
     ],
+
     // Comment made on user's model
     // COMMENT_MADE
     239 => [
@@ -345,6 +349,47 @@ return [
         'name'    => 'Comment Reply',
         'message' => '<a href="{sender_url}">{sender}</a> has made a reply to your comment. <a href="comment/{comment_url}">See Reply.</a>',
         'url'     => '',
+    ],
+    // AWARD_GRANT
+    341 => [
+        'name' => 'Award Grant',
+        'message' => 'You have earned the following award(s): {award_name} (×{award_quantity}). Congratulations! (<a href="{url}">View Awards</a>)',
+        'url' => 'awardcase'
+    ],
+
+    // AWARD_REMOVAL
+    342 => [
+        'name' => 'Award Removal',
+        'message' => '{award_name} (×{award_quantity}) was removed from your Awards by <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Awards</a>)',
+        'url' => 'awardcase'
+    ],
+
+    // AWARD_TRANSFER
+    343 => [
+        'name' => 'Award Transfer',
+        'message' => 'You have received {award_name} (×{award_quantity}) from <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Awards</a>)',
+        'url' => 'awardcase'
+    ],
+
+    // FORCED_AWARD_TRANSFER
+    344 => [
+        'name' => 'Forced Award Transfer',
+        'message' => '{item_name} (×{item_quantity}) was removed from {character_name} by <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Inventory</a>)',
+        'url' => 'character/{character_slug}/inventory'
+    ],
+
+    // CHARACTER_AWARD_GRANT
+    345 => [
+        'name' => 'Character Award Grant',
+        'message' => '{character_name} has received a staff grant of {award_name} (×{award_quantity}) from <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Awards</a>)',
+        'url' => 'character/{character_slug}/awards'
+    ],
+
+    // CHARACTER_AWARD_REMOVAL
+    346 => [
+        'name' => 'Character Award Removal',
+        'message' => '{award_name} (×{award_quantity}) was removed from {character_name} by <a href="{sender_url}">{sender_name}</a>. (<a href="{url}">View Awards</a>)',
+        'url' => 'character/{character_slug}/awards'
     ],
 
     // CHARACTER_ITEM_GRANT

@@ -5,7 +5,11 @@
 @endsection
 
 @section('admin-content')
+<<<<<<< HEAD
     {!! breadcrumbs(['Admin Panel' => 'admin', 'Species' => 'admin/data/species', ($species->id ? 'Edit' : 'Create') . ' Species' => $species->id ? 'admin/data/species/edit/' . $species->id : 'admin/data/species/create']) !!}
+=======
+{!! breadcrumbs(['Admin Panel' => 'admin',  ucfirst(__('lorekeeper.species')) => 'admin/data/species', ($species->id ? 'Edit' : 'Create').' '.ucfirst(__('lorekeeper.species')) => $species->id ? 'admin/data/species/edit/'.$species->id : 'admin/data/species/create']) !!}
+>>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
 
     <h1>{{ $species->id ? 'Edit' : 'Create' }} Species
         @if ($species->id)
@@ -66,6 +70,7 @@
 @endsection
 
 @section('scripts')
+<<<<<<< HEAD
     @parent
     <script>
         $(document).ready(function() {
@@ -75,4 +80,16 @@
             });
         });
     </script>
+=======
+@parent
+<script>
+$( document ).ready(function() {
+    $('.delete-species-button').on('click', function(e) {
+        e.preventDefault();
+        loadModal("{{ url('admin/data/species/delete') }}/{{ $species->id }}", 'Delete '.ucfirst(__('lorekeeper.species')));
+    });
+});
+
+</script>
+>>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
 @endsection

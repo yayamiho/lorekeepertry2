@@ -30,12 +30,13 @@
             </div>
             @if (!$image->character->is_myo_slot && !$image->is_valid)
                 <div class="alert alert-danger">
-                    This version of this character is outdated, and only noted here for recordkeeping purposes. Do not use as an official reference.
+                    This version of this {{ __('lorekeeper.character') }} is outdated, and only noted here for recordkeeping purposes. Do not use as an official reference.
                 </div>
             @endif
 
             {{-- Basic info --}}
             <div class="tab-pane fade show active" id="info-{{ $image->id }}">
+<<<<<<< HEAD
                 <div class="row no-gutters">
                     <div class="col-lg-4 col-5">
                         <h5>Species</h5>
@@ -48,6 +49,16 @@
                             <h5>Subtype</h5>
                         </div>
                         <div class="col-lg-8 col-7 pl-1">{!! $image->subtype_id ? $image->subtype->displayName : 'None' !!}</div>
+=======
+                <div class="row">
+                    <div class="col-lg-4 col-md-6 col-4"><h5>{{ ucfirst(__('lorekeeper.species'))}}</h5></div>
+                    <div class="col-lg-8 col-md-6 col-8">{!! $image->species_id ? $image->species->displayName : 'None' !!}</div>
+                </div>
+                @if($image->subtype_id)
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 col-4"><h5>{{ ucfirst(__('lorekeeper.subtype'))}}</h5></div>
+                        <div class="col-lg-8 col-md-6 col-8">{!! $image->subtype_id ? $image->subtype->displayName : 'None' !!}</div>
+>>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
                     </div>
                 @endif
                 <div class="row no-gutters">

@@ -29,10 +29,17 @@ class SlotService extends Service {
      */
     public function getEditData() {
         return [
+<<<<<<< HEAD
             'rarities'  => ['0' => 'Select Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'specieses' => ['0' => 'Select Species'] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'subtypes'  => ['0' => 'Select Subtype'] + Subtype::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'isMyo'     => true,
+=======
+            'rarities' => ['0' => 'Select Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'specieses' => ['0' => 'Select '.ucfirst('lorekeeper.species')] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'subtypes' => ['0' => 'Select '.ucfirst('lorekeeper.subtype')] + Subtype::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'isMyo' => true
+>>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
         ];
     }
 

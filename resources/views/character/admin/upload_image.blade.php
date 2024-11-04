@@ -107,9 +107,35 @@
         Traits
     </h3>
 
+<<<<<<< HEAD
     <div class="form-group">
         {!! Form::label('Species') !!}
         {!! Form::select('species_id', $specieses, old('species_id') ?: $character->image->species_id, ['class' => 'form-control', 'id' => 'species']) !!}
+=======
+<h3>
+    {{-- <div class="float-right"><a href="#" class="btn btn-info btn-sm" data-toggle="tooltip" title="This will fill the below fields with the same data as the character's current image. Note that this will overwrite any changes made below.">Fill Data</a></div> --}}
+Traits
+</h3>
+
+<div class="form-group">
+    {!! Form::label( ucfirst(__('lorekeeper.species'))) !!}
+    {!! Form::select('species_id', $specieses, old('species_id') ? : $character->image->species_id, ['class' => 'form-control', 'id' => 'species']) !!}
+</div>
+
+<div class="form-group" id="subtypes">
+    {!! Form::label(ucfirst(__('lorekeeper.subtype')).' (Optional)') !!}
+    {!! Form::select('subtype_id', $subtypes, old('subtype_id') ? : $character->image->subtype_id, ['class' => 'form-control', 'id' => 'subtype']) !!}
+</div>
+
+<div class="form-group">
+    {!! Form::label('Character Rarity') !!}
+    {!! Form::select('rarity_id', $rarities, old('rarity_id') ? : $character->image->rarity_id, ['class' => 'form-control']) !!}
+</div>
+
+<div class="form-group">
+    {!! Form::label('Traits') !!}
+    <div id="featureList">
+>>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
     </div>
 
     <div class="form-group" id="subtypes">

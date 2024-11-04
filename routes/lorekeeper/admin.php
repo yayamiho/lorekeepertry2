@@ -161,7 +161,29 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::get('items/tag/{id}', 'ItemController@getAddItemTag');
     Route::post('items/tag/{id}', 'ItemController@postAddItemTag');
 
+<<<<<<< HEAD
     // SHOPS
+=======
+    # AWARDS
+    Route::get('award-categories', 'AwardController@getIndex');
+    Route::get('award-categories/create', 'AwardController@getCreateAwardCategory');
+    Route::get('award-categories/edit/{id}', 'AwardController@getEditAwardCategory');
+    Route::get('award-categories/delete/{id}', 'AwardController@getDeleteAwardCategory');
+    Route::post('award-categories/create', 'AwardController@postCreateEditAwardCategory');
+    Route::post('award-categories/edit/{id?}', 'AwardController@postCreateEditAwardCategory');
+    Route::post('award-categories/delete/{id}', 'AwardController@postDeleteAwardCategory');
+    Route::post('award-categories/sort', 'AwardController@postSortAwardCategory');
+
+    Route::get('awards', 'AwardController@getAwardIndex');
+    Route::get('awards/create', 'AwardController@getCreateAward');
+    Route::get('awards/edit/{id}', 'AwardController@getEditAward');
+    Route::get('awards/delete/{id}', 'AwardController@getDeleteAward');
+    Route::post('awards/create', 'AwardController@postCreateEditAward');
+    Route::post('awards/edit/{id?}', 'AwardController@postCreateEditAward');
+    Route::post('awards/delete/{id}', 'AwardController@postDeleteAward');
+
+    # SHOPS
+>>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
     Route::get('shops', 'ShopController@getIndex');
     Route::get('shops/create', 'ShopController@getCreateShop');
     Route::get('shops/edit/{id}', 'ShopController@getEditShop');
@@ -290,10 +312,18 @@ Route::group(['prefix' => 'grants', 'namespace' => 'Users', 'middleware' => 'pow
     Route::post('items', 'GrantController@postItems');
 
     Route::get('item-search', 'GrantController@getItemSearch');
-});
 
+<<<<<<< HEAD
 // MASTERLIST
 Route::group(['prefix' => 'masterlist', 'namespace' => 'Characters', 'middleware' => 'power:manage_characters'], function () {
+=======
+    Route::get('awards', 'GrantController@getAwards');
+    Route::post('awards', 'GrantController@postAwards');
+});
+
+# MASTERLIST
+Route::group(['prefix' => 'masterlist', 'namespace' => 'Characters', 'middleware' => 'power:manage_characters'], function() {
+>>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
     Route::get('create-character', 'CharacterController@getCreateCharacter');
     Route::post('create-character', 'CharacterController@postCreateCharacter');
 
@@ -317,6 +347,7 @@ Route::group(['prefix' => 'masterlist', 'namespace' => 'Characters', 'middleware
 Route::group(['prefix' => 'character', 'namespace' => 'Characters', 'middleware' => 'power:edit_inventories'], function () {
     Route::post('{slug}/grant', 'GrantController@postCharacterCurrency');
     Route::post('{slug}/grant-items', 'GrantController@postCharacterItems');
+    Route::post('{slug}/grant-awards', 'GrantController@postCharacterAwards');
 });
 Route::group(['prefix' => 'character', 'namespace' => 'Characters', 'middleware' => 'power:manage_characters'], function () {
     // IMAGES

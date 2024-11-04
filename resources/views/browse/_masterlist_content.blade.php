@@ -1,5 +1,6 @@
 <div>
     {!! Form::open(['method' => 'GET']) !!}
+<<<<<<< HEAD
     <div class="form-inline justify-content-end">
         <div class="form-group mr-3 mb-3">
             {!! Form::label('name', 'Character Name/Code: ', ['class' => 'mr-2']) !!}
@@ -16,6 +17,34 @@
     <div class="card bg-light mb-3 collapse" id="advancedSearch">
         <div class="card-body masterlist-advanced-search">
             @if (!$isMyo)
+=======
+        <div class="form-inline justify-content-end">
+            <div class="form-group mr-3 mb-3">
+                {!! Form::label('name', ucfirst(__('lorekeeper.character')).' Name/Code: ', ['class' => 'mr-2']) !!}
+                {!! Form::text('name', Request::get('name'), ['class' => 'form-control']) !!}
+            </div>
+            <div class="form-group mb-3">
+                {!! Form::select('rarity_id', $rarities, Request::get('rarity_id'), ['class' => 'form-control mr-3']) !!}
+            </div>
+            <div class="form-group mb-3">
+                {!! Form::select('species_id', $specieses, Request::get('species_id'), ['class' => 'form-control']) !!}
+            </div>
+        </div>
+        <div class="text-right mb-3"><a href="#advancedSearch" class="btn btn-sm btn-outline-info" data-toggle="collapse">Show Advanced Search Options <i class="fas fa-caret-down"></i></a></div>
+        <div class="card bg-light mb-3 collapse" id="advancedSearch">
+            <div class="card-body masterlist-advanced-search">
+                @if(!$isMyo)
+                    <div class="masterlist-search-field">
+                        {!! Form::label('character_category_id', 'Category: ') !!}
+                        {!! Form::select('character_category_id', $categories, Request::get('character_category_id'), ['class' => 'form-control']) !!}
+                    </div>
+                    <div class="masterlist-search-field">
+                        {!! Form::label('subtype_id', ucfirst(__('lorekeeper.species')).' '.ucfirst(__('lorekeeper.subtype')).':'    ) !!}
+                        {!! Form::select('subtype_id', $subtypes, Request::get('subtype_id'), ['class' => 'form-control']) !!}
+                    </div>
+                @endif
+                <hr/>
+>>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
                 <div class="masterlist-search-field">
                     {!! Form::label('character_category_id', 'Category: ') !!}
                     {!! Form::select('character_category_id', $categories, Request::get('character_category_id'), ['class' => 'form-control mr-2', 'style' => 'width: 250px']) !!}
@@ -96,6 +125,7 @@
                                     {!! Form::select('feature_id[]', $features, $featureId, ['class' => 'form-control feature-select selectize', 'placeholder' => 'Select Trait']) !!}
                                     <a href="#" class="btn feature-remove ml-2"><i class="fas fa-times"></i></a>
                                 </div>
+<<<<<<< HEAD
                             </div>
                         </div>
                     @endforeach
@@ -107,6 +137,17 @@
                 <span class="ml-2">Include all character images in search {!! add_help(
                     'Each character can have multiple images for each updated version of the character, which captures the traits on that character at that point in time. By default the search will only search on the most up-to-date image, but this option will retrieve characters that match the criteria on older images - you may get results that are outdated.',
                 ) !!}</span>
+=======
+                            @endforeach
+                        @endif
+                    </div>
+                <hr />
+                <div class="masterlist-search-field">
+                    {!! Form::checkbox('search_images', 1, Request::get('search_images'), ['class' => 'form-check-input mr-3',  'data-toggle' => 'toggle']) !!}
+                    <span class="ml-2">Include all {{ __('lorekeeper.character') }} images in search {!! add_help('Each character can have multiple images for each updated version of the character, which captures the traits on that character at that point in time. By default the search will only search on the most up-to-date image, but this option will retrieve characters that match the criteria on older images - you may get results that are outdated.') !!}</span>
+                </div>
+
+>>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
             </div>
 
         </div>
@@ -167,6 +208,16 @@
                         {!! $character->image->species_id ? $character->image->species->displayName : 'No Species' !!} ・ {!! $character->image->rarity_id ? $character->image->rarity->displayName : 'No Rarity' !!} ・ {!! $character->displayOwner !!}
                     </div>
                 </div>
+<<<<<<< HEAD
+=======
+                <div class="mt-1">
+                    <a href="{{ $character->url }}" class="h5 mb-0">@if(!$character->is_visible) <i class="fas fa-eye-slash"></i> @endif {{ $character->fullName }}</a>
+                </div>
+                <div class="small">
+                    {!! $character->image->species_id ? $character->image->species->displayName : 'No '.ucfirst(__('lorekeeper.species')) !!} ・ {!! $character->image->rarity_id ? $character->image->rarity->displayName : 'No Rarity' !!} ・ {!! $character->displayOwner !!}
+                </div>
+            </div>
+>>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
             @endforeach
         </div>
     @endforeach
@@ -178,7 +229,7 @@
                 <th>Owner</th>
                 <th>Name</th>
                 <th>Rarity</th>
-                <th>Species</th>
+                <th>{{ ucfirst(__('lorekeeper.species')) }}</th>
                 <th>Created</th>
             </tr>
         </thead>

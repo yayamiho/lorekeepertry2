@@ -83,6 +83,7 @@
 
         <h2>Characters</h2>
         <div id="characters" class="mb-3">
+<<<<<<< HEAD
             @if (count(
                     $submission->characters()->whereRelation('character', 'deleted_at', null)->get()) != count($submission->characters()->get()))
                 <div class="alert alert-warning">
@@ -91,6 +92,10 @@
             @endif
             @foreach ($submission->characters()->whereRelation('character', 'deleted_at', null)->get() as $character)
                 @include('widgets._character_select_entry', ['characterCurrencies' => $characterCurrencies, 'items' => $items, 'tables' => $tables, 'character' => $character, 'expanded_rewards' => $expanded_rewards])
+=======
+            @foreach($submission->characters as $character)
+                @include('widgets._character_select_entry', ['characterCurrencies' => $characterCurrencies, 'items' => $items, 'tables' => $tables, 'character' => $character, 'characterAwards' => $characterAwards,'expanded_rewards' => $expanded_rewards])
+>>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
             @endforeach
         </div>
         <div class="text-right mb-3">
@@ -202,6 +207,7 @@
             <table>
                 <tr class="character-reward-row">
 
+<<<<<<< HEAD
                     @if ($expanded_rewards)
                         <td>
                             {!! Form::select('character_rewardable_type[]', ['Item' => 'Item', 'Currency' => 'Currency', 'LootTable' => 'Loot Table'], null, ['class' => 'form-control character-rewardable-type', 'placeholder' => 'Select Reward Type']) !!}
@@ -211,6 +217,18 @@
                             <div class="character-items hide">{!! Form::select('character_rewardable_id[]', $items, 0, ['class' => 'form-control character-item-id', 'placeholder' => 'Select Item']) !!}</div>
                             <div class="character-tables hide">{!! Form::select('character_rewardable_id[]', $tables, 0, ['class' => 'form-control character-table-id', 'placeholder' => 'Select Loot Table']) !!}</div>
                         </td>
+=======
+                    @if($expanded_rewards)
+                    <td>
+                        {!! Form::select('character_rewardable_type[]', ['Item' => 'Item', 'Currency' => 'Currency', 'LootTable' => 'Loot Table', 'Award' => ucfirst(__('awards.award'))], null, ['class' => 'form-control character-rewardable-type', 'placeholder' => 'Select Reward Type']) !!}
+                    </td>
+                    <td class="lootDivs">
+                        <div class="character-currencies hide">{!! Form::select('character_rewardable_id[]', $characterCurrencies, 0, ['class' => 'form-control character-currency-id', 'placeholder' => 'Select Currency']) !!}</div>
+                        <div class="character-items hide">{!! Form::select('character_rewardable_id[]', $items, 0, ['class' => 'form-control character-item-id', 'placeholder' => 'Select Item']) !!}</div>
+                        <div class="character-awards hide">{!! Form::select('character_rewardable_id[]', $characterAwards, 0, ['class' => 'form-control character-award-id', 'placeholder' => 'Select '.ucfirst(__('awards.award'))]) !!}</div>
+                        <div class="character-tables hide">{!! Form::select('character_rewardable_id[]', $tables, 0, ['class' => 'form-control character-table-id', 'placeholder' => 'Select Loot Table']) !!}</div>
+                    </td>
+>>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
                     @else
                         <td class="lootDivs">
                             {!! Form::hidden('character_rewardable_type[]', 'Currency', ['class' => 'character-rewardable-type']) !!}
@@ -218,6 +236,7 @@
                         </td>
                     @endif
 
+<<<<<<< HEAD
                     <td class="d-flex align-items-center">
                         {!! Form::text('character_quantity[]', 0, ['class' => 'form-control mr-2  character-rewardable-quantity']) !!}
                         <a href="#" class="remove-reward d-block"><i class="fas fa-times text-muted"></i></a>
@@ -226,6 +245,16 @@
             </table>
         </div>
         @include('widgets._loot_select_row', ['showLootTables' => true, 'showRaffles' => true])
+=======
+                <td class="d-flex align-items-center">
+                    {!! Form::text('character_quantity[]', 0, ['class' => 'form-control mr-2  character-rewardable-quantity']) !!}
+                    <a href="#" class="remove-reward d-block"><i class="fas fa-times text-muted"></i></a>
+                </td>
+            </tr>
+        </table>
+    </div>
+    @include('widgets._loot_select_row', ['items' => $items, 'currencies' => $currencies, 'awards' => $awards, 'showLootTables' => true, 'showRaffles' => true])
+>>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
 
         <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">

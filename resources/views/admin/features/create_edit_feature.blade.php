@@ -88,6 +88,7 @@
             </div>
         </div>
     @endif
+<<<<<<< HEAD
 @endsection
 
 @section('scripts')
@@ -119,4 +120,61 @@
             });
         };
     </script>
+=======
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            {!! Form::label('Trait Category (Optional)') !!}
+            {!! Form::select('feature_category_id', $categories, $feature->feature_category_id, ['class' => 'form-control']) !!}
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            {!! Form::label(ucfirst(__('lorekeeper.species')).' Restriction (Optional)') !!}
+            {!! Form::select('species_id', $specieses, $feature->species_id, ['class' => 'form-control']) !!}
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            {!! Form::label(ucfirst(__('lorekeeper.subtype')).' (Optional)') !!} {!! add_help('This is cosmetic and does not limit choice of traits in selections.') !!}
+            {!! Form::select('subtype_id', $subtypes, $feature->subtype_id, ['class' => 'form-control']) !!}
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    {!! Form::label('Description (Optional)') !!}
+    {!! Form::textarea('description', $feature->description, ['class' => 'form-control wysiwyg']) !!}
+</div>
+
+<div class="text-right">
+    {!! Form::submit($feature->id ? 'Edit' : 'Create', ['class' => 'btn btn-primary']) !!}
+</div>
+
+{!! Form::close() !!}
+
+@if($feature->id)
+    <h3>Preview</h3>
+    <div class="card mb-3">
+        <div class="card-body">
+            @include('world._feature_entry', ['feature' => $feature])
+        </div>
+    </div>
+@endif
+
+@endsection
+
+@section('scripts')
+@parent
+<script>
+$( document ).ready(function() {
+    $('.delete-feature-button').on('click', function(e) {
+        e.preventDefault();
+        loadModal("{{ url('admin/data/traits/delete') }}/{{ $feature->id }}", 'Delete Trait');
+    });
+});
+
+</script>
+>>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
 @endsection

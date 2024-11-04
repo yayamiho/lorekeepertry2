@@ -21,25 +21,19 @@ class Subtype extends Model {
      */
     protected $table = 'subtypes';
 
-    /**
-     * Accessors to append to the model.
-     *
-     * @var array
-     */
-    protected $appends = [
-        'name_with_species',
-    ];
+
     /**
      * Validation rules for creation.
      *
      * @var array
      */
     public static $createRules = [
-        'species_id'  => 'required',
-        'name'        => 'required|between:3,100',
+        'species_id' => 'required',
+        'name' => 'required|between:3,100',
         'description' => 'nullable',
-        'image'       => 'mimes:png',
+        'image' => 'mimes:png',
     ];
+
 
     /**
      * Validation rules for updating.
@@ -47,10 +41,19 @@ class Subtype extends Model {
      * @var array
      */
     public static $updateRules = [
-        'species_id'  => 'required',
-        'name'        => 'required|between:3,100',
+        'species_id' => 'required',
+        'name' => 'required|between:3,100',
         'description' => 'nullable',
-        'image'       => 'mimes:png',
+        'image' => 'mimes:png',
+    ];
+
+    /**
+     * Accessors to append to the model.
+     *
+     * @var array
+     */
+    protected $appends = [
+        'name_with_species',
     ];
 
     /**********************************************************************************************
@@ -62,12 +65,14 @@ class Subtype extends Model {
     /**
      * Get the species the subtype belongs to.
      */
-    public function species() {
-        return $this->belongsTo(Species::class, 'species_id');
+    public function species()
+    {
+        return $this->belongsTo('App\Models\Species\Species', 'species_id');
     }
 
     /**********************************************************************************************
 
+<<<<<<< HEAD
             SCOPES
 
     **********************************************************************************************/
@@ -90,6 +95,8 @@ class Subtype extends Model {
 
     /**********************************************************************************************
 
+=======
+>>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
         ACCESSORS
 
     **********************************************************************************************/
@@ -99,8 +106,9 @@ class Subtype extends Model {
      *
      * @return string
      */
-    public function getNameWithSpeciesAttribute() {
-        return $this->name.' ['.$this->species->name.' Subtype]';
+    public function getNameWithSpeciesAttribute()
+    {
+        return $this->name . ' [' . $this->species->name . ' ' . ucfirst(__('lorekeeper.subtype')) . ']';
     }
 
     /**
@@ -157,8 +165,9 @@ class Subtype extends Model {
      *
      * @return string
      */
-    public function getUrlAttribute() {
-        return url('world/subtypes?name='.$this->name);
+    public function getUrlAttribute()
+    {
+        return url('world/'.__('lorekeeper.subtypes').'?name='.$this->name);
     }
 
     /**
@@ -166,8 +175,9 @@ class Subtype extends Model {
      *
      * @return string
      */
-    public function getSearchUrlAttribute() {
-        return url('masterlist?subtype_id='.$this->id);
+    public function getSearchUrlAttribute()
+    {
+        return url('masterlist?'.__('lorekeeper.subtype').'_id='.$this->id);
     }
 
     /**

@@ -22,10 +22,16 @@
                 <strong>Visual Trait Index</strong>
             </a>
         @endif
+<<<<<<< HEAD
         @if (count($species->subtypes))
             <div>
                 <strong>Subtypes: </strong>
                 @foreach ($species->subtypes as $count => $subtype)
+=======
+        @if(count($species->subtypes))
+            <div><strong>{{ ucfirst(__('lorekeeper.subtypes')) }}: </strong>
+                @foreach($species->subtypes as $count=>$subtype)
+>>>>>>> 7741e9cbbdc31ea79be2d1892e9fa2efabce4cec
                     {!! $subtype->displayName !!}{{ $count < $species->subtypes->count() - 1 ? ', ' : '' }}
                 @endforeach
             </div>
