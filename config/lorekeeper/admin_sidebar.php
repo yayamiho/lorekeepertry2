@@ -213,8 +213,11 @@ return [
             [
                 'name' => 'Recipes',
                 'url' => 'admin/data/recipes'
+            ],[
+                'name' => 'Carousel',
+                'url'  => 'admin/data/carousel',
             ],
-        ]
+        ],
     ],
     'Raffles'    => [
         'power' => 'manage_raffles',

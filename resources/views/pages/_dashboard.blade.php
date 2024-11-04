@@ -6,6 +6,12 @@
 </div>
 
 <div class="row justify-content-center">
+<div class="row">
+    <div class="col-md-12">
+        @include('widgets._carousel')
+    </div>
+</div>
+<div class="row">
     <div class="col-md-6">
         <div class="card mb-4">
             <div class="card-body text-center">
