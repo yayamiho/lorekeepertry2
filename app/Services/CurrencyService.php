@@ -137,84 +137,6 @@ class CurrencyService extends Service {
     }
 
     /**
-     * Deletes a currency.
-     *
-     * @param \App\Models\Currency\Currency $currency
-     * @param mixed                         $user
-     *
-     * @return bool
-     */
-    public function deleteCurrency($currency, $user) {
-        DB::beginTransaction();
-
-        try {
-            if (DB::table('loots')->where('rewardable_type', 'Currency')->where('rewardable_id', $currency->id)->exists()) {
-                throw new \Exception('A loot table currently distributes this currency as a potential reward. Please remove the currency before deleting it.');
-            }
-            if (DB::table('prompt_rewards')->where('rewardable_type', 'Currency')->where('rewardable_id', $currency->id)->exists()) {
-                throw new \Exception('A prompt currently distributes this currency as a reward. Please remove the currency before deleting it.');
-            }
-            if (DB::table('shop_stock')->where('currency_id', $currency->id)->exists()) {
-                throw new \Exception('A shop currently requires this currency to purchase an currency. Please change the currency before deleting it.');
-            }
-            // Disabled for now due to issues with JSON lookup with older mysql versions/mariaDB
-            // if(DB::table('items')->where('data->resell', $currency->id)->exists()) throw new \Exception("An item currently uses this currency for its resale value. Please change the resale information before deleting this currency.");
-
-            // This will delete the currency in users' possession as well.
-            // The reason this is allowed is that in instances where event currencies
-            // are created for temporary use, it would be inconvenient to have to manually
-            // remove them from user accounts before deleting the base currency.
-
-            if (!$this->logAdminAction($user, 'Deleted Currency', 'Deleted '.$currency->name)) {
-                throw new \Exception('Failed to log admin action.');
-            }
-
-            UserCurrency::where('currency_id', $currency->id)->delete();
-            CharacterCurrency::where('currency_id', $currency->id)->delete();
-            if ($currency->has_image) {
-                $this->deleteImage($currency->currencyImagePath, $currency->currencyImageFileName);
-            }
-            if ($currency->has_icon) {
-                $this->deleteImage($currency->currencyIconPath, $currency->currencyIconFileName);
-            }
-            $currency->delete();
-
-            return $this->commitReturn(true);
-        } catch (\Exception $e) {
-            $this->setError('error', $e->getMessage());
-        }
-
-        return $this->rollbackReturn(false);
-    }
-
-    /**
-     * Sorts currency order.
-     *
-     * @param array  $data
-     * @param string $type
-     *
-     * @return bool
-     */
-    public function sortCurrency($data, $type) {
-        DB::beginTransaction();
-
-        try {
-            // explode the sort array and reverse it since the power order is inverted
-            $sort = array_reverse(explode(',', $data));
-
-            foreach ($sort as $key => $s) {
-                Currency::where('id', $s)->update([($type == 'user') ? 'sort_user' : 'sort_character' => $key]);
-            }
-
-            return $this->commitReturn(true);
-        } catch (\Exception $e) {
-            $this->setError('error', $e->getMessage());
-        }
-
-        return $this->rollbackReturn(false);
-    }
-
-    /**
      * Processes user input for creating/updating a currency.
      *
      * @param array                         $data
@@ -274,5 +196,67 @@ class CurrencyService extends Service {
         }
 
         return $data;
+    }
+
+    /**
+     * Deletes a currency.
+     *
+     * @param  \App\Models\Currency\Currency  $currency
+     * @return bool
+     */
+    public function deleteCurrency($currency)
+    {
+        DB::beginTransaction();
+
+        try {
+            if(DB::table('user_currencies')->where([['currency_id', '=', $currency->id], ['quantity', '>', 0]])->exists()) throw new \Exception("At least one user currently owns this currency. Please remove the currency before deleting it.");
+            if(DB::table('loots')->where('rewardable_type', 'Currency')->where('rewardable_id', $currency->id)->exists()) throw new \Exception("A loot table currently distributes this currency as a potential reward. Please remove the currency before deleting it.");
+            if(DB::table('prompt_rewards')->where('rewardable_type', 'Currency')->where('rewardable_id', $currency->id)->exists()) throw new \Exception("A prompt currently distributes this currency as a reward. Please remove the currency before deleting it.");
+            if(DB::table('shop_stock')->where('currency_id', $currency->id)->exists()) throw new \Exception("A shop currently requires this currency to purchase an item. Please change the currency before deleting it.");
+            // Disabled for now due to issues with JSON lookup with older mysql versions/mariaDB
+            // if(DB::table('items')->where('data->resell', $currency->id)->exists()) throw new \Exception("An item currently uses this currency for its resale value. Please change the resale information before deleting this currency.");
+
+            // This will delete the currency in users' possession as well.
+            // The reason this is allowed is that in instances where event currencies
+            // are created for temporary use, it would be inconvenient to have to manually
+            // remove them from user accounts before deleting the base currency.
+
+            UserCurrency::where('currency_id', $currency->id)->delete();
+            CharacterCurrency::where('currency_id', $currency->id)->delete();
+            if($currency->has_image) $this->deleteImage($currency->currencyImagePath, $currency->currencyImageFileName);
+            if($currency->has_icon) $this->deleteImage($currency->currencyIconPath, $currency->currencyIconFileName);
+            $currency->delete();
+
+            return $this->commitReturn(true);
+        } catch(\Exception $e) {
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
+    /**
+     * Sorts currency order.
+     *
+     * @param  array   $data
+     * @param  string  $type
+     * @return bool
+     */
+    public function sortCurrency($data, $type)
+    {
+        DB::beginTransaction();
+
+        try {
+            // explode the sort array and reverse it since the power order is inverted
+            $sort = array_reverse(explode(',', $data));
+
+            foreach($sort as $key => $s) {
+                Currency::where('id', $s)->update([($type == 'user') ? 'sort_user' : 'sort_character' => $key]);
+            }
+
+            return $this->commitReturn(true);
+        } catch(\Exception $e) {
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
     }
 }

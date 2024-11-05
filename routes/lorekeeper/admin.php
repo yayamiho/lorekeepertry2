@@ -332,6 +332,13 @@ Route::group(['prefix' => 'grants', 'namespace' => 'Users', 'middleware' => 'pow
     Route::get('awards', 'GrantController@getAwards');
     Route::post('awards', 'GrantController@postAwards');
 });
+# EVENT SETTINGS
+Route::group(['prefix' => 'event-settings', 'middleware' => 'power:edit_inventories'], function() {
+    Route::get('/', 'EventController@getEventSettings');
+    Route::get('clear', 'EventController@getClearEventCurrency');
+    Route::post('clear', 'EventController@postClearEventCurrency');
+    Route::post('teams', 'EventController@postEventTeams');
+});
 
 # MASTERLIST
 Route::group(['prefix' => 'masterlist', 'namespace' => 'Characters', 'middleware' => 'power:manage_characters'], function() {

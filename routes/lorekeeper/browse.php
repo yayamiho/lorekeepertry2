@@ -59,7 +59,6 @@ Route::group(['prefix' => 'user', 'namespace' => 'Users'], function () {
     Route::get('{name}/myos', 'UserController@getUserMyoSlots');
     Route::get('{name}/inventory', 'UserController@getUserInventory');
     Route::get('{name}/bank', 'UserController@getUserBank');
-    Route::get('{name}/'.__('awards.awardcase'), 'UserController@getUserAwardCase');
 
     Route::get('{name}/currency-logs', 'UserController@getUserCurrencyLogs');
     Route::get('{name}/item-logs', 'UserController@getUserItemLogs');
@@ -136,6 +135,10 @@ Route::group(['prefix' => 'shops'], function () {
     Route::get('/', 'ShopController@getIndex');
     Route::get('{id}', 'ShopController@getShop')->where(['id' => '[0-9]+']);
     Route::get('{id}/{stockId}', 'ShopController@getShopStock')->where(['id' => '[0-9]+', 'stockId' => '[0-9]+']);
+});
+
+Route::group(['prefix' => 'event-tracking'], function() {
+    Route::get('/', 'EventController@getEventTracking');
 });
 
 /**************************************************************************************************
