@@ -20,7 +20,7 @@
  */
 function getAssetKeys($isCharacter = false)
 {
-    if(!$isCharacter) return ['items', 'awards', 'currencies', 'raffle_tickets', 'loot_tables', 'user_items', 'recipes', 'user_awards', 'characters', 'themes'];
+    if(!$isCharacter) return ['items', 'awards', 'currencies', 'raffle_tickets', 'loot_tables', 'user_items', 'recipes', 'user_awards', 'characters', 'themes', 'areas'];
     else return ['currencies', 'items', 'character_items', 'loot_tables', 'awards'];
 }
 
@@ -111,6 +111,10 @@ function getAssetModelString($type, $namespaced = true) {
             else return 'Theme';
             break;
     
+        case 'areas':
+            if($namespaced) return '\App\Models\Cultivation\CultivationArea';
+            else return 'Area';
+            break;
     }
 
     return null;
@@ -308,16 +312,24 @@ function fillUserAssets($assets, $sender, $recipient, $logType, $data) {
                 }
             }
         }
-        if($key == 'recipes' && count($contents))
+        elseif($key == 'recipes' && count($contents))
         {
             $service = new \App\Services\RecipeService;
             foreach($contents as $asset)
                 if(!$service->creditRecipe($sender, $recipient, null, $logType, $data, $asset['asset'])) return false;
                 if(!$service->moveCharacter($asset['asset'], $recipient, $data, $asset['quantity'], $logType)) return false;
-        } else if ($key == 'themes' && count($contents)) {
+        } 
+        
+        elseif ($key == 'themes' && count($contents)) {
             $service = new \App\Services\ThemeManager;
             foreach ($contents as $asset)
                 if (!$service->creditTheme($recipient, $asset['asset'])) return false;
+        }
+        
+        elseif ($key == 'areas' && count($contents)) {
+            $service = new \App\Services\CultivationManager;
+            foreach ($contents as $asset)
+                if (!$service->unlockArea($recipient, $asset['asset'])) return false;
         }
     }
 

@@ -41,5 +41,21 @@ return [
         'name' => 'Theme',
         'text_color' => "#ffffff",
         'background_color' => '#573f7e'
-    ]
+    ],
+    'seed' => [
+        'name' => 'Seed',
+        'text_color' => '#ffffff',
+        'background_color' => '#3E7C5D'
+    ],
+ 
+    'tool' => [
+        'name' => 'Tool',
+        'text_color' => '#ffffff',
+        'background_color' => '#332312'
+    ],
+    'exploration' => [
+        'name' => 'Exploration',
+        'text_color' => '#ffffff',
+        'background_color' => '#808000'
+    ],
 ];

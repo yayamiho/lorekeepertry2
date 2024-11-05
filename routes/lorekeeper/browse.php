@@ -149,6 +149,12 @@ Route::group(['prefix' => 'event-tracking'], function() {
     Route::get('/', 'EventController@getEventTracking');
 });
 
+Route::group(['prefix' => __('cultivation.cultivation')], function() {
+    Route::get('/', 'CultivationController@getIndex');
+    Route::get('/guide', 'CultivationController@getGuide');
+
+});
+
 /**************************************************************************************************
     Site Pages
 **************************************************************************************************/

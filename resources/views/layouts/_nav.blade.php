@@ -137,6 +137,8 @@
                         @endif
                         <a class="dropdown-item" href="{{ url('user-shops/shop-index') }}">
                             All User Shops
+                        <a class="dropdown-item" href="{{ url(__('cultivation.cultivation')) }}">
+                            {{__('cultivation.cultivation')}}
                         </a>
                     </div>
                 </li>

@@ -304,3 +304,22 @@ Route::group(['prefix' => 'criteria'], function () {
 
     Route::get('guide/{id}', 'CriterionController@getCriterionGuide');
 });
+
+
+/**************************************************************************************************
+    Cultivation
+**************************************************************************************************/
+
+Route::group(['prefix' => __('cultivation.cultivation')], function() {
+    Route::get('{id}', 'CultivationController@getArea');
+    
+    Route::get('area/delete/{id}', 'CultivationController@getDeleteAreaModal');
+    Route::post('area/delete/{id}', 'CultivationController@postDeleteArea');
+
+    Route::get('{id}/{plotNumber}', 'CultivationController@getPlotModal');
+    Route::post('plots/prepare/{plotNumber}', 'CultivationController@postPreparePlot');
+    Route::post('plots/cultivate/{plotNumber}', 'CultivationController@postCultivatePlot');
+    Route::post('plots/tend/{plotId}', 'CultivationController@postTendPlot');
+    Route::post('plots/harvest/{plotId}', 'CultivationController@postHarvestPlot');
+
+});
