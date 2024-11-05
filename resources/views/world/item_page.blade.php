@@ -145,6 +145,12 @@
                                     @endif
                                 @endif
                             </div>
+                            @endif
+                            @if($item->canUserSell)
+                                <div class="text-right mb-4">
+                                    <a class="btn btn-secondary " href="{{ url('user-shops/item-search?item_ids='.$item->id) }}"><i class="fas fa-shopping-cart mr-2"></i>User Shops</a>
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>

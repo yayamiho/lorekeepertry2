@@ -111,6 +111,7 @@ class AddSiteSettings extends Command
 
         $this->addSiteSetting('event_weighting', 0, '0: Score is not weighted depending on number of team members, 1: Score is weighted. Does not impact raw currency amounts.');
         $this->addSiteSetting('default_theme', 0, 'ID of the default theme users should see. 0: Disabled, shows default lorekeeper. This setting is overwritten by the users theme setting.');
+        $this->addSiteSetting('user_shop_limit', 1, 'Number of user shops that a user can make in total set to 0 to allow infinite shops.');
 
         $this->line("\nSite settings up to date!");
 

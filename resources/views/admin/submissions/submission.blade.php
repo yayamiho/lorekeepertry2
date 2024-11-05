@@ -81,10 +81,8 @@
 
         {!! Form::open(['url' => url()->current(), 'id' => 'submissionForm', 'onsubmit' => "$(this).find('input').prop('disabled', false)"]) !!}
 
-<<<<<<< HEAD
         <h2>Rewards</h2>
         @include('widgets._loot_select', ['loots' => $submission->rewards, 'showLootTables' => true, 'showRaffles' => true, 'showRecipes' => true])
-=======
         @if (isset($submission->data['criterion']))
             <h2 class="mt-5">Criteria Rewards</h2>
             @foreach ($submission->data['criterion'] as $key => $criterionData)
@@ -108,7 +106,6 @@
 
         <h2 class="mt-4">Rewards</h2>
         @include('widgets._loot_select', ['loots' => $submission->rewards, 'showLootTables' => true, 'showRaffles' => true])
->>>>>>> e7a969cc732a2dde6f2ceb56fba180b174fcfb53
         @if ($submission->prompt_id)
             <div class="mb-3">
                 @include('home._prompt', ['prompt' => $submission->prompt, 'staffView' => true])
@@ -117,18 +114,13 @@
 
         <h2>Characters</h2>
         <div id="characters" class="mb-3">
-<<<<<<< HEAD
-            @foreach($submission->characters as $character)
-                @include('widgets._character_select_entry', ['characterCurrencies' => $characterCurrencies, 'items' => $items, 'tables' => $tables, 'character' => $character, 'characterAwards' => $characterAwards,'expanded_rewards' => $expanded_rewards])
-=======
             @if (count($submission->characters()->whereRelation('character', 'deleted_at', null)->get()) != count($submission->characters()->get()))
                 <div class="alert alert-warning">
                     Some characters have been deleted since this submission was created.
                 </div>
             @endif
             @foreach ($submission->characters()->whereRelation('character', 'deleted_at', null)->get() as $character)
-                @include('widgets._character_select_entry', ['characterCurrencies' => $characterCurrencies, 'items' => $items, 'tables' => $tables, 'character' => $character, 'expanded_rewards' => $expanded_rewards])
->>>>>>> e7a969cc732a2dde6f2ceb56fba180b174fcfb53
+                @include('widgets._character_select_entry', ['characterCurrencies' => $characterCurrencies, 'items' => $items, 'tables' => $tables, 'character' => $character, 'characterAwards' => $characterAwards, 'expanded_rewards' => $expanded_rewards])
             @endforeach
         </div>
         <div class="text-right mb-3">

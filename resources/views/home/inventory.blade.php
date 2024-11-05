@@ -13,6 +13,7 @@
             <a class="btn btn-secondary consolidate-inventory" href="#">Consolidate</a>
             <a class="btn btn-primary" href="{{ url('inventory/account-search') }}"><i class="fas fa-search"></i> Account Search</a>
             <a class="btn btn-primary" href="{{ url('inventory/full-inventory') }}"><i class="fas fa-warehouse"></i> Full Inventory</a>
+            <a class="btn btn-primary" href="{{ url('inventory/quickstock') }}"><i class="fas fa-truck"></i> Quickstock</a>
         </div>
     </h1>
 

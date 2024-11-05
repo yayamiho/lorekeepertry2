@@ -11,6 +11,7 @@ use App\Models\Currency\CurrencyLog;
 use App\Models\Item\ItemLog;
 use App\Models\Shop\ShopLog;
 use App\Models\Award\AwardLog;
+use App\Models\Shop\UserShopLog;
 use App\Models\User\UserCharacterLog;
 use App\Models\Submission\Submission;
 use App\Models\Submission\SubmissionCharacter;
@@ -241,6 +242,14 @@ class User extends Authenticatable implements MustVerifyEmail
     public function bookmarks()
     {
         return $this->hasMany('App\Models\Character\CharacterBookmark')->where('user_id', $this->id);
+    }
+
+    /**
+     * Get the user's rank data.
+     */
+    public function shops()
+    {
+        return $this->hasMany('App\Models\Shop\UserShop', 'user_id');
     }
 
     /**********************************************************************************************
@@ -690,6 +699,17 @@ class User extends Authenticatable implements MustVerifyEmail
         } else {
             return $query->paginate(30);
         }
+    }
+     /*
+     * @param  int  $limit
+     * @return \Illuminate\Support\Collection|\Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function getUserShopLogs($limit = 10)
+    {
+        $user = $this;
+        $query = UserShopLog::where('user_id', $this->id)->with('shop')->with('item')->with('currency')->orderBy('id', 'DESC');
+        if($limit) return $query->take($limit)->get();
+        else return $query->paginate(30);
     }
 
     /**

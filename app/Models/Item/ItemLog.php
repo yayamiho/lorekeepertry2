@@ -41,23 +41,21 @@ class ItemLog extends Model {
     /**
      * Get the user who initiated the logged action.
      */
-    public function sender() {
-        if ($this->sender_type == 'User') {
-            return $this->belongsTo(User::class, 'sender_id');
-        }
-
-        return $this->belongsTo(Character::class, 'sender_id');
+    public function sender() 
+    {
+        if($this->sender_type == 'User') return $this->belongsTo('App\Models\User\User', 'sender_id');
+        if($this->sender_type == 'Shop') return $this->belongsTo('App\Models\Shop\UserShop', 'sender_id');
+        return $this->belongsTo('App\Models\Character\Character', 'sender_id');
     }
 
     /**
      * Get the user who received the logged action.
      */
-    public function recipient() {
-        if ($this->recipient_type == 'User') {
-            return $this->belongsTo(User::class, 'recipient_id');
-        }
-
-        return $this->belongsTo(Character::class, 'recipient_id');
+    public function recipient() 
+    {
+        if($this->recipient_type == 'User') return $this->belongsTo('App\Models\User\User', 'recipient_id');
+        if($this->recipient_type == 'Shop') return $this->belongsTo('App\Models\Shop\UserShop', 'recipient_id');
+        return $this->belongsTo('App\Models\Character\Character', 'recipient_id');
     }
 
     /**
