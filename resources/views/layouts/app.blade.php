@@ -130,6 +130,7 @@
 <body>
     <div id="app">
         <div class="site-header-image" id="header" style="background-image: url('{{ asset('images/header.png') }}'); position: relative;">
+        <img id="logo" src="{{ asset('images/logo.png') }}">
             @include('layouts._clock')
         </div>
         @include('layouts._nav')
