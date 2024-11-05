@@ -57,7 +57,6 @@ class UserController extends Controller {
 
         View::share('sublists', Sublist::orderBy('sort', 'DESC')->get());
 
-        echo "<script>console.log('indo no updares');</script>";
         $this->user->updateCharacters();
         $this->user->updateArtDesignCredits();
     }
@@ -71,6 +70,7 @@ class UserController extends Controller {
      */
     public function getUser($name) {
         $characters = $this->user->characters();
+        $aliases = $this->user->aliases();
         if(!Auth::check() || !(Auth::check() && Auth::user()->hasPower('manage_characters'))) $characters->visible();
 
         return view('user.profile', [
