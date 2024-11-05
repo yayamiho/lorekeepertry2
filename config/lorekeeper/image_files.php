@@ -72,4 +72,9 @@ return [
         'description' => 'Logo image that will display on top of the banner. Scales to fit the screen resolution.',
         'filename'    => 'logo.png',
     ],
+    'donation_shop' => [
+        'name' => 'Donation Shop Image',
+        'description' => 'Image used for the donation shop. PNG format, should be the same size as other shop images.',
+        'filename' => 'donation_shop.png'
+    ],
 ];

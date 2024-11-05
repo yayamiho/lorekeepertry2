@@ -229,6 +229,7 @@ Route::group(['prefix' => 'event-tracking'], function() {
 
 Route::group(['prefix' => 'shops'], function () {
     Route::post('buy', 'ShopController@postBuy');
+    Route::post('collect', 'ShopController@postCollect');
     Route::get('history', 'ShopController@getPurchaseHistory');
 });
 

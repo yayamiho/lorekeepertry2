@@ -30,4 +30,10 @@ return [
         'text_color' => '#ffffff',
         'background_color' => '#6D18A7'
     ],
+
+    'donateable' => [
+        'name' => 'Donateable',
+        'text_color' => '#ffffff',
+        'background_color' => '#9e5663'
+    ],
 ];
