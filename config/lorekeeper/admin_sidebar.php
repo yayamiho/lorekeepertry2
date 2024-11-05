@@ -223,8 +223,11 @@ return [
             ],[
                 'name' => 'Advent Calendars',
                 'url' => 'admin/data/advent-calendars'
+            ],[
+                'name' => 'Criteria Rewards',
+                'url'  => 'admin/data/criteria',
             ],
-        ]
+        ],
     ],
     'Raffles'    => [
         'power' => 'manage_raffles',

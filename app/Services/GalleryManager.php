@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Facades\Notifications;
 use App\Facades\Settings;
 use App\Models\Character\Character;
+use App\Models\Criteria\Criterion;
 use App\Models\Currency\Currency;
 use App\Models\Gallery\Gallery;
 use App\Models\Gallery\GalleryCharacter;
@@ -30,11 +31,11 @@ class GalleryManager extends Service {
     /**
      * Creates a new gallery submission.
      *
-     * @param array                 $data
-     * @param array                 $currencyFormData
-     * @param \App\Models\User\User $user
+     * @param array $data
+     * @param array $currencyFormData
+     * @param User  $user
      *
-     * @return \App\Models\Gallery\GallerySubmission|bool
+     * @return bool|GallerySubmission
      */
     public function createSubmission($data, $currencyFormData, $user) {
         DB::beginTransaction();
@@ -104,9 +105,23 @@ class GalleryManager extends Service {
 
             $data = $this->populateData($data);
 
-            if (isset($currencyFormData) && $currencyFormData) {
-                $data['data']['currencyData'] = $currencyFormData;
-                $data['data']['total'] = calculateGroupCurrency($currencyFormData);
+            $withCriteriaSelected = isset($currencyFormData) && $currencyFormData && isset($currencyFormData['criterion']) ? array_filter($currencyFormData['criterion'], function ($obj) {
+                return isset($obj['id']);
+            }) : [];
+            if (count($withCriteriaSelected) > 0) {
+                $currencyFormData['criterion'] = $withCriteriaSelected;
+            } else {
+                $currencyFormData['criterion'] = null;
+            }
+
+            if (isset($currencyFormData) && $currencyFormData && isset($currencyFormData['criterion'])) {
+                $data['data']['criterion'] = $currencyFormData['criterion'];
+                $total = 0;
+                foreach ($currencyFormData['criterion'] as $criteria) {
+                    $calc = Criterion::where('id', $criteria['id'])->first();
+                    $total += $calc->calculateReward($criteria);
+                }
+                $data['data']['total'] = $total;
                 $data['data'] = collect($data['data'])->toJson();
             }
 
@@ -115,7 +130,6 @@ class GalleryManager extends Service {
             if (isset($data['image']) && $data['image']) {
                 $this->processImage($data, $submission);
             }
-            $submission->update();
 
             if (isset($data['collaborator_id']) && $collaborators->count()) {
                 // Attach any collaborators to the submission
@@ -174,11 +188,11 @@ class GalleryManager extends Service {
     /**
      * Updates a gallery submission.
      *
-     * @param \App\Models\Gallery\GallerySubmission $submission
-     * @param array                                 $data
-     * @param \App\Models\User\User                 $user
+     * @param GallerySubmission $submission
+     * @param array             $data
+     * @param User              $user
      *
-     * @return \App\Models\Gallery\GallerySubmission|bool
+     * @return bool|GallerySubmission
      */
     public function updateSubmission($submission, $data, $user) {
         DB::beginTransaction();
@@ -338,11 +352,11 @@ class GalleryManager extends Service {
     /**
      * Processes collaborator edits/approvals on a submission.
      *
-     * @param \App\Models\Gallery\GallerySubmission $submission
-     * @param \App\Models\User\User                 $user
-     * @param mixed                                 $data
+     * @param GallerySubmission $submission
+     * @param User              $user
+     * @param mixed             $data
      *
-     * @return \App\Models\Gallery\GalleryFavorite|bool
+     * @return bool|GalleryFavorite
      */
     public function editCollaborator($submission, $data, $user) {
         DB::beginTransaction();
@@ -393,9 +407,9 @@ class GalleryManager extends Service {
     /**
      * Votes on a gallery submission.
      *
-     * @param string                                $action
-     * @param \App\Models\Gallery\GallerySubmission $submission
-     * @param \App\Models\User\User                 $user
+     * @param string            $action
+     * @param GallerySubmission $submission
+     * @param User              $user
      *
      * @return bool
      */
@@ -466,11 +480,11 @@ class GalleryManager extends Service {
     /**
      * Processes staff comments for a submission.
      *
-     * @param \App\Models\User\User $user
-     * @param mixed                 $id
-     * @param mixed                 $data
+     * @param User  $user
+     * @param mixed $id
+     * @param mixed $data
      *
-     * @return \App\Models\Gallery\GalleryFavorite|bool
+     * @return bool|GalleryFavorite
      */
     public function postStaffComments($id, $data, $user) {
         DB::beginTransaction();
@@ -516,8 +530,8 @@ class GalleryManager extends Service {
     /**
      * Archives a submission.
      *
-     * @param \App\Models\Gallery\GallerySubmission $submission
-     * @param mixed                                 $user
+     * @param GallerySubmission $submission
+     * @param mixed             $user
      *
      * @return bool
      */
@@ -555,11 +569,11 @@ class GalleryManager extends Service {
     /**
      * Processes group currency evaluation for a submission.
      *
-     * @param \App\Models\User\User $user
-     * @param mixed                 $id
-     * @param mixed                 $data
+     * @param User  $user
+     * @param mixed $id
+     * @param mixed $data
      *
-     * @return \App\Models\Gallery\GalleryFavorite|bool
+     * @return bool|GalleryFavorite
      */
     public function postValueSubmission($id, $data, $user) {
         DB::beginTransaction();
@@ -578,66 +592,77 @@ class GalleryManager extends Service {
                 // Process data and award currency for each user associated with the submission
                 // First, set up CurrencyManager instance and log information
                 $currencyManager = new CurrencyManager;
-                $currency = Currency::find(Settings::get('group_currency'));
 
                 $awardType = 'Gallery Submission Reward';
                 $awardData = 'Received reward for gallery submission (<a href="'.$submission->url.'">#'.$submission->id.'</a>)';
 
                 $grantedList = [];
                 $awardQuantity = [];
+                $currency = [];
 
-                // Then cycle through associated users and award currency
-                if (isset($data['value']['submitted'])) {
-                    if (!$currencyManager->creditCurrency($user, $submission->user, $awardType, $awardData, $currency, $data['value']['submitted'][$submission->user->id])) {
-                        throw new \Exception('Failed to award currency to submitting user.');
-                    }
+                $shouldDivideRewards = Settings::get('gallery_rewards_divided') === '1';
 
-                    $grantedList[] = $submission->user;
-                    $awardQuantity[] = $data['value']['submitted'][$submission->user->id];
-                }
+                if (isset($data['criterion'])) {
+                    foreach ($data['criterion'] as $criterionData) {
+                        $criterion = Criterion::where('id', $criterionData['id'])->first();
+                        $total = $criterion->calculateReward($criterionData);
+                        $collaboratorCount = $submission->collaborators->count() + ($submission->collaborators->where('user_id', $submission->user_id)->first() === null ? 1 : 0);
+                        if ($shouldDivideRewards) {
+                            $total /= $collaboratorCount;
+                        }
 
-                if (isset($data['value']['collaborator'])) {
-                    foreach ($submission->collaborators as $collaborator) {
-                        if ($data['value']['collaborator'][$collaborator->user->id] > 0) {
+                        if (isset($criterionData['criterion_currency_id'])) {
+                            $criterion_currency = Currency::find($criterionData['criterion_currency_id']);
+                        } else {
+                            $criterion_currency = $criterion->currency;
+                        }
+
+                        // Then cycle through associated users and award currency
+                        if (!$submission->collaborators->count() || $submission->collaborators->where('user_id', $submission->user_id)->first() == null) {
+                            if (!$currencyManager->creditCurrency($user, $submission->user, $awardType, $awardData, $criterion->currency, $total)) {
+                                throw new \Exception('Failed to award currency to submitting user.');
+                            }
+
+                            $grantedList[] = $submission->user;
+                            $awardQuantity[] = $total;
+                            $currency[] = $criterion->currency;
+                        }
+
+                        foreach ($submission->collaborators as $collaborator) {
                             // Double check that the submitting user isn't being awarded currency twice
-                            if (isset($data['value']['submitted']) && $collaborator->user->id == $submission->user->id) {
+                            if ($collaborator->user->id == $submission->user->id) {
                                 throw new \Exception("Can't award currency to the submitting user twice.");
                             }
 
-                            if (!$currencyManager->creditCurrency($user, $collaborator->user, $awardType, $awardData, $currency, $data['value']['collaborator'][$collaborator->user->id])) {
+                            if (!$currencyManager->creditCurrency($user, $collaborator->user, $awardType, $awardData, $criterion->currency, $total)) {
                                 throw new \Exception('Failed to award currency to one or more collaborators.');
                             }
 
                             $grantedList[] = $collaborator->user;
-                            $awardQuantity[] = $data['value']['collaborator'][$collaborator->user->id];
+                            $awardQuantity[] = $total;
+                            $currency[] = $criterion->currency;
                         }
                     }
                 }
 
-                if (isset($data['value']['participant'])) {
-                    foreach ($submission->participants as $participant) {
-                        if ($data['value']['participant'][$participant->user->id] > 0) {
-                            if (!$currencyManager->creditCurrency($user, $participant->user, $awardType, $awardData, $currency, $data['value']['participant'][$participant->user->id])) {
-                                throw new \Exception('Failed to award currency to one or more participants.');
-                            }
+                // TODO:
+                // if(isset($data['value']['participant'])) {
+                //     foreach($submission->participants as $participant) {
+                //         if($data['value']['participant'][$participant->user->id] > 0) {
+                //             if(!$currencyManager->creditCurrency($user, $participant->user, $awardType, $awardData, $currency, $data['value']['participant'][$participant->user->id])) throw new \Exception("Failed to award currency to one or more participants.");
 
-                            $grantedList[] = $participant->user;
-                            $awardQuantity[] = $data['value']['participant'][$participant->user->id];
-                        }
-                    }
-                }
+                //             $grantedList[] = $participant->user;
+                //             $awardQuantity[] = $data['value']['participant'][$participant->user->id];
+                //         }
+                //     }
+                // }
 
                 // Collect and json encode existing as well as new data for storage
-                if (isset($submission->data['total'])) {
-                    $valueData = collect([
-                        'currencyData' => $submission->data['currencyData'],
-                        'total'        => $submission->data['total'],
-                        'value'        => $data['value'],
-                        'staff'        => $user->id,
-                    ])->toJson();
-                } else {
-                    $valueData = collect(['value' => $data['value'], 'staff' => $user->id])->toJson();
-                }
+                $valueData = collect([
+                    'criterion'     => $data['criterion'] ?? null,
+                    'awardQuantity' => $awardQuantity,
+                    'staff'         => $user->id,
+                ])->toJson();
 
                 // Update the submission with the new data and mark it as processed
                 $submission->update([
@@ -653,7 +678,7 @@ class GalleryManager extends Service {
                 foreach ($grantedList as $key=> $grantedUser) {
                     Notifications::create('GALLERY_SUBMISSION_VALUED', $grantedUser, [
                         'currency_quantity' => $awardQuantity[$key],
-                        'currency_name'     => $currency->name,
+                        'currency_name'     => $currency[$key]->name,
                         'submission_title'  => $submission->title,
                         'submission_id'     => $submission->id,
                     ]);
@@ -662,10 +687,10 @@ class GalleryManager extends Service {
                 // Collect and json encode existing as well as new data for storage
                 if (isset($submission->data['total'])) {
                     $valueData = collect([
-                        'currencyData' => $submission->data['currencyData'],
-                        'total'        => $submission->data['total'],
-                        'ineligible'   => 1,
-                        'staff'        => $user->id,
+                        'criterion'  => $submission->data['criterion'] ?? null,
+                        'total'      => $submission->data['total'],
+                        'ineligible' => 1,
+                        'staff'      => $user->id,
                     ])->toJson();
                 } else {
                     $valueData = collect(['ineligible' => 1, 'staff' => $user->id])->toJson();
@@ -689,10 +714,10 @@ class GalleryManager extends Service {
     /**
      * Toggles favorite status on a submission for a user.
      *
-     * @param \App\Models\Gallery\GallerySubmission $submission
-     * @param \App\Models\User\User                 $user
+     * @param GallerySubmission $submission
+     * @param User              $user
      *
-     * @return \App\Models\Gallery\GalleryFavorite|bool
+     * @return bool|GalleryFavorite
      */
     public function favoriteSubmission($submission, $user) {
         DB::beginTransaction();
@@ -737,10 +762,10 @@ class GalleryManager extends Service {
     /**
      * Processes rejection for a submission.
      *
-     * @param \App\Models\Gallery\GallerySubmission $submission
-     * @param mixed                                 $user
+     * @param GallerySubmission $submission
+     * @param mixed             $user
      *
-     * @return \App\Models\Gallery\GallerySubmission|bool
+     * @return bool|GallerySubmission
      */
     public function rejectSubmission($submission, $user) {
         DB::beginTransaction();
@@ -795,8 +820,8 @@ class GalleryManager extends Service {
     /**
      * Processes gallery submission images.
      *
-     * @param array                                 $data
-     * @param \App\Models\Gallery\GallerySubmission $submission
+     * @param array             $data
+     * @param GallerySubmission $submission
      *
      * @return array
      */
@@ -856,9 +881,9 @@ class GalleryManager extends Service {
     /**
      * Processes acceptance for a submission.
      *
-     * @param \App\Models\Gallery\GallerySubmission $submission
+     * @param GallerySubmission $submission
      *
-     * @return \App\Models\Gallery\GallerySubmission|bool
+     * @return bool|GallerySubmission
      */
     private function acceptSubmission($submission) {
         DB::beginTransaction();

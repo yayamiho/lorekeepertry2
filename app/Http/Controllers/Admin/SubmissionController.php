@@ -74,13 +74,14 @@ class SubmissionController extends Controller {
         }
 
         return view('admin.submissions.submission', [
-            'submission' => $submission,
+            'submission'       => $submission,
             'awardsrow' => Award::all()->keyBy('id'),
-            'inventory' => $inventory,
-            'rewardsData' => isset($submission->data['rewards']) ? parseAssetData($submission->data['rewards']) : null,
-            'itemsrow' => Item::all()->keyBy('id'),
-            'page' => 'submission',
-            'expanded_rewards' => Config::get('lorekeeper.extensions.character_reward_expansion.expanded'),
+            'inventory'        => $inventory,
+            'rewardsData'      => isset($submission->data['rewards']) ? parseAssetData($submission->data['rewards']) : null,
+            'itemsrow'         => Item::all()->keyBy('id'),
+            'page'             => 'submission',
+            'expanded_rewards' => config('lorekeeper.extensions.character_reward_expansion.expanded'),
+            'characters'       => Character::visible(Auth::user() ?? null)->myo(0)->orderBy('slug', 'DESC')->get()->pluck('fullName', 'slug')->toArray(),
         ] + ($submission->status == 'Pending' ? [
             'characterCurrencies' => Currency::where('is_character_owned', 1)->orderBy('sort_character', 'DESC')->pluck('name', 'id'),
             'items' => Item::orderBy('name')->pluck('name', 'id'),
@@ -138,11 +139,12 @@ class SubmissionController extends Controller {
         }
 
         return view('admin.submissions.submission', [
-            'submission' => $submission,
+            'submission'       => $submission,
             'awardsrow' => Award::all()->keyBy('id'),
-            'inventory' => $inventory,
-            'itemsrow' => Item::all()->keyBy('id'),
-            'expanded_rewards' => Config::get('lorekeeper.extensions.character_reward_expansion.expanded'),
+            'inventory'        => $inventory,
+            'itemsrow'         => Item::all()->keyBy('id'),
+            'expanded_rewards' => config('lorekeeper.extensions.character_reward_expansion.expanded'),
+            'characters'       => Character::visible(Auth::user() ?? null)->myo(0)->orderBy('slug', 'DESC')->get()->pluck('fullName', 'slug')->toArray(),
         ] + ($submission->status == 'Pending' ? [
             'characterCurrencies' => Currency::where('is_character_owned', 1)->orderBy('sort_character', 'DESC')->pluck('name', 'id'),
             'items' => Item::orderBy('name')->pluck('name', 'id'),
@@ -167,7 +169,7 @@ class SubmissionController extends Controller {
      * @return \Illuminate\Http\RedirectResponse
      */
     public function postSubmission(Request $request, SubmissionManager $service, $id, $action) {
-        $data = $request->only(['slug',  'character_rewardable_quantity', 'character_rewardable_id',  'character_rewardable_type', 'character_currency_id', 'rewardable_type', 'rewardable_id', 'quantity', 'staff_comments']);
+        $data = $request->only(['slug',  'character_rewardable_quantity', 'character_rewardable_id',  'character_rewardable_type', 'character_currency_id', 'rewardable_type', 'rewardable_id', 'quantity', 'staff_comments', 'criterion']);
         if ($action == 'reject' && $service->rejectSubmission($request->only(['staff_comments']) + ['id' => $id], Auth::user())) {
             flash('Submission rejected successfully.')->success();
         } elseif ($action == 'cancel' && $service->cancelSubmission($request->only(['staff_comments']) + ['id' => $id], Auth::user())) {

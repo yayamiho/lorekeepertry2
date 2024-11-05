@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers\Admin\Data;
 
+use App\Http\Controllers\Controller;
+use App\Models\Criteria\Criterion;
+use App\Models\Prompt\Prompt;
+use App\Models\Prompt\PromptCategory;
+use App\Services\PromptService;
 use Illuminate\Http\Request;
 
 use Auth;
 
-use App\Models\Prompt\PromptCategory;
-use App\Models\Prompt\Prompt;
+
 use App\Models\Item\Item;
 use App\Models\Currency\Currency;
 use App\Models\Loot\LootTable;
@@ -15,9 +19,6 @@ use App\Models\Award\Award;
 use App\Models\Raffle\Raffle;
 use App\Models\Recipe\Recipe;
 
-use App\Services\PromptService;
-
-use App\Http\Controllers\Controller;
 //use Illuminate\Support\Facades\Auth;
 
 class PromptController extends Controller {
@@ -194,6 +195,7 @@ class PromptController extends Controller {
             'tables' => LootTable::orderBy('name')->pluck('name', 'id'),
             'raffles' => Raffle::where('rolled_at', null)->where('is_active', 1)->orderBy('name')->pluck('name', 'id'),
             'recipes'=> Recipe::orderBy('name')->pluck('name', 'id'),
+            'criteria'   => Criterion::active()->orderBy('name')->pluck('name', 'id'),
         ]);
     }
 
@@ -219,6 +221,7 @@ class PromptController extends Controller {
             'tables' => LootTable::orderBy('name')->pluck('name', 'id'),
             'raffles' => Raffle::where('rolled_at', null)->where('is_active', 1)->orderBy('name')->pluck('name', 'id'),
             'recipes'=> Recipe::orderBy('name')->pluck('name', 'id'),
+            'criteria'   => Criterion::active()->orderBy('name')->pluck('name', 'id'),
         ]);
     }
 
@@ -234,6 +237,7 @@ class PromptController extends Controller {
         $id ? $request->validate(Prompt::$updateRules) : $request->validate(Prompt::$createRules);
         $data = $request->only([
             'name', 'prompt_category_id', 'summary', 'description', 'start_at', 'end_at', 'hide_before_start', 'hide_after_end', 'is_active', 'rewardable_type', 'rewardable_id', 'quantity', 'image', 'remove_image', 'prefix', 'hide_submissions', 'staff_only',
+            'criterion_id', 'criterion', 'criterion_currency_id', 'default_criteria',
         ]);
         if ($id && $service->updatePrompt(Prompt::find($id), $data, Auth::user())) {
             flash('Prompt updated successfully.')->success();

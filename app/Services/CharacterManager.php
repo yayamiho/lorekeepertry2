@@ -71,11 +71,11 @@ class CharacterManager extends Service {
     /**
      * Creates a new character or MYO slot.
      *
-     * @param array                 $data
-     * @param \App\Models\User\User $user
-     * @param bool                  $isMyo
+     * @param array $data
+     * @param User  $user
+     * @param bool  $isMyo
      *
-     * @return \App\Models\Character\Character|bool
+     * @return bool|Character
      */
     public function createCharacter($data, $user, $isMyo = false) {
         DB::beginTransaction();
@@ -180,56 +180,7 @@ class CharacterManager extends Service {
         return $this->rollbackReturn(false);
     }
 
-    /**
-     * Handles character data.
-     *
-     * @param  array                  $data
-     * @param  bool                   $isMyo
-     * @return \App\Models\Character\Character|bool
-     */
-    private function handleCharacter($data, $isMyo = false)
-    {
-        try {
-            if($isMyo)
-            {
-                $data['character_category_id'] = null;
-                $data['number'] = null;
-                $data['slug'] = null;
-                $data['species_id'] = isset($data['species_id']) && $data['species_id'] ? $data['species_id'] : null;
-                $data['subtype_id'] = isset($data['subtype_id']) && $data['subtype_id'] ? $data['subtype_id'] : null;
-                $data['rarity_id'] = isset($data['rarity_id']) && $data['rarity_id'] ? $data['rarity_id'] : null;
-            }
-
-            $characterData = Arr::only($data, [
-                'character_category_id', 'rarity_id', 'user_id',
-                'number', 'slug', 'description',
-                'sale_value', 'transferrable_at', 'is_visible'
-            ]);
-
-            $characterData['name'] = ($isMyo && isset($data['name'])) ? $data['name'] : null;
-            $characterData['owner_url'] = isset($characterData['user_id']) ? null : $data['owner_url'];
-            $characterData['is_sellable'] = isset($data['is_sellable']);
-            $characterData['is_tradeable'] = isset($data['is_tradeable']);
-            $characterData['is_giftable'] = isset($data['is_giftable']);
-            $characterData['is_visible'] = isset($data['is_visible']);
-            $characterData['sale_value'] = isset($data['sale_value']) ? $data['sale_value'] : 0;
-            $characterData['is_gift_art_allowed'] = 0;
-            $characterData['is_gift_writing_allowed'] = 0;
-            $characterData['is_trading'] = 0;
-            $characterData['parsed_description'] = parse($data['description']);
-            if($isMyo) $characterData['is_myo_slot'] = 1;
-
-            $character = Character::create($characterData);
-
-            // Create character profile row
-            $character->profile()->create([]);
-
-            return $character;
-        } catch(\Exception $e) {
-            $this->setError('error', $e->getMessage());
-        }
-        return false;
-    }
+    
 
     /**
      * Handles character image data.
@@ -239,122 +190,12 @@ class CharacterManager extends Service {
      * @param  bool                             $isMyo
      * @return \App\Models\Character\CharacterImage|bool
      */
-    private function handleCharacterImage($data, $character, $isMyo = false)
-    {
-        try {
-            if($isMyo)
-            {
-                $data['species_id'] = (isset($data['species_id']) && $data['species_id']) ? $data['species_id'] : null;
-                $data['subtype_id'] = isset($data['subtype_id']) && $data['subtype_id'] ? $data['subtype_id'] : null;
-                $data['rarity_id'] = (isset($data['rarity_id']) && $data['rarity_id']) ? $data['rarity_id'] : null;
-
-
-                // Use default images for MYO slots without an image provided
-                if(!isset($data['image']))
-                {
-                    $data['image'] = public_path('images/myo.png');
-                    $data['thumbnail'] = public_path('images/myo-th.png');
-                    $data['extension'] = 'png';
-                    $data['default_image'] = true;
-                    unset($data['use_cropper']);
-                }
-            }
-            $imageData = Arr::only($data, [
-                'species_id', 'subtype_id', 'rarity_id', 'use_cropper',
-                'x0', 'x1', 'y0', 'y1',
-            ]);
-            $imageData['use_cropper'] = isset($data['use_cropper']) ;
-            $imageData['description'] = isset($data['image_description']) ? $data['image_description'] : null;
-            $imageData['parsed_description'] = parse($imageData['description']);
-            $imageData['hash'] = randomString(10);
-            $imageData['fullsize_hash'] = randomString(15);
-            $imageData['sort'] = 0;
-            $imageData['is_valid'] = isset($data['is_valid']);
-            $imageData['is_visible'] = isset($data['is_visible']);
-            $imageData['extension'] = (Config::get('lorekeeper.settings.masterlist_image_format') ? Config::get('lorekeeper.settings.masterlist_image_format') : (isset($data['extension']) ? $data['extension'] : $data['image']->getClientOriginalExtension()));
-            $imageData['character_id'] = $character->id;
-
-            $image = CharacterImage::create($imageData);
-
-            // Check if entered url(s) have aliases associated with any on-site users
-            foreach($data['designer_url'] as $key=>$url) {
-                $recipient = checkAlias($url, false);
-                if(is_object($recipient)) {
-                    $data['designer_id'][$key] = $recipient->id;
-                    $data['designer_url'][$key] = null;
-                }
-            }
-            foreach($data['artist_url'] as $key=>$url) {
-                $recipient = checkAlias($url, false);
-                if(is_object($recipient)) {
-                    $data['artist_id'][$key] = $recipient->id;
-                    $data['artist_url'][$key] = null;
-                }
-            }
-
-            // Check that users with the specified id(s) exist on site
-            foreach($data['designer_id'] as $id) {
-                if(isset($id) && $id) {
-                    $user = User::find($id);
-                    if(!$user) throw new \Exception('One or more designers is invalid.');
-                }
-            }
-            foreach($data['artist_id'] as $id) {
-                if(isset($id) && $id) {
-                    $user = $user = User::find($id);
-                    if(!$user) throw new \Exception('One or more artists is invalid.');
-                }
-            }
-
-            // Attach artists/designers
-            foreach($data['designer_id'] as $key => $id) {
-                if($id || $data['designer_url'][$key])
-                    DB::table('character_image_creators')->insert([
-                        'character_image_id' => $image->id,
-                        'type' => 'Designer',
-                        'url' => $data['designer_url'][$key],
-                        'user_id' => $id
-                    ]);
-            }
-            foreach($data['artist_id'] as $key => $id) {
-                if($id || $data['artist_url'][$key])
-                    DB::table('character_image_creators')->insert([
-                        'character_image_id' => $image->id,
-                        'type' => 'Artist',
-                        'url' => $data['artist_url'][$key],
-                        'user_id' => $id
-                    ]);
-            }
-
-            // Save image
-            $this->handleImage($data['image'], $image->imageDirectory, $image->imageFileName, null, isset($data['default_image']));
-
-            // Save thumbnail first before processing full image
-            if(isset($data['use_cropper'])) $this->cropThumbnail(Arr::only($data, ['x0','x1','y0','y1']), $image, $isMyo);
-            else $this->handleImage($data['thumbnail'], $image->imageDirectory, $image->thumbnailFileName, null, isset($data['default_image']));
-
-            // Process and save the image itself
-            if(!$isMyo) $this->processImage($image);
-
-            // Attach features
-            foreach($data['feature_id'] as $key => $featureId) {
-                if($featureId) {
-                    $feature = CharacterFeature::create(['character_image_id' => $image->id, 'feature_id' => $featureId, 'data' => $data['feature_data'][$key]]);
-                }
-            }
-
-            return $image;
-        } catch(\Exception $e) {
-            $this->setError('error', $e->getMessage());
-        }
-        return false;
-
-    }
+    
 
     /**
      * Trims and optionally resizes and watermarks an image.
      *
-     * @param \App\Models\Character\CharacterImage $characterImage
+     * @param CharacterImage $characterImage
      */
     public function processImage($characterImage) {
         $imageProperties = getimagesize($characterImage->imagePath.'/'.$characterImage->imageFileName);
@@ -498,9 +339,9 @@ class CharacterManager extends Service {
     /**
      * Crops a thumbnail for the given image.
      *
-     * @param array                                $points
-     * @param \App\Models\Character\CharacterImage $characterImage
-     * @param mixed                                $isMyo
+     * @param array          $points
+     * @param CharacterImage $characterImage
+     * @param mixed          $isMyo
      */
     public function cropThumbnail($points, $characterImage, $isMyo = false) {
         $imageProperties = getimagesize($characterImage->imagePath.'/'.$characterImage->imageFileName);
@@ -700,11 +541,11 @@ class CharacterManager extends Service {
     /**
      * Creates a character image.
      *
-     * @param array                           $data
-     * @param \App\Models\Character\Character $character
-     * @param \App\Models\User\User           $user
+     * @param array     $data
+     * @param Character $character
+     * @param User      $user
      *
-     * @return \App\Models\Character\Character|bool
+     * @return bool|Character
      */
     public function createImage($data, $character, $user) {
         DB::beginTransaction();
@@ -775,9 +616,9 @@ class CharacterManager extends Service {
     /**
      * Updates a character image.
      *
-     * @param array                                $data
-     * @param \App\Models\Character\CharacterImage $image
-     * @param \App\Models\User\User                $user
+     * @param array          $data
+     * @param CharacterImage $image
+     * @param User           $user
      *
      * @return bool
      */
@@ -848,9 +689,9 @@ class CharacterManager extends Service {
     /**
      * Updates image data.
      *
-     * @param array                                $data
-     * @param \App\Models\Character\CharacterImage $image
-     * @param \App\Models\User\User                $user
+     * @param array          $data
+     * @param CharacterImage $image
+     * @param User           $user
      *
      * @return bool
      */
@@ -884,9 +725,9 @@ class CharacterManager extends Service {
     /**
      * Updates image credits.
      *
-     * @param array                                $data
-     * @param \App\Models\Character\CharacterImage $image
-     * @param \App\Models\User\User                $user
+     * @param array          $data
+     * @param CharacterImage $image
+     * @param User           $user
      *
      * @return bool
      */
@@ -976,9 +817,9 @@ class CharacterManager extends Service {
     /**
      * Reuploads an image.
      *
-     * @param array                                $data
-     * @param \App\Models\Character\CharacterImage $image
-     * @param \App\Models\User\User                $user
+     * @param array          $data
+     * @param CharacterImage $image
+     * @param User           $user
      *
      * @return bool
      */
@@ -1044,9 +885,9 @@ class CharacterManager extends Service {
     /**
      * Deletes an image.
      *
-     * @param \App\Models\Character\CharacterImage $image
-     * @param \App\Models\User\User                $user
-     * @param bool                                 $forceDelete
+     * @param CharacterImage $image
+     * @param User           $user
+     * @param bool           $forceDelete
      *
      * @return bool
      */
@@ -1094,9 +935,9 @@ class CharacterManager extends Service {
     /**
      * Updates image settings.
      *
-     * @param array                                $data
-     * @param \App\Models\Character\CharacterImage $image
-     * @param \App\Models\User\User                $user
+     * @param array          $data
+     * @param CharacterImage $image
+     * @param User           $user
      *
      * @return bool
      */
@@ -1131,8 +972,8 @@ class CharacterManager extends Service {
     /**
      * Updates a character's active image.
      *
-     * @param \App\Models\Character\CharacterImage $image
-     * @param \App\Models\User\User                $user
+     * @param CharacterImage $image
+     * @param User           $user
      *
      * @return bool
      */
@@ -1169,9 +1010,9 @@ class CharacterManager extends Service {
     /**
      * Sorts a character's images.
      *
-     * @param array                 $data
-     * @param \App\Models\User\User $user
-     * @param mixed                 $character
+     * @param array $data
+     * @param User  $user
+     * @param mixed $character
      *
      * @return bool
      */
@@ -1217,8 +1058,8 @@ class CharacterManager extends Service {
     /**
      * Sorts a user's characters.
      *
-     * @param array                 $data
-     * @param \App\Models\User\User $user
+     * @param array $data
+     * @param User  $user
      *
      * @return bool
      */
@@ -1251,9 +1092,9 @@ class CharacterManager extends Service {
     /**
      * Updates a character's stats.
      *
-     * @param array                 $data
-     * @param \App\Models\User\User $user
-     * @param mixed                 $character
+     * @param array $data
+     * @param User  $user
+     * @param mixed $character
      *
      * @return bool
      */
@@ -1354,9 +1195,9 @@ class CharacterManager extends Service {
     /**
      * Updates a character's description.
      *
-     * @param array                           $data
-     * @param \App\Models\Character\Character $character
-     * @param \App\Models\User\User           $user
+     * @param array     $data
+     * @param Character $character
+     * @param User      $user
      *
      * @return bool
      */
@@ -1390,9 +1231,9 @@ class CharacterManager extends Service {
     /**
      * Updates a character's settings.
      *
-     * @param array                 $data
-     * @param \App\Models\User\User $user
-     * @param mixed                 $character
+     * @param array $data
+     * @param User  $user
+     * @param mixed $character
      *
      * @return bool
      */
@@ -1424,10 +1265,10 @@ class CharacterManager extends Service {
     /**
      * Updates a character's profile.
      *
-     * @param array                           $data
-     * @param \App\Models\Character\Character $character
-     * @param \App\Models\User\User           $user
-     * @param bool                            $isAdmin
+     * @param array     $data
+     * @param Character $character
+     * @param User      $user
+     * @param bool      $isAdmin
      *
      * @return bool
      */
@@ -1511,8 +1352,8 @@ class CharacterManager extends Service {
     /**
      * Deletes a character.
      *
-     * @param \App\Models\Character\Character $character
-     * @param \App\Models\User\User           $user
+     * @param Character $character
+     * @param User      $user
      *
      * @return bool
      */
@@ -1563,9 +1404,9 @@ class CharacterManager extends Service {
     /**
      * Creates a character transfer.
      *
-     * @param array                           $data
-     * @param \App\Models\Character\Character $character
-     * @param \App\Models\User\User           $user
+     * @param array     $data
+     * @param Character $character
+     * @param User      $user
      *
      * @return bool
      */
@@ -1639,9 +1480,9 @@ class CharacterManager extends Service {
     /**
      * Forces an admin transfer of a character.
      *
-     * @param array                           $data
-     * @param \App\Models\Character\Character $character
-     * @param \App\Models\User\User           $user
+     * @param array     $data
+     * @param Character $character
+     * @param User      $user
      *
      * @return bool
      */
@@ -1721,8 +1562,8 @@ class CharacterManager extends Service {
     /**
      * Processes a character transfer.
      *
-     * @param array                 $data
-     * @param \App\Models\User\User $user
+     * @param array $data
+     * @param User  $user
      *
      * @return bool
      */
@@ -1789,8 +1630,8 @@ class CharacterManager extends Service {
     /**
      * Cancels a character transfer.
      *
-     * @param array                 $data
-     * @param \App\Models\User\User $user
+     * @param array $data
+     * @param User  $user
      *
      * @return bool
      */
@@ -1825,8 +1666,8 @@ class CharacterManager extends Service {
     /**
      * Processes a character transfer in the approvals queue.
      *
-     * @param array                 $data
-     * @param \App\Models\User\User $user
+     * @param array $data
+     * @param User  $user
      *
      * @return bool
      */
@@ -1921,11 +1762,11 @@ class CharacterManager extends Service {
     /**
      * Moves a character from one user to another.
      *
-     * @param \App\Models\Character\Character $character
-     * @param \App\Models\User\User           $recipient
-     * @param string                          $data
-     * @param int                             $cooldown
-     * @param string                          $logType
+     * @param Character $character
+     * @param User      $recipient
+     * @param string    $data
+     * @param int       $cooldown
+     * @param string    $logType
      */
     public function moveCharacter($character, $recipient, $data, $cooldown = -1, $logType = null) {
         $sender = $character->user;
@@ -2003,11 +1844,195 @@ class CharacterManager extends Service {
         );
     }
 
+    /**
+     * Handles character data.
+     *
+     * @param array $data
+     * @param bool  $isMyo
+     *
+     * @return bool|Character
+     */
+    private function handleCharacter($data, $isMyo = false) {
+        try {
+            if ($isMyo) {
+                $data['character_category_id'] = null;
+                $data['number'] = null;
+                $data['slug'] = null;
+                $data['species_id'] = isset($data['species_id']) && $data['species_id'] ? $data['species_id'] : null;
+                $data['subtype_id'] = isset($data['subtype_id']) && $data['subtype_id'] ? $data['subtype_id'] : null;
+                $data['rarity_id'] = isset($data['rarity_id']) && $data['rarity_id'] ? $data['rarity_id'] : null;
+            }
+
+            $characterData = Arr::only($data, [
+                'character_category_id', 'rarity_id', 'user_id',
+                'number', 'slug', 'description',
+                'sale_value', 'transferrable_at', 'is_visible',
+            ]);
+
+            $characterData['name'] = ($isMyo && isset($data['name'])) ? $data['name'] : null;
+            $characterData['owner_url'] = isset($characterData['user_id']) ? null : $data['owner_url'];
+            $characterData['is_sellable'] = isset($data['is_sellable']);
+            $characterData['is_tradeable'] = isset($data['is_tradeable']);
+            $characterData['is_giftable'] = isset($data['is_giftable']);
+            $characterData['is_visible'] = isset($data['is_visible']);
+            $characterData['sale_value'] = $data['sale_value'] ?? 0;
+            $characterData['is_gift_art_allowed'] = 0;
+            $characterData['is_gift_writing_allowed'] = 0;
+            $characterData['is_trading'] = 0;
+            $characterData['parsed_description'] = parse($data['description']);
+            if ($isMyo) {
+                $characterData['is_myo_slot'] = 1;
+            }
+
+            $character = Character::create($characterData);
+
+            // Create character profile row
+            $character->profile()->create([]);
+
+            return $character;
+        } catch (\Exception $e) {
+            $this->setError('error', $e->getMessage());
+        }
+
+        return false;
+    }
+
+    /**
+     * Handles character image data.
+     *
+     * @param array $data
+     * @param bool  $isMyo
+     * @param mixed $character
+     *
+     * @return Character           $character
+     * @return bool|CharacterImage
+     */
+    private function handleCharacterImage($data, $character, $isMyo = false) {
+        try {
+            if ($isMyo) {
+                $data['species_id'] = (isset($data['species_id']) && $data['species_id']) ? $data['species_id'] : null;
+                $data['subtype_id'] = isset($data['subtype_id']) && $data['subtype_id'] ? $data['subtype_id'] : null;
+                $data['rarity_id'] = (isset($data['rarity_id']) && $data['rarity_id']) ? $data['rarity_id'] : null;
+
+                // Use default images for MYO slots without an image provided
+                if (!isset($data['image'])) {
+                    $data['image'] = public_path('images/myo.png');
+                    $data['thumbnail'] = public_path('images/myo-th.png');
+                    $data['extension'] = config('lorekeeper.settings.masterlist_image_format') ?? 'png';
+                    $data['fullsize_extension'] = config('lorekeeper.settings.masterlist_fullsizes_format') ?? $data['extension'];
+                    $data['default_image'] = true;
+                    unset($data['use_cropper']);
+                }
+            }
+            $imageData = Arr::only($data, [
+                'species_id', 'subtype_id', 'rarity_id', 'use_cropper',
+                'x0', 'x1', 'y0', 'y1',
+            ]);
+            $imageData['use_cropper'] = isset($data['use_cropper']);
+            $imageData['description'] = $data['image_description'] ?? null;
+            $imageData['parsed_description'] = parse($imageData['description']);
+            $imageData['hash'] = randomString(10);
+            $imageData['fullsize_hash'] = randomString(15);
+            $imageData['sort'] = 0;
+            $imageData['is_valid'] = isset($data['is_valid']);
+            $imageData['is_visible'] = isset($data['is_visible']);
+            $imageData['extension'] = (config('lorekeeper.settings.masterlist_image_format') ?? ($data['extension'] ?? $data['image']->getClientOriginalExtension()));
+            $imageData['fullsize_extension'] = (config('lorekeeper.settings.masterlist_fullsizes_format') ?? ($data['fullsize_extension'] ?? $data['image']->getClientOriginalExtension()));
+            $imageData['character_id'] = $character->id;
+
+            $image = CharacterImage::create($imageData);
+
+            // Check if entered url(s) have aliases associated with any on-site users
+            $designers = array_filter($data['designer_url']); // filter null values
+            foreach ($designers as $key=> $url) {
+                $recipient = checkAlias($url, false);
+                if (is_object($recipient)) {
+                    $data['designer_id'][$key] = $recipient->id;
+                    $designers[$key] = null;
+                }
+            }
+            $artists = array_filter($data['artist_url']);  // filter null values
+            foreach ($artists as $key=> $url) {
+                $recipient = checkAlias($url, false);
+                if (is_object($recipient)) {
+                    $data['artist_id'][$key] = $recipient->id;
+                    $artists[$key] = null;
+                }
+            }
+            // Check that users with the specified id(s) exist on site
+            foreach ($data['designer_id'] as $id) {
+                if (isset($id) && $id) {
+                    $user = User::find($id);
+                    if (!$user) {
+                        throw new \Exception('One or more designers is invalid.');
+                    }
+                }
+            }
+            foreach ($data['artist_id'] as $id) {
+                if (isset($id) && $id) {
+                    $user = $user = User::find($id);
+                    if (!$user) {
+                        throw new \Exception('One or more artists is invalid.');
+                    }
+                }
+            }
+
+            // Attach artists/designers
+            foreach ($data['designer_id'] as $key => $id) {
+                if ($id || $data['designer_url'][$key]) {
+                    DB::table('character_image_creators')->insert([
+                        'character_image_id' => $image->id,
+                        'type'               => 'Designer',
+                        'url'                => $data['designer_url'][$key],
+                        'user_id'            => $id,
+                    ]);
+                }
+            }
+            foreach ($data['artist_id'] as $key => $id) {
+                if ($id || $data['artist_url'][$key]) {
+                    DB::table('character_image_creators')->insert([
+                        'character_image_id' => $image->id,
+                        'type'               => 'Artist',
+                        'url'                => $data['artist_url'][$key],
+                        'user_id'            => $id,
+                    ]);
+                }
+            }
+
+            // Save image
+            $this->handleImage($data['image'], $image->imageDirectory, $image->imageFileName, null, isset($data['default_image']));
+
+            // Save thumbnail first before processing full image
+            if (isset($data['use_cropper'])) {
+                $this->cropThumbnail(Arr::only($data, ['x0', 'x1', 'y0', 'y1']), $image, $isMyo);
+            } else {
+                $this->handleImage($data['thumbnail'], $image->imageDirectory, $image->thumbnailFileName, null, isset($data['default_image']));
+            }
+
+            // Process and save the image itself
+            if (!$isMyo) {
+                $this->processImage($image);
+            }
+
+            // Attach features
+            foreach ($data['feature_id'] as $key => $featureId) {
+                if ($featureId) {
+                    $feature = CharacterFeature::create(['character_image_id' => $image->id, 'feature_id' => $featureId, 'data' => $data['feature_data'][$key]]);
+                }
+            }
+
+            return $image;
+        } catch (\Exception $e) {
+            $this->setError('error', $e->getMessage());
+        }
+
+        return false;
+    }
 
     /**
      * Generates a list of features for displaying.
      *
-     * @param \App\Models\Character\CharacterImage $image
+     * @param CharacterImage $image
      *
      * @return string
      */
@@ -2023,7 +2048,7 @@ class CharacterManager extends Service {
     /**
      * Generates a list of image credits for displaying.
      *
-     * @param \App\Models\Character\CharacterImage $image
+     * @param CharacterImage $image
      *
      * @return string
      */

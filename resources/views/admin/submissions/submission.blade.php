@@ -47,6 +47,14 @@
                 </div>
                 <div class="col-md-10 col-8"><a href="{{ $submission->url }}">{{ $submission->url }}</a></div>
             </div>
+            @if (config('lorekeeper.settings.allow_gallery_submissions_on_prompts') && $submission->data['gallery_submission_id'])
+                <div class="row mb-2 no-gutters">
+                    <div class="col-md-2">
+                        <h5 class="mb-0">Gallery Submission</h5>
+                    </div>
+                    <div class="col-md-10"><a href="{{ $submission->gallerySubmission->url }}">{{ $submission->gallerySubmission->title }}</a></div>
+                </div>
+            @endif
             <div class="row">
                 <div class="col-md-2 col-4">
                     <h5>Submitted</h5>
@@ -71,10 +79,36 @@
             </div>
         @endif
 
-        {!! Form::open(['url' => url()->current(), 'id' => 'submissionForm']) !!}
+        {!! Form::open(['url' => url()->current(), 'id' => 'submissionForm', 'onsubmit' => "$(this).find('input').prop('disabled', false)"]) !!}
 
+<<<<<<< HEAD
         <h2>Rewards</h2>
         @include('widgets._loot_select', ['loots' => $submission->rewards, 'showLootTables' => true, 'showRaffles' => true, 'showRecipes' => true])
+=======
+        @if (isset($submission->data['criterion']))
+            <h2 class="mt-5">Criteria Rewards</h2>
+            @foreach ($submission->data['criterion'] as $key => $criterionData)
+                <div class="card p-3 mb-2">
+                    @php $criterion = \App\Models\Criteria\Criterion::where('id', $criterionData['id'])->first() @endphp
+                    <h3>{!! $criterion->displayName !!}</h3>
+                    {!! Form::hidden('criterion[' . $key . '][id]', $criterionData['id']) !!}
+                    @include('criteria._minimum_requirements', [
+                        'criterion' => $criterion,
+                        'values' => $criterionData,
+                        'minRequirements' => $submission->prompt->criteria->where('criterion_id', $criterionData['id'])->first()->minRequirements ?? null,
+                        'title' => 'Selections',
+                        'limitByMinReq' => true,
+                        'id' => $key,
+                        'criterion_currency' => isset($criterionData['criterion_currency_id']) ? $criterionData['criterion_currency_id'] : $criterion->currency_id,
+                    ])
+                </div>
+            @endforeach
+        @endif
+
+
+        <h2 class="mt-4">Rewards</h2>
+        @include('widgets._loot_select', ['loots' => $submission->rewards, 'showLootTables' => true, 'showRaffles' => true])
+>>>>>>> e7a969cc732a2dde6f2ceb56fba180b174fcfb53
         @if ($submission->prompt_id)
             <div class="mb-3">
                 @include('home._prompt', ['prompt' => $submission->prompt, 'staffView' => true])
@@ -83,8 +117,18 @@
 
         <h2>Characters</h2>
         <div id="characters" class="mb-3">
+<<<<<<< HEAD
             @foreach($submission->characters as $character)
                 @include('widgets._character_select_entry', ['characterCurrencies' => $characterCurrencies, 'items' => $items, 'tables' => $tables, 'character' => $character, 'characterAwards' => $characterAwards,'expanded_rewards' => $expanded_rewards])
+=======
+            @if (count($submission->characters()->whereRelation('character', 'deleted_at', null)->get()) != count($submission->characters()->get()))
+                <div class="alert alert-warning">
+                    Some characters have been deleted since this submission was created.
+                </div>
+            @endif
+            @foreach ($submission->characters()->whereRelation('character', 'deleted_at', null)->get() as $character)
+                @include('widgets._character_select_entry', ['characterCurrencies' => $characterCurrencies, 'items' => $items, 'tables' => $tables, 'character' => $character, 'expanded_rewards' => $expanded_rewards])
+>>>>>>> e7a969cc732a2dde6f2ceb56fba180b174fcfb53
             @endforeach
         </div>
         <div class="text-right mb-3">

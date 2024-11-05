@@ -30,6 +30,14 @@
             </div>
             <div class="col-md-10"><a href="{{ $submission->url }}">{{ $submission->url }}</a></div>
         </div>
+        @if (config('lorekeeper.settings.allow_gallery_submissions_on_prompts') && $submission->data['gallery_submission_id'])
+            <div class="row mb-2 no-gutters">
+                <div class="col-md-2">
+                    <h5 class="mb-0">Gallery Submission</h5>
+                </div>
+                <div class="col-md-10"><a href="{{ $submission->gallerySubmission->url }}">{{ $submission->gallerySubmission->title }}</a></div>
+            </div>
+        @endif
         <div class="row mb-2 no-gutters">
             <div class="col-md-2">
                 <h5 class="mb-0">Submitted</h5>
@@ -69,6 +77,35 @@
     @endif
 </div>
 
+@if (isset($submission->data['criterion']))
+    <div class="card mb-3">
+        <div class="card-header h2">Criteria Rewards</div>
+        <div class="card-body">
+            @foreach ($submission->data['criterion'] as $criterionData)
+                <div class="card p-3 mb-2">
+                    @php $criterion = \App\Models\Criteria\Criterion::where('id', $criterionData['id'])->first() @endphp
+                    <h3>{!! $criterion->displayName !!} <span class="text-secondary"> - {!! isset($criterionData['criterion_currency_id'])
+                        ? \App\Models\Currency\Currency::find($criterionData['criterion_currency_id'])->display($criterion->calculateReward($criterionData))
+                        : $criterion->currency->display($criterion->calculateReward($criterionData)) !!}</span></h3>
+                    @foreach ($criterion->steps->where('is_active', 1) as $step)
+                        <div class="d-flex">
+                            <span class="mr-1 text-secondary">{{ $step->name }}:</span>
+                            @if ($step->type === 'options')
+                                @php $stepOption = $step->options->where('id', $criterionData[$step->id])->first() @endphp
+                                <span>{{ isset($stepOption) ? $stepOption->name : 'Not Selected' }}</span>
+                            @elseif($step->type === 'boolean')
+                                <span>{{ isset($criterionData[$step->id]) ? 'On' : 'Off' }}
+                                @elseif($step->type === 'input')
+                                    <span> {{ $criterionData[$step->id] ?? 0 }}</span>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+            @endforeach
+        </div>
+    </div>
+@endif
+
 @if (array_filter(parseAssetData(isset($submission->data['rewards']) ? $submission->data['rewards'] : $submission->data)))
     <div class="card mb-3">
         <div class="card-header h2">Rewards</div>
@@ -98,8 +135,7 @@
 <div class="card mb-3">
     <div class="card-header h2">Characters</div>
     <div class="card-body">
-        @if (count(
-                $submission->characters()->whereRelation('character', 'deleted_at', null)->get()) != count($submission->characters()->get()))
+        @if (count($submission->characters()->whereRelation('character', 'deleted_at', null)->get()) != count($submission->characters()->get()))
             <div class="alert alert-warning">
                 Some characters have been deleted since this submission was created.
             </div>

@@ -46,14 +46,18 @@ class PromptsController extends Controller {
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getPrompts(Request $request)
-    {
-        $query = Prompt::active()->with('category');
-        $data = $request->only(['prompt_category_id', 'name', 'sort']);
-        if(isset($data['prompt_category_id']) && $data['prompt_category_id'] != 'none')
-            $query->where('prompt_category_id', $data['prompt_category_id']);
-        if(isset($data['name']))
-            $query->where('name', 'LIKE', '%'.$data['name'].'%');
+    public function getPrompts(Request $request) {
+        $query = Prompt::active()->staffOnly(Auth::user() ?? null)->with('category');
+        $data = $request->only(['prompt_category_id', 'name', 'sort', 'open_prompts']);
+        if (isset($data['prompt_category_id']) && $data['prompt_category_id'] != 'none') {
+            if ($data['prompt_category_id'] == 'withoutOption') {
+                $query->whereNull('prompt_category_id');
+            } else {
+                $query->where('prompt_category_id', $data['prompt_category_id']);
+            }
+        }
+        if (isset($data['name'])) {
+            $query->where('name', 'LIKE', '%'.$data['name'].'%');}
         
 
         if (isset($data['open_prompts'])) {

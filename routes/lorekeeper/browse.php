@@ -49,6 +49,8 @@ Route::get('/deactivated-list', 'BrowseController@getDeactivated');
 // PROFILES
 Route::group(['prefix' => 'user', 'namespace' => 'Users'], function () {
     Route::get('{name}/gallery', 'UserController@getUserGallery');
+    Route::get('{name}/character-designs', 'UserController@getUserCharacterDesigns');
+    Route::get('{name}/character-art', 'UserController@getUserCharacterArt');
     Route::get('{name}/favorites', 'UserController@getUserFavorites');
     Route::get('{name}/favorites/own-characters', 'UserController@getUserOwnCharacterFavorites');
 
@@ -109,8 +111,10 @@ Route::group(['prefix' => 'world'], function () {
     Route::get('currencies', 'WorldController@getCurrencies');
     Route::get('rarities', 'WorldController@getRarities');
     Route::get('species', 'WorldController@getSpecieses');
-    Route::get(__('lorekeeper.subtypes'), 'WorldController@getSubtypes');
-    Route::get(__('lorekeeper.specieses').'/{id}/traits', 'WorldController@getSpeciesFeatures');
+    Route::get('subtypes', 'WorldController@getSubtypes');
+    Route::get('species/{id}/traits', 'WorldController@getSpeciesFeatures');
+    Route::get('subtypes/{id}/traits', 'WorldController@getSubtypeFeatures');
+    Route::get('universaltraits', 'WorldController@getUniversalFeatures');
     Route::get('item-categories', 'WorldController@getItemCategories');
     Route::get('items', 'WorldController@getItems');
     Route::get(__('awards.award').'-categories', 'WorldController@getAwardCategories');
@@ -119,6 +123,7 @@ Route::group(['prefix' => 'world'], function () {
     Route::get('items/{id}', 'WorldController@getItem');
     Route::get('trait-categories', 'WorldController@getFeatureCategories');
     Route::get('traits', 'WorldController@getFeatures');
+    Route::get('traits/modal/{id}', 'WorldController@getFeatureDetail')->where(['id' => '[0-9]+']);
     Route::get('character-categories', 'WorldController@getCharacterCategories');
     Route::get('recipes', 'WorldController@getRecipes');
     Route::get('recipes/{id}', 'WorldController@getRecipe');
