@@ -124,6 +124,10 @@ return [
                 'name' => 'Event Settings',
                 'url' => 'admin/event-settings'
             ],
+            [
+                'name' => 'Border Grants',
+                'url' => 'admin/grants/borders'
+            ],
         ]
     ],
     'Masterlist' => [
@@ -226,8 +230,11 @@ return [
             ],[
                 'name' => 'Criteria Rewards',
                 'url'  => 'admin/data/criteria',
+            ],[
+                'name' => 'User Borders',
+                'url' => 'admin/data/borders'
             ],
-        ],
+        ]
     ],
     'Raffles'    => [
         'power' => 'manage_raffles',

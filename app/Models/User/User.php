@@ -36,6 +36,8 @@ use App\Models\Character\CharacterTransfer;
 use App\Models\Trade;
 use App\Models\Recipe\Recipe;
 use App\Models\User\UserRecipeLog;
+use App\Models\Border\Border;
+
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -48,7 +50,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $fillable = [
         'name', 'alias', 'rank_id', 'email', 'email_verified_at', 'password', 'is_news_unread', 'is_banned', 'has_alias', 'avatar', 'is_sales_unread', 'theme_id', 'decorator_theme_id', 'birthday',
-        'is_deactivated', 'deactivater_id',
+        'is_deactivated', 'deactivater_id', 'border_id', 'border_variant_id', 'bottom_border_id', 'top_border_id',
     ];
 
     /**
@@ -88,7 +90,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     /**********************************************************************************************
 
-        RELATIONS
+    RELATIONS
 
      **********************************************************************************************/
 
@@ -259,10 +261,48 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsToMany('App\Models\Cultivation\CultivationArea', 'user_area', 'user_id', 'area_id');
     }
 
+    //Get user's unlocked borders.
+     
+    public function borders()
+    {
+        return $this->belongsToMany('App\Models\Border\Border', 'user_borders')->withPivot('id');
+    }
+
+    /**
+     * Get the border associated with this user.
+     */
+    public function border()
+    {
+        return $this->belongsTo('App\Models\Border\Border', 'border_id');
+    }
+
+    /**
+     * Get the border associated with this user.
+     */
+    public function borderVariant()
+    {
+        return $this->belongsTo('App\Models\Border\Border', 'border_variant_id');
+    }
+
+    /**
+     * Get the border associated with this user.
+     */
+    public function borderTopLayer()
+    {
+        return $this->belongsTo('App\Models\Border\Border', 'top_border_id');
+    }
+
+    /**
+     * Get the border associated with this user.
+     */
+    public function borderBottomLayer()
+    {
+        return $this->belongsTo('App\Models\Border\Border', 'bottom_border_id');
+    }
 
     /**********************************************************************************************
 
-        SCOPES
+    SCOPES
 
      **********************************************************************************************/
 
@@ -303,7 +343,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     /**********************************************************************************************
 
-        ACCESSORS
+    ACCESSORS
 
      **********************************************************************************************/
 
@@ -455,27 +495,6 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->avatar;
     }
 
-    /**
-     * Gets the display URL for a user's avatar, or the default avatar if they don't have one.
-     *
-     * @return url
-     */
-    public function getAvatarUrlAttribute() {
-        if ($this->avatar == 'default.jpg' && config('lorekeeper.extensions.use_gravatar')) {
-            // check if a gravatar exists
-            $hash = md5(strtolower(trim($this->email)));
-            $url = 'https://www.gravatar.com/avatar/'.$hash.'??d=mm&s=200';
-            $headers = @get_headers($url);
-
-            if (!preg_match('|200|', $headers[0])) {
-                return url('images/avatars/default.jpg');
-            } else {
-                return 'https://www.gravatar.com/avatar/'.$hash.'?d=mm&s=200';
-            }
-        }
-
-        return url('images/avatars/'.$this->avatar.'?v='.filemtime(public_path('images/avatars/'.$this->avatar)));
-    }
 
     /**
      * Gets the user's log type for log creation.
@@ -552,7 +571,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     /**********************************************************************************************
 
-        OTHER FUNCTIONS
+    OTHER FUNCTIONS
 
      **********************************************************************************************/
 
@@ -593,7 +612,7 @@ class User extends Authenticatable implements MustVerifyEmail
         $currencies = $currencies->orderBy('sort_user', 'DESC')->get();
 
         foreach ($currencies as $currency) {
-            $currency->quantity = $owned[$currency->id] ?? 0;
+            $currency->quantity = isset($owned[$currency->id]) ? $owned[$currency->id] : 0;
         }
 
         return $currencies;
@@ -667,11 +686,15 @@ class User extends Authenticatable implements MustVerifyEmail
         $user = $this;
         $query = AwardLog::with('award')->where(function($query) use ($user) {
             $query->with('sender')->where('sender_type', 'User')->where('sender_id', $user->id)->whereNotIn('log_type', ['Staff Grant', 'Prompt Rewards', 'Claim Rewards']);
-        })->orWhere(function($query) use ($user) {
+        })->orWhere(function ($query) use ($user) {
             $query->with('recipient')->where('recipient_type', 'User')->where('recipient_id', $user->id)->where('log_type', '!=', 'Staff Removal');
         })->orderBy('id', 'DESC');
-        if($limit) return $query->take($limit)->get();
-        else return $query->paginate(30);
+        if ($limit) {
+            return $query->take($limit)->get();
+        } else {
+            return $query->paginate(30);
+        }
+
     }
 
     /**
@@ -850,6 +873,126 @@ class User extends Authenticatable implements MustVerifyEmail
             }
         }
         return $recipeCollection;
+    }
+
+    /*     
+    * Get the user's border logs.
+     *
+     * @param  int  $limit
+     * @return \Illuminate\Support\Collection|\Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function getBorderLogs($limit = 10)
+    {
+        $user = $this;
+        $query = UserBorderLog::with('border')->where(function ($query) use ($user) {
+            $query->with('sender')->where('sender_id', $user->id)->whereNotIn('log_type', ['Staff Grant', 'Prompt Rewards', 'Claim Rewards']);
+        })->orWhere(function ($query) use ($user) {
+            $query->with('recipient')->where('recipient_id', $user->id)->where('log_type', '!=', 'Staff Removal');
+        })->orderBy('id', 'DESC');
+        if ($limit) {
+            return $query->take($limit)->get();
+        } else {
+            return $query->paginate(30);
+        }
+
+    }
+
+    /**
+     * Checks if the user has the named border
+     *
+     * @return bool
+     */
+    public function hasBorder($border_id)
+    {
+        $border = Border::find($border_id);
+        $user_has = $this->borders->contains($border);
+        $default = $border->is_default;
+        return $default ? true : $user_has;
+    }
+
+    /**
+     * Gets the display URL for a user's avatar, or the default avatar if they don't have one.
+     *
+     * @return url
+     */
+    public function getAvatarUrlAttribute()
+    {
+        // Yoinking a bit of this from develop, just to future proof it a bit.
+        //and plus it simplifies the user icons which is good for this ext
+        //just replace this with the full bit when develop is the new main, it wont change anything
+        if ($this->avatar == 'default.jpg') {
+            return url('images/avatars/default.jpg');
+        }
+
+        return url('images/avatars/' . $this->avatar);
+    }
+
+    /**
+     * display the user's icon and border styling
+     *
+     */
+    public function UserBorder()
+    {
+        //basically just an ugly ass string of html for copypasting use
+        //would you want to keep posting this everywhere? yeah i thought so. me neither
+        //there's probably a less hellish way to do this but it beats having to paste this over everywhere... EVERY SINGLE TIME.
+        //especially with the checks
+
+        //get some fun variables for later
+        $avatar = '<!-- avatar -->
+                <img class="avatar" src="' . $this->avatarUrl . '" alt="Avatar of ' . $this->name . '">';
+
+        // Check if variant border or regular border is under or over
+        if (isset($this->borderVariant) && $this->borderVariant->border_style == 0) {
+            $layer = 'under';
+        } elseif (isset($this->border) && $this->border->border_style == 0) {
+            $layer = 'under';
+        } else {
+            $layer = null;
+        }
+
+        $styling = '<div class="user-avatar">';
+
+        //if the user has a border, we apply it
+        if (isset($this->border) || isset($this->borderBottomLayer) && isset($this->borderTopLayer) || isset($this->borderVariant)) {
+            //layers supersede variants
+            //variants supersede regular borders
+            if (isset($this->borderBottomLayer) && isset($this->borderTopLayer)) {
+                if ($this->borderTopLayer->border_style == 0 && $this->borderBottomLayer->border_style == 0) {
+                    // If both layers are UNDER layers
+                    // top layer's image
+                    $mainframe = '<img src="' . $this->borderTopLayer->imageUrl . '" class="avatar-border under" alt="' . $this->borderTopLayer->name . ' Avatar Frame">';
+                    // bottom layer's image
+                    $secondframe = '<img src="' . $this->borderBottomLayer->imageUrl . '" class="avatar-border bottom" alt="' . $this->borderBottomLayer->name . ' Avatar Frame">';
+                } elseif ($this->borderTopLayer->border_style == 1 && $this->borderBottomLayer->border_style == 1) {
+                    // If both layers are OVER layers
+                    // top layer's image
+                    $mainframe = '<img src="' . $this->borderTopLayer->imageUrl . '" class="avatar-border top" alt="' . $this->borderTopLayer->name . ' Avatar Frame">';
+                    // bottom layer's image
+                    $secondframe = '<img src="' . $this->borderBottomLayer->imageUrl . '" class="avatar-border" alt="' . $this->borderBottomLayer->name . ' Avatar Frame">';
+                } else {
+                    // If one layer is UNDER and one is OVER
+                    $mainlayer = ($this->borderTopLayer->border_style == 0 ? 'under' : ' ');
+                    $secondlayer = ($this->borderBottomLayer->border_style == 0 ? 'under' : ' ');
+
+                    // top layer's image
+                    $mainframe = '<img src="' . $this->borderTopLayer->imageUrl . '" class="avatar-border ' . $mainlayer . '" alt="' . $this->borderTopLayer->name . ' Avatar Frame">';
+                    // bottom layer's image
+                    $secondframe = '<img src="' . $this->borderBottomLayer->imageUrl . '" class="avatar-border ' . $secondlayer . '" alt="' . $this->borderBottomLayer->name . ' Avatar Frame">';
+                }
+                return $styling . $avatar . $mainframe . $secondframe . '</div>';
+            } elseif (isset($this->borderVariant)) {
+                $mainframe = '<img src="' . $this->borderVariant->imageUrl . '" class="avatar-border ' . $layer . '" alt="' . $this->borderVariant->name . ' ' . $this->border->name . ' Avatar Frame">';
+            } else {
+                $mainframe = '<img src="' . $this->border->imageUrl . '" class="avatar-border '. $layer .'" alt="' . $this->border->name . ' Avatar Frame">';
+            }
+
+            if (!isset($this->borderBottomLayer) && !isset($this->borderTopLayer)) {
+                return $styling . $avatar . $mainframe . '</div>';
+            }
+        }
+        //if no border return standard avatar style
+        return $styling . $avatar . '</div>';
     }
 
 }

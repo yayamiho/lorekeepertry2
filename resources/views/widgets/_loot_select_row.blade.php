@@ -29,6 +29,7 @@
                     + ($showRaffles ? ['Raffle' => 'Raffle Ticket'] : []) 
                     + (isset($showRecipes) && $showRecipes ? ['Recipe' => 'Recipe'] : []) 
                     + (isset($showThemes) && $showThemes ? ['Theme' => 'Theme'] : []), 
+                    + (isset($showBorders) && $showBorders ? ['Border' => 'Border'] : []),
                     null, 
                     [
                         'class' => 'form-control reward-type', 
@@ -55,5 +56,8 @@
     @endif
     @if(isset($showThemes) && $showThemes)
         {!! Form::select('rewardable_id[]', $themes, null, ['class' => 'form-control theme-select', 'placeholder' => 'Select Theme']) !!}
+    @endif
+    @if(isset($showBorders) && $showBorders)
+        {!! Form::select('rewardable_id[]', $borders, null, ['class' => 'form-control border-select', 'placeholder' => 'Select Border']) !!}
     @endif
 </div>

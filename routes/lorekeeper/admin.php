@@ -323,6 +323,28 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('criteria-defaults/edit/{id}', 'CriterionController@postCreateEditCriterionDefault');
     Route::get('criteria-defaults/delete/{id}', 'CriterionController@getDeleteCriterionDefault');
     Route::post('criteria-defaults/delete/{id}', 'CriterionController@postDeleteCriterionDefault');
+     # BORDERS
+     Route::get('border-categories', 'BorderController@getIndex');
+     Route::get('border-categories/create', 'BorderController@getCreateBorderCategory');
+     Route::get('border-categories/edit/{id}', 'BorderController@getEditBorderCategory');
+     Route::get('border-categories/delete/{id}', 'BorderController@getDeleteBorderCategory');
+     Route::post('border-categories/create', 'BorderController@postCreateEditBorderCategory');
+     Route::post('border-categories/edit/{id?}', 'BorderController@postCreateEditBorderCategory');
+     Route::post('border-categories/delete/{id}', 'BorderController@postDeleteBorderCategory');
+     Route::post('border-categories/sort', 'BorderController@postSortBorderCategory');
+ 
+     Route::get('borders', 'BorderController@getBorderIndex');
+     Route::get('borders/create', 'BorderController@getCreateBorder');
+     Route::get('borders/edit/{id}', 'BorderController@getEditBorder');
+     Route::get('borders/delete/{id}', 'BorderController@getDeleteBorder');
+     Route::post('borders/create', 'BorderController@postCreateEditBorder');
+     Route::post('borders/edit/{id?}', 'BorderController@postCreateEditBorder');
+     Route::post('borders/delete/{id}', 'BorderController@postDeleteBorder');
+
+    Route::get('borders/edit/{border_id}/{type}s/create', 'BorderController@getCreateEditVariant');
+    Route::get('borders/edit/{border_id}/{type}s/edit/{id}', 'BorderController@getCreateEditVariant');
+    Route::post('borders/edit/{border_id}/{type}s/create', 'BorderController@postCreateEditVariant');
+    Route::post('borders/edit/{border_id}/{type}s/edit/{id}', 'BorderController@postCreateEditVariant');
 });
 
 // PAGES
@@ -375,6 +397,9 @@ Route::group(['prefix' => 'grants', 'namespace' => 'Users', 'middleware' => 'pow
     Route::post('items', 'GrantController@postItems');
     
     Route::get('item-search', 'GrantController@getItemSearch');
+
+    Route::get('borders', 'GrantController@getBorders');
+    Route::post('borders', 'GrantController@postBorders');
 
     Route::get('recipes', 'GrantController@getRecipes');
     Route::post('recipes', 'GrantController@postRecipes');

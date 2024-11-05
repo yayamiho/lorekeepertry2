@@ -20,7 +20,7 @@
  */
 function getAssetKeys($isCharacter = false)
 {
-    if(!$isCharacter) return ['items', 'awards', 'currencies', 'raffle_tickets', 'loot_tables', 'user_items', 'recipes', 'user_awards', 'characters', 'themes', 'areas'];
+    if(!$isCharacter) return ['items', 'awards', 'currencies', 'raffle_tickets', 'loot_tables', 'user_items', 'recipes', 'user_awards', 'characters', 'themes', 'areas','borders'];
     else return ['currencies', 'items', 'character_items', 'loot_tables', 'awards'];
 }
 
@@ -114,6 +114,11 @@ function getAssetModelString($type, $namespaced = true) {
         case 'areas':
             if($namespaced) return '\App\Models\Cultivation\CultivationArea';
             else return 'Area';
+            break;
+
+        case 'borders':
+            if($namespaced) return '\App\Models\Border\Border';
+            else return 'Border';
             break;
     }
 
@@ -330,6 +335,12 @@ function fillUserAssets($assets, $sender, $recipient, $logType, $data) {
             $service = new \App\Services\CultivationManager;
             foreach ($contents as $asset)
                 if (!$service->unlockArea($recipient, $asset['asset'])) return false;
+        }
+        elseif($key == 'borders' && count($contents))
+        {
+            $service = new \App\Services\BorderService;
+            foreach($contents as $asset)
+                if(!$service->creditBorder($sender, $recipient, null, $logType, $data, $asset['asset'])) return false;
         }
     }
 
