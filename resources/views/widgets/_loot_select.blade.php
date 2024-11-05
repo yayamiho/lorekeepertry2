@@ -51,7 +51,9 @@
                                 @elseif($showRecipes && $loot->rewardable_type == 'Recipe')
                             {!! Form::select('rewardable_id[]', $recipes, $loot->rewardable_id, ['class' => 'form-control recipe-select selectize', 'placeholder' => 'Select Recipe']) !!}
                         
-                                @endif
+                            @elseif(isset($showThemes) && $showThemes && $loot->rewardable_type == 'Theme')
+                            {!! Form::select('rewardable_id[]', $themes, $loot->rewardable_id, ['class' => 'form-control theme-select selectize', 'placeholder' => 'Select Theme']) !!}
+                        @endif
                     </td>
                     <td>{!! Form::text('quantity[]', $loot->quantity, ['class' => 'form-control']) !!}</td>
                     <td class="text-right"><a href="#" class="btn btn-danger remove-loot-button">Remove</a></td>

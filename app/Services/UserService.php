@@ -148,7 +148,7 @@ class UserService extends Service {
             $user->save();
 
             return $this->commitReturn(true);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->setError('error', $e->getMessage());
         }
 
@@ -174,11 +174,38 @@ class UserService extends Service {
     }
 
     /**
-     * Updates user's birthday.
+     * Updates user's birthday setting
+     */
+    public function updateDOB($data, $user)
+    {
+        $user->settings->birthday_setting = $data;
+        $user->settings->save();
+
+        return true;
+    }
+
+    /**
+     * Updates the user's theme.
+     *
+     * @param  array                  $data
+     * @param  \App\Models\User\User  $user
+     * @return bool
+     */
+    public function updateTheme($data, $user)
+    {
+        $user->theme_id = $data['theme'];
+        $user->decorator_theme_id = $data['decorator_theme'];
+        $user->save();
+        return true;
+    }
+
+    /**
+     * Updates the user's avatar.
      *
      * @param mixed $data
      * @param mixed $user
      */
+    
     public function updateBirthday($data, $user) {
         DB::beginTransaction();
 
@@ -292,7 +319,12 @@ class UserService extends Service {
             $filename = $user->id.'.'.$avatar->getClientOriginalExtension();
 
             if ($user->avatar != 'default.jpg') {
-                $file = 'images/avatars/'.$user->avatar;
+                $file = 'images/avatars/'.$user->avatar;}
+            if(!$avatar) throw new \Exception ("Please upload a file.");
+            $filename = $user->id . '.' . $avatar->getClientOriginalExtension();
+
+            if ($user->avatar !== 'default.jpg') {
+                $file = 'images/avatars/' . $user->avatar;
                 //$destinationPath = 'uploads/' . $id . '/';
 
                 if (File::exists($file)) {
@@ -304,20 +336,23 @@ class UserService extends Service {
 
             // Checks if uploaded file is a GIF
             if ($avatar->getClientOriginalExtension() == 'gif') {
-                if (!$avatar->move(public_path('images/avatars'), $filename)) {
-                    throw new \Exception('Failed to move file.');
-                }
-            } else {
-                if (!Image::make($avatar)->resize(150, 150)->save(public_path('images/avatars/'.$filename))) {
-                    throw new \Exception('Failed to process avatar.');
-                }
+
+                if(!copy($avatar, $file)) throw new \Exception("Failed to copy file.");
+                if(!$file->move( public_path('images/avatars', $filename))) throw new \Exception("Failed to move file.");
+                if(!$avatar->move( public_path('images/avatars', $filename))) throw new \Exception("Failed to move file.");
+
+            }
+
+            else {
+                if(!Image::make($avatar)->resize(150, 150)->save( public_path('images/avatars/' . $filename)))
+                throw new \Exception("Failed to process avatar.");
             }
 
             $user->avatar = $filename;
             $user->save();
 
             return $this->commitReturn($avatar);
-        } catch (\Exception $e) {
+        } catch(Exception $e) {
             $this->setError('error', $e->getMessage());
         }
 
@@ -329,6 +364,7 @@ class UserService extends Service {
      *
      * @param string                $username
      * @param \App\Models\User\User $user
+     * Bans a user.
      *
      * @return bool
      */
@@ -466,7 +502,7 @@ class UserService extends Service {
             $user->settings->save();
 
             return $this->commitReturn(true);
-        } catch (\Exception $e) {
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
 

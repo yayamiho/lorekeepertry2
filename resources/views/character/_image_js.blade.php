@@ -20,13 +20,27 @@
                     toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | spoiler-add spoiler-remove | removeformat | code',
                     content_css: [
                         '{{ asset('css/app.css') }}',
-                        '{{ asset('css/lorekeeper.css') }}'
+                        '{{ asset('css/lorekeeper.css') }}',
+                        '{{ asset('css/custom.css') }}',
+                        '{{ asset($theme?->cssUrl) }}',
+                        '{{ asset($conditionalTheme?->cssUrl) }}',
+                        '{{ asset($decoratorTheme?->cssUrl) }}',
+                        '{{ asset('css/all.min.css') }}' //fontawesome
                     ],
+                    content_style: `
+                    {{ str_replace(['<style>', '</style>'], '', view('layouts.editable_theme', ['theme' => $theme])) }}
+                    {{ str_replace(['<style>', '</style>'], '', view('layouts.editable_theme', ['theme' => $conditionalTheme])) }}
+                    {{ str_replace(['<style>', '</style>'], '', view('layouts.editable_theme', ['theme' => $decoratorTheme])) }}
+                    `,
                     spoiler_caption: 'Toggle Spoiler',
                     target_list: false
                 });
             });
             $(".edit-notes").remove();
+        });
+        $('.edit-credits').on('click', function(e) {
+            e.preventDefault();
+            loadModal("{{ url('admin/character/image') }}/" + $(this).data('id') + "/credits", 'Edit Image Credits');
         });
         $('.edit-credits').on('click', function(e) {
             e.preventDefault();
@@ -64,8 +78,18 @@
                     toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | spoiler-add spoiler-remove | removeformat | code',
                     content_css: [
                         '{{ asset('css/app.css') }}',
-                        '{{ asset('css/lorekeeper.css') }}'
+                        '{{ asset('css/lorekeeper.css') }}',
+                        '{{ asset('css/custom.css') }}',
+                        '{{ asset($theme?->cssUrl) }}',
+                        '{{ asset($conditionalTheme?->cssUrl) }}',
+                        '{{ asset($decoratorTheme?->cssUrl) }}',
+                        '{{ asset('css/all.min.css') }}' //fontawesome
                     ],
+                    content_style: `
+                    {{ str_replace(['<style>', '</style>'], '', view('layouts.editable_theme', ['theme' => $theme])) }}
+                    {{ str_replace(['<style>', '</style>'], '', view('layouts.editable_theme', ['theme' => $conditionalTheme])) }}
+                    {{ str_replace(['<style>', '</style>'], '', view('layouts.editable_theme', ['theme' => $decoratorTheme])) }}
+                    `,
                     spoiler_caption: 'Toggle Spoiler',
                     target_list: false
                 });

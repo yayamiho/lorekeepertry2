@@ -231,12 +231,12 @@
         </div>
     </div>
 
-    <!-- Comments -->
-    @if ($submission->isVisible)
-        <div class="container">
-            @comments(['model' => $submission, 'perPage' => 5])
-        </div>
-    @endif
+<!-- Comments -->
+@if($submission->isVisible)
+    @comments(['model' => $submission,
+            'perPage' => 5
+        ])
+@endif
 
 @endsection
 

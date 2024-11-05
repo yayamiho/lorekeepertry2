@@ -133,17 +133,14 @@
 
 @endsection
 
-@if ($report->status !== 'Closed')
-    @section('scripts')
-        @parent
-        <script>
-            $(document).ready(function() {
-                $('#closalButton').on('click', function(e) {
-                    e.preventDefault();
-                    $('#closalContent').removeClass('hide');
-                    $('#assignContent').addClass('hide');
-                    $('#confirmationModal').modal('show');
-                });
+@section('scripts')
+@parent
+@if($report->status !== 'Closed')
+    <script>
+
+        $(document).ready(function() {
+            var $confirmationModal = $('#confirmationModal');
+            var $reportForm = $('#reportForm');
 
                 $('#assignButton').on('click', function(e) {
                     e.preventDefault();
@@ -152,18 +149,36 @@
                     $('#confirmationModal').modal('show');
                 });
 
-                $('#closalSubmit').on('click', function(e) {
-                    e.preventDefault();
-                    $('#reportForm').attr('action', '{{ url()->current() }}/close');
-                    $('#reportForm').submit();
-                });
+            var $assignButton = $('#assignButton');
+            var $assignContent = $('#assignContent');
+            var $assignSubmit = $('#assignSubmit');
 
-                $('#assignSubmit').on('click', function(e) {
-                    e.preventDefault();
-                    $('#reportForm').attr('action', '{{ url()->current() }}/assign');
-                    $('#reportForm').submit();
-                });
+            $closalButton.on('click', function(e) {
+                e.preventDefault();
+                $closalContent.removeClass('hide');
+                $assignContent.addClass('hide');
+                $confirmationModal.modal('show');
             });
-        </script>
-    @endsection
+
+            $assignButton.on('click', function(e) {
+                e.preventDefault();
+                $assignContent.removeClass('hide');
+                $closalContent.addClass('hide');
+                $confirmationModal.modal('show');
+            });
+
+            $closalSubmit.on('click', function(e) {
+                e.preventDefault();
+                $reportForm.attr('action', '{{ url()->current() }}/close');
+                $reportForm.submit();
+            });
+
+            $assignSubmit.on('click', function(e) {
+                e.preventDefault();
+                $reportForm.attr('action', '{{ url()->current() }}/assign');
+                $reportForm.submit();
+            });
+        });
+
+    </script>
 @endif

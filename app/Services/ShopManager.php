@@ -12,8 +12,6 @@ use App\Models\Shop\ShopStock;
 use App\Models\Shop\UserItemDonation;
 use App\Models\Item\ItemLog;
 use App\Models\Shop\ShopLog;
-use App\Models\Shop\ShopStock;
-use Illuminate\Support\Facades\DB;
 
 class ShopManager extends Service {
     /*
@@ -38,9 +36,7 @@ class ShopManager extends Service {
 
         try {
             $quantity = ceil($data['quantity']);
-            if (!$quantity || $quantity == 0) {
-                throw new \Exception('Invalid quantity selected.');
-            }
+            if(!$quantity || $quantity == 0) throw new \Exception("Invalid quantity selected.");
 
             // Check that the shop exists and is open
             $shop = Shop::where('id', $data['shop_id'])->where('is_active', 1)->first();
@@ -67,6 +63,8 @@ class ShopManager extends Service {
             if ($shopStock->purchase_limit && $quantity > $shopStock->purchase_limit) {
                 throw new \Exception('The quantity specified exceeds the amount of this item you can buy.');
             }
+
+            if($shopStock->purchase_limit && $quantity > $shopStock->purchase_limit) throw new \Exception("The quantity specified exceeds the amount of this item you can buy.");
 
             $total_cost = $shopStock->cost * $quantity;
 
@@ -106,32 +104,31 @@ class ShopManager extends Service {
             }
 
             // If the item has a limited quantity, decrease the quantity
-            if ($shopStock->is_limited_stock) {
+            if($shopStock->is_limited_stock)
+            {
                 $shopStock->quantity -= $quantity;
                 $shopStock->save();
             }
 
             // Add a purchase log
             $shopLog = ShopLog::create([
-                'shop_id'      => $shop->id,
+                'shop_id' => $shop->id,
                 'character_id' => $character ? $character->id : null,
-                'user_id'      => $user->id,
-                'currency_id'  => $shopStock->currency->id,
-                'cost'         => $total_cost,
-                'item_id'      => $shopStock->item_id,
-                'quantity'     => $quantity,
+                'user_id' => $user->id,
+                'currency_id' => $shopStock->currency->id,
+                'cost' => $total_cost,
+                'item_id' => $shopStock->item_id,
+                'quantity' => $quantity
             ]);
 
             // Give the user the item, noting down 1. whose currency was used (user or character) 2. who purchased it 3. which shop it was purchased from
-            if (!(new InventoryManager)->creditItem(null, $user, 'Shop Purchase', [
-                'data'  => $shopLog->itemData,
-                'notes' => 'Purchased '.format_date($shopLog->created_at),
-            ], $shopStock->item, $quantity)) {
-                throw new \Exception('Failed to purchase item.');
-            }
+            if(!(new InventoryManager)->creditItem(null, $user, 'Shop Purchase', [
+                'data' => $shopLog->itemData,
+                'notes' => 'Purchased ' . format_date($shopLog->created_at)
+            ], $shopStock->item, $quantity)) throw new \Exception("Failed to purchase item.");
 
             return $this->commitReturn($shop);
-        } catch (\Exception $e) {
+        } catch(\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
 

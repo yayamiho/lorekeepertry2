@@ -108,6 +108,7 @@ class AddSiteSettings extends Command
         $this->addSiteSetting('event_teams', 0, '0: Teams are not enabled, even if set. 1: Teams are enabled.');
 
         $this->addSiteSetting('event_weighting', 0, '0: Score is not weighted depending on number of team members, 1: Score is weighted. Does not impact raw currency amounts.');
+        $this->addSiteSetting('default_theme', 0, 'ID of the default theme users should see. 0: Disabled, shows default lorekeeper. This setting is overwritten by the users theme setting.');
 
         $this->line("\nSite settings up to date!");
 
