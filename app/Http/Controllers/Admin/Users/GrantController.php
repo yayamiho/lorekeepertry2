@@ -8,22 +8,23 @@ use Settings;
 use Config;
 use Illuminate\Http\Request;
 
-use App\Models\User\User;
+use App\Models\Character\Character;
+use App\Models\Character\CharacterDesignUpdate;
+use App\Models\Character\CharacterItem;
+use App\Models\Currency\Currency;
 use App\Models\Item\Item;
+use App\Models\Pet\Pet;
+use App\Models\Submission\Submission;
+use App\Models\Trade;
+use App\Models\User\User;
 use App\Models\Award\Award;
 use App\Models\Award\AwardCategories;
 use App\Models\Recipe\Recipe;
-use App\Models\Currency\Currency;
 
 use App\Models\User\UserItem;
-use App\Models\Character\CharacterItem;
-use App\Models\Trade;
-use App\Models\Character\CharacterDesignUpdate;
-use App\Models\Submission\Submission;
 use App\Models\User\UserCurrency;
 use App\Models\SitePage;
 
-use App\Models\Character\Character;
 use App\Services\CurrencyManager;
 use App\Services\InventoryManager;
 use App\Services\AwardCaseManager;
@@ -146,6 +147,19 @@ class GrantController extends Controller {
         ]);
     }
 
+     /*
+     * Show the pet grant page.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getPets() 
+    {
+        return view('admin.grants.pets', [
+            'users' => User::orderBy('id')->pluck('name', 'id'),
+            'pets'  => Pet::orderBy('name')->pluck('name', 'id'),
+        ]);
+    }
+
     /**
      * Grants or removes items from multiple users.
      *
@@ -166,6 +180,48 @@ class GrantController extends Controller {
     }
 
     /*
+     * Gets all variants of a pet.
+     *
+     * @param mixed $id
+     */
+    public function getPetVariants($id) {
+        $pet = Pet::find($id);
+
+        return $pet->variants->pluck('variant_name', 'id')->toArray();
+    }
+
+    /**
+     * Gets all evlutions of a pet.
+     *
+     * @param mixed $id
+     */
+    public function getPetEvolutions($id) {
+        $pet = Pet::find($id);
+
+        return $pet->evolutions->pluck('evolution_name', 'id')->toArray();
+    }
+
+    /**
+     * Grants or removes pets from multiple users.
+     *
+     * @param App\Services\InvenntoryManager $service
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postPets(Request $request, PetManager $service) {
+        $data = $request->only(['names', 'pet_ids', 'quantities', 'data', 'disallow_transfer', 'notes', 'variant', 'evolution']);
+        if ($service->grantPets($data, Auth::user())) {
+            flash('Pets granted successfully.')->success();
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
+        }
+
+        return redirect()->back();
+    }
+
+    /**
      * Show the item search page.
      *
      * @return \Illuminate\Contracts\Support\Renderable

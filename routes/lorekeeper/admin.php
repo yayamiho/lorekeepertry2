@@ -202,16 +202,91 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('recipes/edit/{id?}', 'RecipeController@postCreateEditRecipe');
     Route::post('recipes/delete/{id}', 'RecipeController@postDeleteRecipe');
     
-    # SHOPS
+
+    // PETS
+    Route::get('pet-categories', 'PetController@getIndex');
+    Route::get('pet-categories/create', 'PetController@getCreatePetCategory');
+    Route::get('pet-categories/edit/{id}', 'PetController@getEditPetCategory');
+    Route::get('pet-categories/delete/{id}', 'PetController@getDeletePetCategory');
+    Route::post('pet-categories/create', 'PetController@postCreateEditPetCategory');
+    Route::post('pet-categories/edit/{id?}', 'PetController@postCreateEditPetCategory');
+    Route::post('pet-categories/delete/{id}', 'PetController@postDeletePetCategory');
+    Route::post('pet-categories/sort', 'PetController@postSortPetCategory');
+
+    Route::get('pets', 'PetController@getPetIndex');
+    Route::get('pets/create', 'PetController@getCreatePet');
+    Route::get('pets/edit/{id}', 'PetController@getEditPet');
+    Route::get('pets/delete/{id}', 'PetController@getDeletePet');
+    Route::post('pets/create', 'PetController@postCreateEditPet');
+    Route::post('pets/edit/{id?}', 'PetController@postCreateEditPet');
+    Route::post('pets/delete/{id}', 'PetController@postDeletePet');
+
+    // variants
+    Route::get('pets/edit/{pet_id}/variants/create', 'PetController@getCreateEditVariant');
+    Route::get('pets/edit/{pet_id}/variants/edit/{id}', 'PetController@getCreateEditVariant');
+    Route::post('pets/edit/{pet_id}/variants/create', 'PetController@postCreateEditVariant');
+    Route::post('pets/edit/{pet_id}/variants/edit/{id}', 'PetController@postCreateEditVariant');
+
+    // evolutions
+    Route::get('pets/edit/{pet_id}/evolution/create', 'PetController@getCreateEditEvolution');
+    Route::get('pets/edit/{pet_id}/evolution/edit/{id}', 'PetController@getCreateEditEvolution');
+    Route::post('pets/edit/{pet_id}/evolution/create', 'PetController@postCreateEditEvolution');
+    Route::post('pets/edit/{pet_id}/evolution/edit/{id}', 'PetController@postCreateEditEvolution');
+
+    Route::get('pets/drops', 'PetController@getDropIndex');
+    Route::get('pets/drops/create', 'PetController@getCreateDrop');
+    Route::get('pets/drops/edit/{pet_id}', 'PetController@getEditDrop');
+    Route::get('pets/drops/delete/{pet_id}', 'PetController@getDeleteDrop');
+    Route::post('pets/drops/create', 'PetController@postCreateEditDrop');
+    Route::post('pets/drops/edit/{pet_id}', 'PetController@postCreateEditDrop');
+    Route::post('pets/drops/delete/{pet_id}', 'PetController@postDeleteDrop');
+    Route::get('pets/drops/widget/{id}', 'PetController@getDropWidget');
+
+    // variants drops
+    Route::get('pets/drops/edit/{pet_id}/variants/create', 'PetController@getCreateVariantDrop');
+    Route::get('pets/drops/edit/{pet_id}/variants/edit/{variant_id}', 'PetController@getEditVariantDrop');
+    Route::post('pets/drops/edit/{pet_id}/variants/create', 'PetController@postCreateEditVariantDrop');
+    Route::post('pets/drops/edit/{pet_id}/variants/edit/{variant_id}', 'PetController@postCreateEditVariantDrop');
+    Route::get('pets/drops/edit/{pet_id}/variants/delete/{variant_id}', 'PetController@getDeleteVariantDrop');
+    Route::post('pets/drops/edit/{pet_id}/variants/delete/{variant_id}', 'PetController@postDeleteVariantDrop');
+
+    // levels
+    Route::get('pets/levels', 'PetController@getLevelIndex');
+    Route::get('pets/levels/create', 'PetController@getCreateLevel');
+    Route::get('pets/levels/edit/{id}', 'PetController@getEditLevel');
+    Route::get('pets/levels/delete/{id}', 'PetController@getDeleteLevel');
+    Route::post('pets/levels/create', 'PetController@postCreateEditLevel');
+    Route::post('pets/levels/edit/{id}', 'PetController@postCreateEditLevel');
+    Route::post('pets/levels/delete/{id}', 'PetController@postDeleteLevel');
+
+    // level pets
+    Route::get('pets/levels/edit/{level_id}/pets/add', 'PetController@getAddPetToLevel');
+    Route::get('pets/levels/edit/{level_id}/pets/edit/{id}', 'PetController@getEditPetLevel');
+    Route::post('pets/levels/edit/{level_id}/pets/add', 'PetController@postAddPetToLevel');
+    Route::post('pets/levels/edit/{level_id}/pets/edit/{id}', 'PetController@postEditPetLevel');
+
+    // SHOPS
     Route::get('shops', 'ShopController@getIndex');
     Route::get('shops/create', 'ShopController@getCreateShop');
     Route::get('shops/edit/{id}', 'ShopController@getEditShop');
     Route::get('shops/delete/{id}', 'ShopController@getDeleteShop');
     Route::post('shops/create', 'ShopController@postCreateEditShop');
     Route::post('shops/edit/{id?}', 'ShopController@postCreateEditShop');
-    Route::post('shops/stock/{id}', 'ShopController@postEditShopStock');
     Route::post('shops/delete/{id}', 'ShopController@postDeleteShop');
     Route::post('shops/sort', 'ShopController@postSortShop');
+    Route::post('shops/restrictions/{id}', 'ShopController@postRestrictShop');
+    // stock
+    // create
+    Route::get('shops/stock/{id}', 'ShopController@getCreateShopStock');
+    Route::post('shops/stock/{id}', 'ShopController@postCreateShopStock');
+    // edit
+    Route::get('shops/stock/edit/{id}', 'ShopController@getEditShopStock');
+    Route::post('shops/stock/edit/{id}', 'ShopController@postEditShopStock');
+    // delete
+    Route::get('shops/stock/delete/{id}', 'ShopController@getDeleteShopStock');
+    Route::post('shops/stock/delete/{id}', 'ShopController@postDeleteShopStock');
+    // misc
+    Route::get('shops/stock-type', 'ShopController@getShopStockType');
 
     // FEATURES (TRAITS)
     Route::get('trait-categories', 'FeatureController@getIndex');
@@ -395,7 +470,12 @@ Route::group(['prefix' => 'grants', 'namespace' => 'Users', 'middleware' => 'pow
 
     Route::get('items', 'GrantController@getItems');
     Route::post('items', 'GrantController@postItems');
-    
+
+    Route::get('pets', 'GrantController@getPets');
+    Route::post('pets', 'GrantController@postPets');
+    Route::get('pets/variants/{id}', 'GrantController@getPetVariants');
+    Route::get('pets/evolutions/{id}', 'GrantController@getPetEvolutions');
+
     Route::get('item-search', 'GrantController@getItemSearch');
 
     Route::get('borders', 'GrantController@getBorders');
@@ -415,8 +495,13 @@ Route::group(['prefix' => 'event-settings', 'middleware' => 'power:edit_inventor
     Route::post('teams', 'EventController@postEventTeams');
 });
 
-# MASTERLIST
-Route::group(['prefix' => 'masterlist', 'namespace' => 'Characters', 'middleware' => 'power:manage_characters'], function() {
+// PETS
+Route::group(['prefix' => 'pets', 'middleware' => 'power:edit_inventories'], function () {
+    Route::post('pet/{id}', 'Data\PetController@postEditPetDrop');
+});
+
+// MASTERLIST
+Route::group(['prefix' => 'masterlist', 'namespace' => 'Characters', 'middleware' => 'power:manage_characters'], function () {
     Route::get('create-character', 'CharacterController@getCreateCharacter');
     Route::post('create-character', 'CharacterController@postCreateCharacter');
 

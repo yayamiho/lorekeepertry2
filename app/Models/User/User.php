@@ -19,6 +19,7 @@ use App\Models\Gallery\GallerySubmission;
 use App\Models\Gallery\GalleryCollaborator;
 use App\Models\Gallery\GalleryFavorite;
 use App\Models\Item\Item;
+use App\Models\Pet\PetLog;
 use App\Models\Notification;
 use App\Models\Rank\Rank;
 use App\Models\Rank\RankPower;
@@ -218,6 +219,13 @@ class User extends Authenticatable implements MustVerifyEmail
     public function recipes()
     {
         return $this->belongsToMany('App\Models\Recipe\Recipe', 'user_recipes')->withPivot('id');
+    }
+
+     /*
+     * Get the user's pets.
+     */
+    public function pets() {
+        return $this->belongsToMany('App\Models\Pet\Pet', 'user_pets')->withPivot('data', 'updated_at', 'id', 'variant_id', 'character_id', 'pet_name', 'has_image', 'evolution_id')->whereNull('user_pets.deleted_at');
     }
 
     /**
@@ -713,6 +721,27 @@ class User extends Authenticatable implements MustVerifyEmail
         })->orderBy('id', 'DESC');
         if($limit) return $query->take($limit)->get();
         else return $query->paginate(30);
+    }
+
+    /**
+     * Get the user's pet logs.
+     *
+     * @param int $limit
+     *
+     * @return \Illuminate\Pagination\LengthAwarePaginator|\Illuminate\Support\Collection
+     */
+    public function getPetLogs($limit = 10) {
+        $user = $this;
+        $query = PetLog::with('sender')->with('recipient')->with('pet')->where(function ($query) use ($user) {
+            $query->where('sender_id', $user->id)->whereNotIn('log_type', ['Staff Grant', 'Staff Removal']);
+        })->orWhere(function ($query) use ($user) {
+            $query->where('recipient_id', $user->id);
+        })->orderBy('id', 'DESC');
+        if ($limit) {
+            return $query->take($limit)->get();
+        } else {
+            return $query->paginate(30);
+        }
     }
 
     /**

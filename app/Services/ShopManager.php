@@ -7,11 +7,13 @@ use Config;
 use Carbon\Carbon;
 
 use App\Models\Character\Character;
+use App\Models\Item\Item;
 use App\Models\Shop\Shop;
 use App\Models\Shop\ShopStock;
 use App\Models\Shop\UserItemDonation;
 use App\Models\Item\ItemLog;
 use App\Models\Shop\ShopLog;
+use App\Models\User\UserItem;
 
 class ShopManager extends Service {
     /*
@@ -45,7 +47,7 @@ class ShopManager extends Service {
             }
 
             // Check that the stock exists and belongs to the shop
-            $shopStock = ShopStock::where('id', $data['stock_id'])->where('shop_id', $data['shop_id'])->with('currency')->with('item')->first();
+            $shopStock = ShopStock::where('id', $data['stock_id'])->where('shop_id', $data['shop_id'])->with('currency')->first();
             if (!$shopStock) {
                 throw new \Exception('Invalid item selected.');
             }
@@ -60,9 +62,11 @@ class ShopManager extends Service {
                 throw new \Exception('You have already purchased the maximum amount of this item you can buy.');
             }
 
-            if ($shopStock->purchase_limit && $quantity > $shopStock->purchase_limit) {
-                throw new \Exception('The quantity specified exceeds the amount of this item you can buy.');
-            }
+            if (isset($data['use_coupon'])) {
+                // check if the the stock is limited stock
+                if ($shopStock->is_limited_stock && !Settings::get('limited_stock_coupon_settings')) {
+                    throw new \Exception('Sorry! You can\'t use coupons on limited stock items');
+                }
 
             if ($shopStock->purchase_limit && $quantity > $shopStock->purchase_limit) {
                 throw new \Exception('The quantity specified exceeds the amount of this item you can buy.');
@@ -130,9 +134,11 @@ class ShopManager extends Service {
             ], $shopStock->item, $quantity)) throw new \Exception("Failed to purchase item.");
 
             return $this->commitReturn($shop);
-        } catch(\Exception $e) {
-            $this->setError('error', $e->getMessage());
-        }
+        } 
+    }
+    catch(\Exception $e) {
+        $this->setError('error', $e->getMessage());
+    }
 
         return $this->rollbackReturn(false);
     }
@@ -162,9 +168,16 @@ class ShopManager extends Service {
      * @return int
      */
     public function checkUserPurchases($shopStock, $user) {
-        return ShopLog::where('shop_id', $shopStock->shop_id)->where('item_id', $shopStock->item_id)->where('user_id', $user->id)->sum('quantity');
+        $date = $shopStock->purchaseLimitDate;
+        $shopQuery = ShopLog::where('shop_id', $shopStock->shop_id)->where('cost', $shopStock->cost)->where('item_id', $shopStock->item_id)->where('user_id', $user->id);
+        $shopQuery = isset($date) ? $shopQuery->where('created_at', '>=', date('Y-m-d H:i:s', $date)) : $shopQuery;
+
+        return $shopQuery->sum('quantity');
     }
 
+    /**
+     * Gets the purchase limit for a user for a shop item.
+     */
     public function getStockPurchaseLimit($shopStock, $user) {
         $limit = config('lorekeeper.settings.default_purchase_limit');
         if ($shopStock->purchase_limit > 0) {
@@ -249,6 +262,18 @@ class ShopManager extends Service {
                 $this->setError('error', $e->getMessage());
             }
             return $this->rollbackReturn(false);
+        }
+    }
+     /*
+     * Gets how many of a shop item a user owns.
+     */
+    public function getUserOwned($stock, $user) {
+        switch (strtolower($stock->stock_type)) {
+            case 'item':
+                return $user->items()->where('item_id', $stock->item_id)->count();
+            case 'pet':
+                return $user->pets()->where('pet_id', $stock->item_id)->count();
+            break;
         }
     }
 }

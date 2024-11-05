@@ -28,5 +28,6 @@
     <li class="sidebar-section">
         <div class="sidebar-section-header">Recipes</div>
         <div class="sidebar-item"><a href="{{ url('world/recipes') }}" class="{{ set_active('world/recipes*') }}">All Recipes</a></div>
+        <div class="sidebar-item"><a href="{{ url('world/pets') }}" class="{{ set_active('world/pets*') }}">Pets</a></div>
     </li>
 </ul>

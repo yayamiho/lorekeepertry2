@@ -127,8 +127,11 @@ return [
             [
                 'name' => 'Border Grants',
                 'url' => 'admin/grants/borders'
+            ],[
+                'name' => 'Pet Grants',
+                'url'  => 'admin/grants/pets',
             ],
-        ]
+        ],
     ],
     'Masterlist' => [
         'power' => 'manage_characters',
@@ -233,8 +236,12 @@ return [
             ],[
                 'name' => 'User Borders',
                 'url' => 'admin/data/borders'
+            ],[
+        
+                'name' => 'Pets',
+                'url'  => 'admin/data/pets',
             ],
-        ]
+        ],
     ],
     'Raffles'    => [
         'power' => 'manage_raffles',

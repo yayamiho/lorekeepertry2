@@ -4,7 +4,14 @@
     // doing so this way enables better compatibility across disparate extensions
     $characterCurrencies = \App\Models\Currency\Currency::where('is_character_owned', 1)->orderBy('sort_character', 'DESC')->pluck('name', 'id');
     $items = \App\Models\Item\Item::orderBy('name')->pluck('name', 'id');
-    $currencies = \App\Models\Currency\Currency::where('is_user_owned', 1)->orderBy('name')->pluck('name', 'id');
+    $pets = \App\Models\Pet\Pet::orderBy('name')->pluck('name', 'id');
+    $variants = \App\Models\Pet\PetVariant::orderBy('variant_name')->pluck('variant_name', 'id')->map(function ($variant, $key) {
+        $pet = \App\Models\Pet\PetVariant::find($key)->pet;
+        return $variant . ' (' . $pet->name . ' variant)';
+    });
+    $currencies = \App\Models\Currency\Currency::where('is_user_owned', 1)
+        ->orderBy('name')
+        ->pluck('name', 'id');
     if ($showLootTables) {
         $tables = \App\Models\Loot\LootTable::orderBy('name')->pluck('name', 'id');
     }
@@ -45,8 +52,12 @@
                                 {!! Form::select('rewardable_id[]', $recipes, $loot->rewardable_id, ['class' => 'form-control recipe-select selectize', 'placeholder' => 'Select Recipe']) !!}
                             @elseif(isset($showBorders) && $showBorders && $loot->rewardable_type == 'Border')
                                 {!! Form::select('rewardable_id[]', $borders, $loot->rewardable_id, ['class' => 'form-control border-select selectize', 'placeholder' => 'Select Border']) !!}    
-                            @elseif(isset($showThemes) && $showThemes && $loot->rewardable_type == 'Theme')
-                            {!! Form::select('rewardable_id[]', $themes, $loot->rewardable_id, ['class' => 'form-control theme-select selectize', 'placeholder' => 'Select Theme']) !!}
+                                @elseif($loot->rewardable_type == 'Pet')
+                                {!! Form::select('rewardable_id[]', $pets, $loot->rewardable_id, ['class' => 'form-control pet-select selectize', 'placeholder' => 'Select Pet']) !!}
+                            @elseif($loot->rewardable_type == 'PetVariant')
+                                {!! Form::select('rewardable_id[]', $variants, $loot->rewardable_id, ['class' => 'form-control pet-variant-select selectize', 'placeholder' => 'Select Pet Variant']) !!}
+                             @elseif(isset($showThemes) && $showThemes && $loot->rewardable_type == 'Theme')
+                                {!! Form::select('rewardable_id[]', $themes, $loot->rewardable_id, ['class' => 'form-control theme-select selectize', 'placeholder' => 'Select Theme']) !!}
                         @endif
                     </td>
                     <td>{!! Form::text('quantity[]', $loot->quantity, ['class' => 'form-control']) !!}</td>
