@@ -220,8 +220,11 @@ return [
             ],[
                 'name' => 'Carousel',
                 'url'  => 'admin/data/carousel',
+            ],[
+                'name' => 'Advent Calendars',
+                'url' => 'admin/data/advent-calendars'
             ],
-        ],
+        ]
     ],
     'Raffles'    => [
         'power' => 'manage_raffles',
