@@ -20,7 +20,7 @@
                             {!! Form::select('limit_id[]', $items, $limit->limit_id, ['class' => 'form-control item-select selectize', 'placeholder' => 'Select Item']) !!}
                         @elseif($limit->limit_type == 'Currency')
                             {!! Form::select('limit_id[]', $currencies, $limit->limit_id, ['class' => 'form-control currency-select selectize', 'placeholder' => 'Select Currency']) !!}
-                        @elseif($showRecipes && $limit->limit_type == 'Recipe')
+                        @elseif(isset($showRecipes) && $showRecipes && $limit->limit_type == 'Recipe')
                             {!! Form::select('limit_id[]', $recipes, $limit->limit_id, ['class' => 'form-control recipe-select selectize', 'placeholder' => 'Select Recipe']) !!}
                         @endif
                     </td>

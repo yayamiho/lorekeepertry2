@@ -740,9 +740,11 @@ class User extends Authenticatable implements MustVerifyEmail
      * Checks if there are characters credited to the user's alias and updates ownership to their account accordingly.
      */
     public function updateCharacters() {
-        if (!$this->attributes['has_alias']) {
+        if ($this->attributes['has_alias']) {
+            echo "<script>console.log('I got an alias');</script>";
             return;
         }
+        echo "<script>console.log(attributes['has_alias]);</script>";
 
         // Pluck alias from url and check for matches
         $urlCharacters = Character::whereNotNull('owner_url')->pluck('owner_url', 'id');

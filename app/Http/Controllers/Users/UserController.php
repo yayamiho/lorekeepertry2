@@ -57,6 +57,7 @@ class UserController extends Controller {
 
         View::share('sublists', Sublist::orderBy('sort', 'DESC')->get());
 
+        echo "<script>console.log('indo no updares');</script>";
         $this->user->updateCharacters();
         $this->user->updateArtDesignCredits();
     }
