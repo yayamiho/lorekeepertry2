@@ -133,12 +133,14 @@
                         </div>
                     </li>
                 @endif
+
                 @if ($canTransfer || $user->hasPower('edit_inventories'))
                     <li class="list-group-item">
                         <a class="card-title h5 collapse-title" data-toggle="collapse" href="#transferForm">
                             @if ($stack->first()->user_id != $user->id || !$canTransfer)
                                 [ADMIN]
-                            @endif Transfer Item
+                            @endif 
+                            Transfer Item
                         </a>
                         <div id="transferForm" class="collapse">
                             <div class="form-group">

@@ -6,6 +6,7 @@ use App\Models\Cultivation\CultivationPlot;
 use App\Models\Cultivation\CultivationArea;
 use DB;
 use Auth;
+use Config;
 use App\Models\Model;
 use App\Models\Item\ItemCategory;
 use App\Models\Shop\Shop;

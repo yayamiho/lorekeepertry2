@@ -135,6 +135,7 @@
             </div>
         </div>
     @endif
+@endif
 @endsection
 
 @section('scripts')
@@ -246,5 +247,5 @@
                 $('.criterion-select').on('change', loadForm);
             });
         </script>
-    @endif
+@endif
 @endsection
