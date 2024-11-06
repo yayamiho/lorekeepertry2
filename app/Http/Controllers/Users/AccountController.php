@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Users;
 use Auth;
 use File;
 use Image;
+use App\Http\Controllers\Controller;
 
 use App\Models\Theme;
 use App\Models\User\User;
@@ -26,7 +27,6 @@ use BaconQrCode\Writer;
 use Illuminate\Support\Collection;
 use Laravel\Fortify\Contracts\TwoFactorAuthenticationProvider;
 use Laravel\Fortify\RecoveryCode;
-use App\Http\Controllers\Controller;
 
 class AccountController extends Controller {
     /*
