@@ -76,6 +76,7 @@ class InventoryController extends Controller
         $stack = UserItem::where([['user_id', $first_instance->user_id], ['item_id', $first_instance->item_id], ['count', '>', 0]])->get();
         $item = Item::where('id', $first_instance->item_id)->first();
         $shops = UserShop::where('user_id', '=', Auth::user()->id)->pluck('name', 'id');
+        $owner_id = $stack->first()->user_id;
 
         return view('home._inventory_stack', [
             'stack' => $stack,
@@ -84,7 +85,8 @@ class InventoryController extends Controller
             'userOptions' => ['' => 'Select User'] + User::visible()->where('id', '!=', $first_instance ? $first_instance->user_id : 0)->orderBy('name')->get()->pluck('verified_name', 'id')->toArray(),
             'readOnly' => $readOnly,
             'characterOptions' => Character::visible()->myo(0)->where('user_id', optional(Auth::user())->id)->orderBy('sort','DESC')->get()->pluck('fullName','id')->toArray(),
-            'shopOptions' => $shops
+            'shopOptions' => $shops,
+            'owner_id' => $owner_id ?? null,
         ]);
     }
 

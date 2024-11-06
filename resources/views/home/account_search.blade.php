@@ -25,7 +25,7 @@
     @if ($item)
         <h3>{{ $item->name }}</h3>
 
-    <p>You currently have {{ $userItems->pluck('count')->sum()+$characterItems->pluck('count')->sum()+$shopItems->pluck('quantity')->sum() }} of this item between your and your characters' inventories.</p>
+        <p>You currently have {{ $userItems->pluck('count')->sum()+$characterItems->pluck('count')->sum()+$shopItems->pluck('quantity')->sum() }} of this item between your and your characters' inventories.</p>
 
         @if ($userItems->count())
             <h5>In Your Inventory:</h5>
@@ -108,28 +108,18 @@
                 @endforeach
             </ul>
         @endif
+        @if($shopItems->count())
+            <h5>In your shops:</h5>
+           <ul>
+               @foreach($shopItems as $item)
+                   <li>
+                       {!! $item->shop->displayName !!} has {{ $item->quantity }}
+                   </li>
+              @endforeach
+            </ul>
+        @endif
+    
     @endif
-    @if($characterItems->count())
-        <h5>In Character Inventories:</h5>
-        <ul>
-            @foreach($characterItems as $item)
-                <li>
-                    <a href="{{ $item->character->url }}">{{ $item->character->fullName }}</a> has a stack of {{ $item->count }}
-                </li>
-            @endforeach
-        </ul>
-    @endif
-    @if($shopItems->count())
-        <h5>In your shops:</h5>
-        <ul>
-            @foreach($shopItems as $item)
-                <li>
-                    {!! $item->shop->displayName !!} has {{ $item->quantity }}
-                </li>
-            @endforeach
-        </ul>
-    @endif
-@endif
 
     <script>
         $(document).ready(function() {

@@ -54,7 +54,6 @@
         {!! Form::label('On Transfer Cooldown Until (Optional)') !!}
         {!! Form::text('transferrable_at', $character->transferrable_at, ['class' => 'form-control', 'id' => 'datepicker']) !!}
     </div>
-@endif
 
 <div class="alert alert-info">
     These are displayed on the character's profile, but don't have any effect on site functionality except for the following:

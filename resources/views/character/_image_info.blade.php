@@ -90,7 +90,8 @@
                                     <div>
                                         @if ($feature->feature->feature_category_id)
                                             <strong>{!! $feature->feature->category->displayName !!}:</strong>
-                                            @endif {!! $feature->feature->displayName !!} @if ($feature->data)
+                                            @endif 
+                                            {!! $feature->feature->displayName !!} @if ($feature->data)
                                                 ({{ $feature->data }})
                                             @endif
                                     </div>
@@ -114,6 +115,8 @@
                     </div>
                 @endif
 
+                
+                @if(!$character->is_myo_slot)
                 <div class="mb-1">
                     <div>
                         <h5>Pets</h5>
@@ -135,10 +138,15 @@
                             @endif
                         @endforeach
                         <div class="ml-auto float-right mr-3">
+                            @if (count($pets))
                             <a href="{{ $character->url . '/pets' }}" class="btn btn-outline-info btn-sm">View All</a>
+                            @else
+                            <a href="{{ $character->url . '/pets' }}" class="btn btn-outline-info btn-sm" style="pointer-events:none">No Pets</a>
+                            @endif
                         </div>
                     </div>
                 </div>
+                @endif
             </div>
 
             {{-- Image notes --}}
@@ -231,7 +239,8 @@
                     <div class="text-right">
                         @if ($character->character_image_id != $image->id)
                             <a href="#" class="btn btn-outline-info btn-sm active-image" data-id="{{ $image->id }}">Set Active</a>
-                        @endif <a href="#" class="btn btn-outline-info btn-sm reupload-image" data-id="{{ $image->id }}">Reupload Image</a> <a href="#" class="btn btn-outline-danger btn-sm delete-image"
+                        @endif 
+                        <a href="#" class="btn btn-outline-info btn-sm reupload-image" data-id="{{ $image->id }}">Reupload Image</a> <a href="#" class="btn btn-outline-danger btn-sm delete-image"
                             data-id="{{ $image->id }}">Delete</a>
                     </div>
                 </div>

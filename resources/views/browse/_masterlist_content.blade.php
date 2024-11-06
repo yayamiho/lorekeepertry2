@@ -16,16 +16,6 @@
         <div class="card bg-light mb-3 collapse" id="advancedSearch">
             <div class="card-body masterlist-advanced-search">
                 @if(!$isMyo)
-                    <div class="masterlist-search-field">
-                        {!! Form::label('character_category_id', 'Category: ') !!}
-                        {!! Form::select('character_category_id', $categories, Request::get('character_category_id'), ['class' => 'form-control']) !!}
-                    </div>
-                    <div class="masterlist-search-field">
-                        {!! Form::label('subtype_id', ucfirst(__('lorekeeper.species')).' '.ucfirst(__('lorekeeper.subtype')).':'    ) !!}
-                        {!! Form::select('subtype_id', $subtypes, Request::get('subtype_id'), ['class' => 'form-control']) !!}
-                    </div>
-                @endif
-                <hr/>
                 <div class="masterlist-search-field">
                     {!! Form::label('character_category_id', 'Category: ') !!}
                     {!! Form::select('character_category_id', $categories, Request::get('character_category_id'), ['class' => 'form-control mr-2', 'style' => 'width: 250px']) !!}
@@ -35,7 +25,7 @@
                     {!! Form::select('subtype_id', $subtypes, Request::get('subtype_id'), ['class' => 'form-control mr-2', 'style' => 'width: 250px']) !!}
                 </div>
                 <hr />
-            @endif
+                @endif
             <div class="masterlist-search-field">
                 {!! Form::label('owner', 'Owner Username: ') !!}
                 {!! Form::select('owner', $userOptions, Request::get('owner'), ['class' => 'form-control mr-2 userselectize', 'style' => 'width: 250px', 'placeholder' => 'Select a User']) !!}
@@ -158,7 +148,8 @@
                         <a href="{{ $character->url }}" class="h5 mb-0">
                             @if (!$character->is_visible)
                                 <i class="fas fa-eye-slash"></i>
-                            @endif {{ Illuminate\Support\Str::limit($character->fullName, 20, $end = '...') }}
+                            @endif 
+                            {{ Illuminate\Support\Str::limit($character->fullName, 20, $end = '...') }}
                         </a>
                     </div>
                     <div class="small">
@@ -194,7 +185,8 @@
                     <td>
                         @if (!$character->is_visible)
                             <i class="fas fa-eye-slash"></i>
-                        @endif {!! $character->displayName !!}
+                        @endif 
+                        {!! $character->displayName !!}
                     </td>
                     <td>{!! $character->image->rarity_id ? $character->image->rarity->displayName : 'None' !!}</td>
                     <td>{!! $character->image->species_id ? $character->image->species->displayName : 'None' !!}</td>

@@ -28,9 +28,11 @@
                                                     <div>
                                                         <strong>{!! $key ? $group->first()->feature->category->displayName : 'Miscellaneous' !!}:</strong>
                                                         @foreach ($group as $feature)
-                                                            {!! $feature->feature->displayName !!}@if ($feature->data)
+                                                            {!! $feature->feature->displayName !!}
+                                                            @if ($feature->data)
                                                                 ({{ $feature->data }})
-                                                            @endif{{ !$loop->last ? ', ' : '' }}
+                                                            @endif
+                                                            {{ !$loop->last ? ', ' : '' }}
                                                         @endforeach
                                                     </div>
                                                 @else
@@ -54,7 +56,9 @@
                                             <div>
                                                 @if ($feature->feature->feature_category_id)
                                                     <strong>{!! $feature->feature->category->displayName !!}:</strong>
-                                                    @endif {!! $feature->feature->displayName !!} @if ($feature->data)
+                                                @endif 
+                                                    {!! $feature->feature->displayName !!} 
+                                                    @if ($feature->data)
                                                         ({{ $feature->data }})
                                                     @endif
                                             </div>
@@ -72,7 +76,7 @@
                             Design:
                             @foreach ($character->image->designers as $designer)
                                 {!! $designer->displayLink() !!}{{ !$loop->last ? ', ' : '' }}
-                            @endforeach ・
+                            @endforeach
                             Art:
                             @foreach ($character->image->artists as $artist)
                                 {!! $artist->displayLink() !!}{{ !$loop->last ? ', ' : '' }}

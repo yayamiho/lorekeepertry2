@@ -13,9 +13,11 @@
         Traits</h2>
 
     @if ($request->status == 'Draft' && $request->user_id == Auth::user()->id)
-        <p>Select the traits for the {{ $request->character->is_myo_slot ? 'created' : 'updated' }} character. @if ($request->character->is_myo_slot)
+        <p>Select the traits for the {{ $request->character->is_myo_slot ? 'created' : 'updated' }} character. 
+            @if ($request->character->is_myo_slot)
                 Some traits may have been restricted for you - you cannot change them.
-            @endif Staff will not be able to modify these traits for you during approval, so if in doubt, please communicate with them beforehand to make sure that your design is acceptable.</p>
+            @endif 
+            Staff will not be able to modify these traits for you during approval, so if in doubt, please communicate with them beforehand to make sure that your design is acceptable.</p>
         {!! Form::open(['url' => 'designs/' . $request->id . '/traits']) !!}
         <div class="form-group">
             {!! Form::label('species_id',  ucfirst(__('lorekeeper.species'))) !!}
@@ -83,15 +85,15 @@
         <div class="text-right">
             {!! Form::submit('Save', ['class' => 'btn btn-primary']) !!}
         </div>
-    {!! Form::close() !!}
-@else
-    <div class="mb-1">
-        <div class="row">
+        {!! Form::close() !!}
+    @else
+        <div class="mb-1">
+            <div class="row">
             <div class="col-md-2 col-4"><h5>{{ ucfirst(__('lorekeeper.species')) }}</h5></div>
             <div class="col-md-10 col-8">{!! $request->species ? $request->species->displayName : 'None Selected' !!}</div>
         </div>
         @if($request->subtype_id)
-        <div class="row">
+            <div class="row">
             <div class="col-md-2 col-4"><h5>{{ ucfirst(__('lorekeeper.subtype')) }}</h5></div>
             <div class="col-md-10 col-8">
             @if($request->character->is_myo_slot && $request->character->image->subtype_id)
@@ -105,17 +107,20 @@
                 </div>
                 <div class="col-md-10 col-8">{!! $request->rarity ? $request->rarity->displayName : 'None Selected' !!}</div>
             </div>
-        </div>
-        <h5>Traits</h5>
-        <div>
+            </div>
+            <h5>Traits</h5>
+            <div>
             @if ($request->character && $request->character->is_myo_slot && $request->character->image->features)
                 @foreach ($request->character->image->features as $feature)
                     <div>
                         @if ($feature->feature->feature_category_id)
                             <strong>{!! $feature->feature->category->displayName !!}:</strong>
-                            @endif {!! $feature->feature->displayName !!} @if ($feature->data)
+                        @endif 
+                            {!! $feature->feature->displayName !!} 
+                            @if ($feature->data)
                                 ({{ $feature->data }})
-                            @endif <span class="text-danger">*Required</span>
+                            @endif 
+                            <span class="text-danger">*Required</span>
                     </div>
                 @endforeach
             @endif
@@ -123,12 +128,15 @@
                 <div>
                     @if ($feature->feature->feature_category_id)
                         <strong>{!! $feature->feature->category->displayName !!}:</strong>
-                        @endif {!! $feature->feature->displayName !!} @if ($feature->data)
-                            ({{ $feature->data }})
-                        @endif
+                    @endif 
+                        {!! $feature->feature->displayName !!}
+                    @if ($feature->data)
+                        ({{ $feature->data }})
+                    @endif
                 </div>
             @endforeach
-        </div>
+            </div>
+            @endif
     @endif
 
 @endsection

@@ -12,7 +12,7 @@
 <div class="text-right mb-3"><a class="btn btn-primary" href="{{ url('admin/data/species/create') }}"><i class="fas fa-plus"></i> Create New {{ ucfirst(__('lorekeeper.species')) }}</a></div>
 @if(count($specieses))
     <table class="table table-sm species-table">
-    <thead>
+        <thead>
             <tr>
                 <th>{{ ucfirst(__('lorekeeper.species')) }}</th>
                 <th>Sub Masterlist</th>
@@ -27,36 +27,18 @@
                         {!! $species->displayName !!}
                     </td>
                     <td>
-                    @if(isset($species->sublist->name)) {{ $species->sublist->name  }} @else -- @endif
+                    @if (isset($species->sublist->name)) 
+                        {{ $species->sublist->name  }}
+                    @else
+                     -- 
+                    @endif
                     </td>
                     <td class="text-right">
                         <a href="{{ url('admin/data/species/edit/'.$species->id) }}" class="btn btn-primary">Edit</a>
                     </td>
                 </tr>
-            </thead>
-            <tbody id="sortable" class="sortable">
-                @foreach ($specieses as $species)
-                    <tr class="sort-item" data-id="{{ $species->id }}">
-                        <td>
-                            <a class="fas fa-arrows-alt-v handle mr-3" href="#"></a>
-                            @if (!$species->is_visible)
-                                <i class="fas fa-eye-slash mr-1"></i>
-                            @endif
-                            {!! $species->displayName !!}
-                        </td>
-                        <td>
-                            @if (isset($species->sublist->name))
-                                {{ $species->sublist->name }}
-                            @else
-                                --
-                            @endif
-                        </td>
-                        <td class="text-right">
-                            <a href="{{ url('admin/data/species/edit/' . $species->id) }}" class="btn btn-primary">Edit</a>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
+            @endforeach
+        </tbody>
 
     </table>
     <div class="mb-4">
