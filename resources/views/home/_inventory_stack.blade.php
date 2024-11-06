@@ -32,7 +32,7 @@
         <table class="table table-sm">
             <thead class="thead">
                 <tr class="d-flex">
-                @if($user && !$readOnly &&  ($user->hasPower('edit_inventories') ||  $owner_id == $user->id))
+                    @if($user && !$readOnly &&  ($user->hasPower('edit_inventories') ||  $owner_id == $user->id))
                         <th class="col-1"><input id="toggle-checks" type="checkbox" onclick="toggleChecks(this)"></th>
                     @endif
                     @if($item->category->can_name)

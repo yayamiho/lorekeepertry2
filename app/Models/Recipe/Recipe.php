@@ -5,6 +5,7 @@ namespace App\Models\Recipe;
 use Config;
 use DB;
 use App\Models\Model;
+use Psy\Readline\Hoa\Console;
 
 class Recipe extends Model
 {
