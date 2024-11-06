@@ -24,10 +24,10 @@
 
 
 <h3>
-    Stage 5 Image (Optional)
+    Stage Images (Optional)
 </h3>
 <p>
-    Upload an image for last stage (harvest stage) if you wish. Otherwise, the plots stage 5 image will be used as a
+    Upload images for the stages (harvest stages) if you wish. Otherwise, the original plot stage images will be used as a
     default.
 </p>
 

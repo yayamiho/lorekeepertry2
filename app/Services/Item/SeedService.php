@@ -163,42 +163,42 @@ class SeedService extends Service
 
 
             if($image2){
-                $saveName = $tag->id.'-image.'. $image2->getClientOriginalExtension();
-                $fileName = $tag->id.'-image.'. $image2->getClientOriginalExtension().'?v='. Carbon::now()->format('mdY_').randomString(6);
+                $saveName2 = $tag->id.'-image2.'. $image2->getClientOriginalExtension();
+                $fileName2 = $tag->id.'-image2.'. $image2->getClientOriginalExtension().'?v='. Carbon::now()->format('mdY_').randomString(6);
 
-                $assets['stage_2_image'] = 'images/data/items/seeds/'.$fileName;
+                $assets['stage_2_image'] = 'images/data/items/seeds/'.$fileName2;
 
-                $this->handleImage($image2, public_path('images/data/items/seeds/'), $saveName);
+                $this->handleImage($image2, public_path('images/data/items/seeds/'), $saveName2);
             }
             else $assets['stage_3_image'] = ( $tag->getData() ? $tag->getData()['stage_3_image'] : null);
             
             if($image3){
-                $saveName = $tag->id.'-image.'. $image3->getClientOriginalExtension();
-                $fileName = $tag->id.'-image.'. $image3->getClientOriginalExtension().'?v='. Carbon::now()->format('mdY_').randomString(6);
+                $saveName3 = $tag->id.'-image3.'. $image3->getClientOriginalExtension();
+                $fileName3 = $tag->id.'-image3.'. $image3->getClientOriginalExtension().'?v='. Carbon::now()->format('mdY_').randomString(6);
 
-                $assets['stage_3_image'] = 'images/data/items/seeds/'.$fileName;
+                $assets['stage_3_image'] = 'images/data/items/seeds/'.$fileName3;
 
-                 $this->handleImage($image3, public_path('images/data/items/seeds/'), $saveName);
+                 $this->handleImage($image3, public_path('images/data/items/seeds/'), $saveName3);
                 }
             else $assets['stage_3_image'] = ( $tag->getData() ? $tag->getData()['stage_3_image'] : null);
             
             if($image4){
-                $saveName = $tag->id.'-image.'. $image4->getClientOriginalExtension();
-                $fileName = $tag->id.'-image.'. $image4->getClientOriginalExtension().'?v='. Carbon::now()->format('mdY_').randomString(6);
+                $saveName4 = $tag->id.'-image4.'. $image4->getClientOriginalExtension();
+                $fileName4 = $tag->id.'-image4.'. $image4->getClientOriginalExtension().'?v='. Carbon::now()->format('mdY_').randomString(6);
 
-                $assets['stage_4_image'] = 'images/data/items/seeds/'.$fileName;
+                $assets['stage_4_image'] = 'images/data/items/seeds/'.$fileName4;
 
-                $this->handleImage($image4, public_path('images/data/items/seeds/'), $saveName);
+                $this->handleImage($image4, public_path('images/data/items/seeds/'), $saveName4);
             }
             else $assets['stage_4_image'] = ( $tag->getData() ? $tag->getData()['stage_4_image'] : null);
 
             if($image5){
-                $saveName = $tag->id.'-image.'. $image5->getClientOriginalExtension();
-                $fileName = $tag->id.'-image.'. $image5->getClientOriginalExtension().'?v='. Carbon::now()->format('mdY_').randomString(6);
+                $saveName5 = $tag->id.'-image5.'. $image5->getClientOriginalExtension();
+                $fileName5 = $tag->id.'-image5.'. $image5->getClientOriginalExtension().'?v='. Carbon::now()->format('mdY_').randomString(6);
 
-                $assets['stage_5_image'] = 'images/data/items/seeds/'.$fileName;
+                $assets['stage_5_image'] = 'images/data/items/seeds/'.$fileName5;
 
-                $this->handleImage($image5, public_path('images/data/items/seeds/'), $saveName);
+                $this->handleImage($image5, public_path('images/data/items/seeds/'), $saveName5);
             }
             else $assets['stage_5_image'] = ( $tag->getData() ? $tag->getData()['stage_5_image'] : null);
 
