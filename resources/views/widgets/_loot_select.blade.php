@@ -18,6 +18,10 @@
     if ($showRaffles) {
         $raffles = \App\Models\Raffle\Raffle::where('rolled_at', null)->where('is_active', 1)->orderBy('name')->pluck('name', 'id');
     }
+    if(isset($showBorders) && $showBorders){
+    
+        $borders = \App\Models\Border\Border::orderBy('name')->pluck('name', 'id');
+        }
 @endphp
 
 <div class="text-right mb-3">

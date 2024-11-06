@@ -163,8 +163,8 @@ class SeedService extends Service
 
 
             if($image2){
-                $saveName = $tag->id.'-image2.'. $image2->getClientOriginalExtension();
-                $fileName = $tag->id.'-image2.'. $image2->getClientOriginalExtension().'?v='. Carbon::now()->format('mdY_').randomString(6);
+                $saveName = $tag->id.'-image.'. $image2->getClientOriginalExtension();
+                $fileName = $tag->id.'-image.'. $image2->getClientOriginalExtension().'?v='. Carbon::now()->format('mdY_').randomString(6);
 
                 $assets['stage_2_image'] = 'images/data/items/seeds/'.$fileName;
 

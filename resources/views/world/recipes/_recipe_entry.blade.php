@@ -39,6 +39,7 @@
                             </div>
                         </div>
             @endif
+            
             <div class="col-md">
                 <h5>Ingredients</h5>
                 @for($i = 0; $i < count($recipe->ingredients) && $i < 3; ++$i)

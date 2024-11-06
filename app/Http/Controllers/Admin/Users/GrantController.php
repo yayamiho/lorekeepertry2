@@ -25,6 +25,7 @@ use App\Models\User\UserItem;
 use App\Models\User\UserCurrency;
 use App\Models\SitePage;
 
+use App\Services\PetManager;
 use App\Services\CurrencyManager;
 use App\Services\InventoryManager;
 use App\Services\AwardCaseManager;

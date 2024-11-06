@@ -14,7 +14,10 @@ class RecipeReward extends Model
      * @var array
      */
     protected $fillable = [
-        'recipe_id', 'rewardable_type', 'rewardable_id', 'quantity'
+        'recipe_id',
+        'rewardable_type',
+        'rewardable_id',
+        'quantity'
     ];
 
     /**
@@ -23,7 +26,7 @@ class RecipeReward extends Model
      * @var string
      */
     protected $table = 'recipe_rewards';
-    
+
     /**
      * Validation rules for creation.
      *
@@ -34,7 +37,7 @@ class RecipeReward extends Model
         'rewardable_id' => 'required',
         'quantity' => 'required|integer|min:1'
     ];
-    
+
     /**
      * Validation rules for updating.
      *
@@ -51,16 +54,17 @@ class RecipeReward extends Model
         RELATIONS
 
     **********************************************************************************************/
-    
+
     /**
      * Get the reward attached to the loot entry.
      */
-    public function reward() 
+    public function reward()
     {
-        switch ($this->rewardable_type)
-        {
+        switch ($this->rewardable_type) {
             case 'Item':
                 return $this->belongsTo('App\Models\Item\Item', 'rewardable_id');
+            case 'Pet':
+                return $this->belongsTo('App\Models\Pet\Pet', 'rewardable_id');
             case 'Currency':
                 return $this->belongsTo('App\Models\Currency\Currency', 'rewardable_id');
             case 'LootTable':

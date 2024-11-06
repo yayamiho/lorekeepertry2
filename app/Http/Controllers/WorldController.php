@@ -612,31 +612,15 @@ class WorldController extends Controller
     }
 
     /**
-     * Shows the items page.
+     * Shows the recipe's items page.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getRecipes(Request $request)
-    {
+    public function getRecipes(Request $request) {
         $query = Recipe::query();
-
         $data = $request->only(['name', 'sort']);
-        if(isset($data['name']))
-            $query->where('name', 'LIKE', '%'.$data['name'].'%');
-        $query = Item::with('category')->released();
-        $data = $request->only(['item_category_id', 'name', 'sort', 'artist']);
-        
-        if (isset($data['item_category_id']) && $data['item_category_id'] != 'none') {
-            $query->where('item_category_id', $data['item_category_id']);
-        }
-
         if (isset($data['name'])) {
-            $query->where('name', 'LIKE', '%' . $data['name'] . '%');
-        }
-
-        if (isset($data['artist']) && $data['artist'] != 'none') {
-            $query->where('artist_id', $data['artist']);
+            $query->where('name', 'LIKE', '%'.$data['name'].'%');
         }
 
         if (isset($data['sort'])) {
@@ -646,6 +630,9 @@ class WorldController extends Controller
                     break;
                 case 'alpha-reverse':
                     $query->sortAlphabetical(true);
+                    break;
+                case 'category':
+                    $query->sortCategory();
                     break;
                 case 'newest':
                     $query->sortNewest();
@@ -657,8 +644,9 @@ class WorldController extends Controller
                     $query->sortNeedsUnlocking();
                     break;
             }
-        } 
-        else $query->sortNewest();
+        } else {
+            $query->sortNewest();
+        }
 
         return view('world.recipes.recipes', [
             'recipes' => $query->paginate(20)->appends($request->query()),

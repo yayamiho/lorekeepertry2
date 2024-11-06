@@ -520,11 +520,12 @@ class InventoryManager extends Service {
                     ['data', '=', $encoded_data],
                 ])->first();
 
-                if(!$recipient_stack)
+                if(!$recipient_stack){
                     $recipient_stack = CharacterItem::create(['character_id' => $recipient->id, 'item_id' => $item->id, 'data' => $encoded_data]);
                 }
                 $recipient_stack->count += $quantity;
                 $recipient_stack->save();
+            }
             
 
             if (!$item->is_released) {

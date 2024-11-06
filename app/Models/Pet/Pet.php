@@ -5,6 +5,8 @@ namespace App\Models\Pet;
 use App\Models\Model;
 use App\Models\User\UserPet;
 use DB;
+use Config;
+use Auth;
 
 class Pet extends Model {
     /**

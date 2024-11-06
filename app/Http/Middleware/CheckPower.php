@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Http\Controllers\Admin\Users\PetManager;
+
 use Closure;
 
 class CheckPower {

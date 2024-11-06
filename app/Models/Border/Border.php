@@ -16,7 +16,8 @@ class Border extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'description', 'parsed_description', 'is_default', 'border_category_id', 'is_active', 'border_style', 'admin_only', 'parent_id', 'border_type', 'artist_id','artist_url'
+        'name', 'description', 'parsed_description', 'is_default', 'border_category_id', 'is_active', 'border_style', 
+        'admin_only', 'parent_id', 'border_type', 'artist_id','artist_url'
     ];
 
     /**
