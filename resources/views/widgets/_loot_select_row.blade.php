@@ -6,15 +6,15 @@
     $characterCurrencies = \App\Models\Currency\Currency::where('is_character_owned', 1)->orderBy('sort_character', 'DESC')->pluck('name', 'id');
     $items = \App\Models\Item\Item::orderBy('name')->pluck('name', 'id');
     $awards = \App\Models\Award\Award::
-            orderBy('name')
-            ->pluck('name', 'id');
+        orderBy('name')
+        ->pluck('name', 'id');
 
     $pets = \App\Models\Pet\Pet::orderBy('name')->pluck('name', 'id');
     $variants = \App\Models\Pet\PetVariant::orderBy('variant_name')->pluck('variant_name', 'id')
-    ->map(function ($variant, $key) {
-        $pet = \App\Models\Pet\PetVariant::find($key)->pet;
-        return $variant . ' (' . $pet->name . ' variant)';
-    });
+        ->map(function ($variant, $key) {
+            $pet = \App\Models\Pet\PetVariant::find($key)->pet;
+            return $variant . ' (' . $pet->name . ' variant)';
+        });
     $currencies = \App\Models\Currency\Currency::where('is_user_owned', 1)
         ->orderBy('name')
         ->pluck('name', 'id');
@@ -31,24 +31,25 @@
         <tbody id="lootRow">
             <tr class="loot-row">
                 <td>{!! Form::select(
-                    'rewardable_type[]', 
-                    [
-                        'Item' => 'Item', 
-                        'Currency' => 'Currency', 
-                        'Award' => ucfirst(__('awards.award')), 
-                        'Pet' => 'Pet', 
-                        'PetVariant' => 'Pet Variant'
-                    ] 
-                    + ($showLootTables ? ['LootTable' => 'Loot Table'] : []) 
-                    + ($showRaffles ? ['Raffle' => 'Raffle Ticket'] : []) 
-                    + (isset($showRecipes) && $showRecipes ? ['Recipe' => 'Recipe'] : []) 
-                    + (isset($showThemes) && $showThemes ? ['Theme' => 'Theme'] : []) 
-                    + (isset($showBorders) && $showBorders ? ['Border' => 'Border'] : []),
-                    null, 
-                    [
-                        'class' => 'form-control reward-type', 
-                        'placeholder' => (isset($progression) && $progression ? 'Select Progression Type' : 'Select Reward Type')
-                    ])  !!}
+    'rewardable_type[]',
+    [
+        'Item' => 'Item',
+        'Currency' => 'Currency',
+        'Award' => ucfirst(__('awards.award')),
+        'Pet' => 'Pet',
+        'PetVariant' => 'Pet Variant'
+    ]
+    + ($showLootTables ? ['LootTable' => 'Loot Table'] : [])
+    + ($showRaffles ? ['Raffle' => 'Raffle Ticket'] : [])
+    + (isset($showRecipes) && $showRecipes ? ['Recipe' => 'Recipe'] : [])
+    + (isset($showThemes) && $showThemes ? ['Theme' => 'Theme'] : [])
+    + (isset($showBorders) && $showBorders ? ['Border' => 'Border'] : []),
+    null,
+    [
+        'class' => 'form-control reward-type',
+        'placeholder' => (isset($progression) && $progression ? 'Select Progression Type' : 'Select Reward Type')
+    ]
+)  !!}
                 </td>
                 <td class="loot-row-select"></td>
                 <td>{!! Form::text('quantity[]', 1, ['class' => 'form-control']) !!}</td>
@@ -58,7 +59,7 @@
     </table>
     {!! Form::select('rewardable_id[]', $items, null, ['class' => 'form-control item-select', 'placeholder' => 'Select Item']) !!}
     {!! Form::select('rewardable_id[]', $currencies, null, ['class' => 'form-control currency-select', 'placeholder' => 'Select Currency']) !!}
-    {!! Form::select('rewardable_id[]', $awards, null, ['class' => 'form-control award-select', 'placeholder' => 'Select '.ucfirst(__('awards.award'))]) !!}
+    {!! Form::select('rewardable_id[]', $awards, null, ['class' => 'form-control award-select', 'placeholder' => 'Select ' . ucfirst(__('awards.award'))]) !!}
     {!! Form::select('rewardable_id[]', $pets, null, ['class' => 'form-control pet-select', 'placeholder' => 'Select Pet']) !!}
     {!! Form::select('rewardable_id[]', $variants, null, ['class' => 'form-control pet-variant-select', 'placeholder' => 'Select Pet Variant']) !!}
     @if ($showLootTables)
