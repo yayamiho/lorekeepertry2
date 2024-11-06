@@ -1,6 +1,7 @@
 @if (!$stack)
     <div class="text-center">
-        Invalid stack selected.</div>
+        Invalid stack selected.
+    </div>
 @else
     <div class="text-center">
         @if ($item->has_image)
@@ -54,7 +55,8 @@
                             <td class="col-2">{!! htmlentities($itemRow->stack_name) ? : 'N/A' !!}</td> 
                         @endif
                         <td class="col-3">{!! array_key_exists('notes', $itemRow->data) ? ($itemRow->data['notes'] ? $itemRow->data['notes'] : 'N/A') : 'N/A' !!}</td>
-                        @if($user && !$readOnly && ($user->hasPower('edit_inventories') ||  $owner_id == $user->id))
+                        @if($user && !$readOnly && 
+                        ($user->hasPower('edit_inventories') ||  $owner_id == $user->id))
                             @if ($itemRow->availableQuantity)
                                 <td class="col-3">{!! Form::selectRange('', 1, $itemRow->availableQuantity, 1, ['class' => 'quantity-select', 'type' => 'number', 'style' => 'min-width:40px;']) !!} /{{ $itemRow->availableQuantity }} 
                                     @if ($itemRow->getOthers()) {{ $itemRow->getOthers() }}
@@ -83,11 +85,21 @@
     @if($user && !$readOnly && ($user->hasPower('edit_inventories') ||  $owner_id == $user->id))
         <div class="card mt-3">
             <ul class="list-group list-group-flush">
-<!--NAME-->
-            @if($item->category->can_name  || $user->hasPower('edit_inventories'))
+
+            @if (count($item->tags))
+                    @foreach ($item->tags as $tag)
+                        @if ($tag->is_active && View::exists('inventory._' . $tag->tag))
+                            @include('inventory._' . $tag->tag, ['stack' => $stack, 'tag' => $tag])
+                        @endif
+                    @endforeach
+                @endif
+
+
+                <!--NAME-->
+                @if($item->category->can_name)
                 <li class="list-group-item">
                     <a class="card-title h5 collapse-title" data-toggle="collapse" href="#nameForm">
-                            @if($user->hasPower('edit_inventories') && $owner_id != $user->id) 
+                       @if ($user->hasPower('edit_inventories') && $owner_id != $user -> id) 
                             [ADMIN] 
                             @endif 
                              Name Item</a>
@@ -104,21 +116,13 @@
                 </div>
                 </li>
                 @endif
-                
-                @if (count($item->tags))
-                    @foreach ($item->tags as $tag)
-                        @if ($tag->is_active && View::exists('inventory._' . $tag->tag))
-                            @include('inventory._' . $tag->tag, ['stack' => $stack, 'tag' => $tag])
-                        @endif
-                    @endforeach
-                @endif
 
-<!--DONATE-->
+                <!--DONATE-->
                 @if($item->canDonate || $user->hasPower('edit_inventories'))
                     
                     <li class="list-group-item">
                         <a class="card-title h5 collapse-title" data-toggle="collapse" href="#donateForm">
-                            @if($user->hasPower('edit_inventories') && $owner_id != $user->id) 
+                        @if ($user->hasPower('edit_inventories') && $owner_id != $user -> id) 
                             [ADMIN] 
                             @endif 
                             Donate Item</a>
@@ -130,13 +134,30 @@
                         </div>
                     </li>
                 @endif
-<!--RESELL-->
 
-                    <!--CHARACTER TRANSFER-->
+                <!--RESELL-->
+                @if (isset($item->data['resell']) && App\Models\Currency\Currency::where('id', $item->resell->flip()->pop())->first() && config('lorekeeper.extensions.item_entry_expansion.resale_function'))
+                    <li class="list-group-item">
+                        <a class="card-title h5 collapse-title" data-toggle="collapse" href="#resellForm">
+                            @if ($user->hasPower('edit_inventories') && $owner_id != $user -> id)
+                                [ADMIN]
+                            @endif 
+                            Sell Item
+                        </a>
+                        <div id="resellForm" class="collapse">
+                            <p>This item can be sold for <strong>{!! App\Models\Currency\Currency::find($item->resell->flip()->pop())->display($item->resell->pop()) !!}</strong>. This action is not reversible. Are you sure you want to sell this item?</p>
+                            <div class="text-right">
+                                {!! Form::button('Sell', ['class' => 'btn btn-danger', 'name' => 'action', 'value' => 'resell', 'type' => 'submit']) !!}
+                            </div>
+                        </div>
+                    </li>
+                @endif
+
+                <!--CHARACTER TRANSFER-->
                     @if(isset($item->category) && $item->category->is_character_owned)
                     <li class="list-group-item">
                         <a class="card-title h5 collapse-title" data-toggle="collapse" href="#characterTransferForm">
-                            @if($user->hasPower('edit_inventories') && $owner_id != $user->id) 
+                            @if ($user->hasPower('edit_inventories') && $owner_id != $user -> id) 
                             [ADMIN] 
                             @endif 
                             Transfer Item to Character</a>
@@ -150,13 +171,15 @@
                             </div>
                         </div>
                     </li>
-                @endif
+
+                    @endif
 
                 <!--TRANSFER-->
                 @if ($item->allow_transfer || $user->hasPower('edit_inventories'))
                 <li class="list-group-item">
-                    <a class="card-title h5 collapse-title" data-toggle="collapse" href="#transferForm">
-                            @if($user->hasPower('edit_inventories') && $owner_id != $user->id) 
+ 
+                <a class="card-title h5 collapse-title" data-toggle="collapse" href="#transferForm">
+                            @if ($user->hasPower('edit_inventories') && $owner_id != $user -> id)
                             [ADMIN] 
                             @endif 
                             Transfer Item
@@ -177,7 +200,7 @@
                 @if ($item->is_deletable || $user->hasPower('edit_inventories'))
                     <li class="list-group-item">
                         <a class="card-title h5 collapse-title" data-toggle="collapse" href="#deleteForm">
-                         @if($user->hasPower('edit_inventories') && $owner_id != $user->id) 
+                        @if ($user->hasPower('edit_inventories') && $owner_id != $user -> id)
                             [ADMIN] 
                             @endif 
                             Delete Item

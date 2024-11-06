@@ -1,14 +1,16 @@
 <li class="list-group-item">
-    <a class="card-title h5 collapse-title"  data-toggle="collapse" href="#openSlotForm"> Use Slot</a>
-    {!! Form::open(['url' => 'inventory/act/'
-    
-    .'/'.$tag->
-    tag, 
-    'id' => 'openSlotForm', 
-    'class' => 'collapse']) !!}
-        <p>This action is not reversible. Are you sure you want to open this box?</p>
+    <a class="card-title h5 collapse-title" data-toggle="collapse" href="#openSlotForm">
+         Use Slot
+        </a>
+    <div id="openSlotForm" class="collapse">
+        {!! Form::hidden('tag', $tag->tag) !!}
+        <p>This action is not reversible. Are you sure you want to use this item?</p>
         <div class="text-right">
-            {!! Form::submit('Open', ['class' => 'btn btn-primary']) !!}
+            {!! Form::button('Open', 
+            ['class' => 'btn btn-primary', 
+            'name' => 'action', 
+            'value' => 'act', 
+            'type' => 'submit']) !!}
         </div>
-    {!! Form::close() !!}
+    </div>
 </li>

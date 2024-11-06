@@ -5,6 +5,7 @@ namespace App\Models\Item;
 use App\Models\Cultivation\CultivationPlot;
 use App\Models\Cultivation\CultivationArea;
 use DB;
+use Config;
 use Auth;
 use App\Models\Model;
 use App\Models\Item\ItemCategory;

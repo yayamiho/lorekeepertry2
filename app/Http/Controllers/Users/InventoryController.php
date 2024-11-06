@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Users;
 
+
 use App\Facades\Settings;
 use App\Http\Controllers\Controller;
 use App\Models\Character\Character;
@@ -12,6 +13,7 @@ use App\Models\Item\ItemCategory;
 use App\Models\Item\UserItemLog;
 use App\Services\InventoryManager;
 use App\Models\Shop\UserShop;
+use App\Models\Item\Config;
 
 use App\Models\Trade;
 use App\Models\Submission\Submission;
