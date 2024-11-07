@@ -18,7 +18,6 @@
             'Pets' => $character->url . '/pets',
         ]) !!}
     @endif
-
     @include('character._header', ['character' => $character])
 
     <h1>Pets</h1>

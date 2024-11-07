@@ -1,21 +1,21 @@
 <div>
     {!! Form::open(['method' => 'GET']) !!}
-        <div class="form-inline justify-content-end">
-            <div class="form-group mr-3 mb-3">
-                {!! Form::label('name', ucfirst(__('lorekeeper.character')).' Name/Code: ', ['class' => 'mr-2']) !!}
-                {!! Form::text('name', Request::get('name'), ['class' => 'form-control']) !!}
-            </div>
-            <div class="form-group mb-3">
-                {!! Form::select('rarity_id', $rarities, Request::get('rarity_id'), ['class' => 'form-control mr-3']) !!}
-            </div>
-            <div class="form-group mb-3">
-                {!! Form::select('species_id', $specieses, Request::get('species_id'), ['class' => 'form-control']) !!}
-            </div>
+    <div class="form-inline justify-content-end">
+        <div class="form-group mr-3 mb-3">
+            {!! Form::label('name', 'Character Name/Code: ', ['class' => 'mr-2']) !!}
+            {!! Form::text('name', Request::get('name'), ['class' => 'form-control']) !!}
         </div>
-        <div class="text-right mb-3"><a href="#advancedSearch" class="btn btn-sm btn-outline-info" data-toggle="collapse">Show Advanced Search Options <i class="fas fa-caret-down"></i></a></div>
-        <div class="card bg-light mb-3 collapse" id="advancedSearch">
-            <div class="card-body masterlist-advanced-search">
-                @if(!$isMyo)
+        <div class="form-group mb-3 mr-1">
+            {!! Form::select('rarity_id', $rarities, Request::get('rarity_id'), ['class' => 'form-control mr-2']) !!}
+        </div>
+        <div class="form-group mb-3">
+            {!! Form::select('species_id', $specieses, Request::get('species_id'), ['class' => 'form-control']) !!}
+        </div>
+    </div>
+    <div class="text-right mb-3"><a href="#advancedSearch" class="btn btn-sm btn-outline-info" data-toggle="collapse">Show Advanced Search Options <i class="fas fa-caret-down"></i></a></div>
+    <div class="card bg-light mb-3 collapse" id="advancedSearch">
+        <div class="card-body masterlist-advanced-search">
+            @if (!$isMyo)
                 <div class="masterlist-search-field">
                     {!! Form::label('character_category_id', 'Category: ') !!}
                     {!! Form::select('character_category_id', $categories, Request::get('character_category_id'), ['class' => 'form-control mr-2', 'style' => 'width: 250px']) !!}
@@ -25,7 +25,7 @@
                     {!! Form::select('subtype_id', $subtypes, Request::get('subtype_id'), ['class' => 'form-control mr-2', 'style' => 'width: 250px']) !!}
                 </div>
                 <hr />
-                @endif
+            @endif
             <div class="masterlist-search-field">
                 {!! Form::label('owner', 'Owner Username: ') !!}
                 {!! Form::select('owner', $userOptions, Request::get('owner'), ['class' => 'form-control mr-2 userselectize', 'style' => 'width: 250px', 'placeholder' => 'Select a User']) !!}
@@ -96,15 +96,17 @@
                                     {!! Form::select('feature_id[]', $features, $featureId, ['class' => 'form-control feature-select selectize', 'placeholder' => 'Select Trait']) !!}
                                     <a href="#" class="btn feature-remove ml-2"><i class="fas fa-times"></i></a>
                                 </div>
-                            @endforeach
-                        @endif
-                    </div>
-                <hr />
-                <div class="masterlist-search-field">
-                    {!! Form::checkbox('search_images', 1, Request::get('search_images'), ['class' => 'form-check-input mr-3',  'data-toggle' => 'toggle']) !!}
-                    <span class="ml-2">Include all {{ __('lorekeeper.character') }} images in search {!! add_help('Each character can have multiple images for each updated version of the character, which captures the traits on that character at that point in time. By default the search will only search on the most up-to-date image, but this option will retrieve characters that match the criteria on older images - you may get results that are outdated.') !!}</span>
-                </div>
-
+                            </div>
+                        </div>
+                    @endforeach
+                @endif
+            </div>
+            <hr />
+            <div class="masterlist-search-field">
+                {!! Form::checkbox('search_images', 1, Request::get('search_images'), ['class' => 'form-check-input mr-3', 'data-toggle' => 'toggle']) !!}
+                <span class="ml-2">Include all character images in search {!! add_help(
+                    'Each character can have multiple images for each updated version of the character, which captures the traits on that character at that point in time. By default the search will only search on the most up-to-date image, but this option will retrieve characters that match the criteria on older images - you may get results that are outdated.',
+                ) !!}</span>
             </div>
 
         </div>
@@ -128,6 +130,16 @@
     </div>
     {!! Form::close() !!}
 </div>
+<div class="hide" id="featureContent">
+    <div class="feature-block col-md-4 col-sm-6 mt-3 p-1">
+        <div class="card">
+            <div class="card-body d-flex">
+                {!! Form::select('feature_id[]', $features, null, ['class' => 'form-control feature-select selectize', 'placeholder' => 'Select Trait']) !!}
+                <a href="#" class="btn feature-remove ml-2"><i class="fas fa-times"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="text-right mb-3">
     <div class="btn-group">
         <button type="button" class="btn btn-secondary active grid-view-button" data-toggle="tooltip" title="Grid View" alt="Grid View"><i class="fas fa-th"></i></button>
@@ -148,21 +160,13 @@
                         <a href="{{ $character->url }}" class="h5 mb-0">
                             @if (!$character->is_visible)
                                 <i class="fas fa-eye-slash"></i>
-                            @endif 
-                            {{ Illuminate\Support\Str::limit($character->fullName, 20, $end = '...') }}
+                            @endif {{ Illuminate\Support\Str::limit($character->fullName, 20, $end = '...') }}
                         </a>
                     </div>
                     <div class="small">
                         {!! $character->image->species_id ? $character->image->species->displayName : 'No Species' !!} ・ {!! $character->image->rarity_id ? $character->image->rarity->displayName : 'No Rarity' !!} ・ {!! $character->displayOwner !!}
                     </div>
                 </div>
-                <div class="mt-1">
-                    <a href="{{ $character->url }}" class="h5 mb-0">@if(!$character->is_visible) <i class="fas fa-eye-slash"></i> @endif {{ $character->fullName }}</a>
-                </div>
-                <div class="small">
-                    {!! $character->image->species_id ? $character->image->species->displayName : 'No '.ucfirst(__('lorekeeper.species')) !!} ・ {!! $character->image->rarity_id ? $character->image->rarity->displayName : 'No Rarity' !!} ・ {!! $character->displayOwner !!}
-                </div>
-            </div>
             @endforeach
         </div>
     @endforeach
@@ -174,7 +178,7 @@
                 <th>Owner</th>
                 <th>Name</th>
                 <th>Rarity</th>
-                <th>{{ ucfirst(__('lorekeeper.species')) }}</th>
+                <th>Species</th>
                 <th>Created</th>
             </tr>
         </thead>
@@ -185,8 +189,7 @@
                     <td>
                         @if (!$character->is_visible)
                             <i class="fas fa-eye-slash"></i>
-                        @endif 
-                        {!! $character->displayName !!}
+                        @endif {!! $character->displayName !!}
                     </td>
                     <td>{!! $character->image->rarity_id ? $character->image->rarity->displayName : 'None' !!}</td>
                     <td>{!! $character->image->species_id ? $character->image->species->displayName : 'None' !!}</td>

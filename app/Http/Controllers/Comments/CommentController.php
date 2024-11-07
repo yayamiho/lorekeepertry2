@@ -23,7 +23,7 @@ use Spatie\Honeypot\ProtectAgainstSpam;
 //use App\Models\Comment;
 
 
-class CommentController extends Controller implements CommentControllerInterface
+class CommentController extends Controller
 {
     public function __construct()
     {

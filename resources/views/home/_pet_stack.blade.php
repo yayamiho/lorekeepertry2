@@ -55,7 +55,8 @@
                     <a class="card-title h5 collapse-title" data-toggle="collapse" href="#descForm">
                         @if ($stack->user_id != Auth::user()->id)
                             [ADMIN]
-                        @endif Edit Profile
+                        @endif 
+                        Edit Profile
                     </a>
                     {!! Form::open(['url' => 'pets/description/' . $stack->id, 'id' => 'descForm', 'class' => 'collapse']) !!}
                     <p>Tell everyone about your pet.</p>

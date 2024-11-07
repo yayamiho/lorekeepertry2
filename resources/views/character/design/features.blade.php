@@ -56,14 +56,24 @@
             {!! Form::label('Traits') !!}
 
             <div id="featureList">
+                {{-- Add in the compulsory traits for MYO slots --}}
+                @if($request->character->is_myo_slot && $request->character->image->features)
+                    @foreach($request->character->image->features as $feature)
+                        <div class="mb-2 d-flex align-items-center">
+                            {!! Form::text('', $feature->name, ['class' => 'form-control mr-2', 'disabled']) !!}
+                            {!! Form::text('', $feature->data, ['class' => 'form-control mr-2', 'disabled']) !!}
+                            <div>{!! add_help('This trait is required.') !!}</div>
+                        </div>
+                    @endforeach
+                @endif
                 {{-- Add in the ones that currently exist --}}
-                @if ($request->features)
-                    @foreach ($request->features as $feature)
+                @if($request->features)
+                    @foreach($request->features as $feature)
                         <div class="mb-2 d-flex">
-                                                        <!--- Users no longer assign traits, this is done via addon trait item! Hence, turn this readonly --->
-
-                            {!! Form::select('feature_id[]', $features, $feature->feature_id, ['class' => 'form-control mr-2 initial feature-select', 'placeholder' => 'Select Trait']) !!}
-                            {!! Form::text('feature_data[]', $feature->data, ['class' => 'form-control mr-2', 'placeholder' => 'Extra Info (Optional)']) !!}
+                            <!--- Users no longer assign traits, this is done via addon trait item! Hence, turn this readonly --->
+                            {!! Form::select('feature_id[]', $features, $feature->feature_id, ['class' => 'form-control mr-2 feature-select', 'readonly', 'style' => 'pointer-events: none;']) !!}
+                            {!! Form::text('feature_data[]', $feature->data, ['class' => 'form-control mr-2', 'readonly']) !!}
+                            @if($request->canRemoveTrait() || Settings::get('trait_remover_needed') == 0 )<a href="#" class="remove-feature btn btn-danger mb-2">×</a>@endif
                         </div>
                     @endforeach
                 @endif

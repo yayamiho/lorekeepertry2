@@ -352,7 +352,7 @@ return [
     | 1: Use WYSIWYG editor. 0: Use markdown / plain text editor.
     |
     */
-    'wysiwyg_comments'                                  => 1,
+    'wysiwyg_comments'                                  => 0,
 
     /*
     |--------------------------------------------------------------------------

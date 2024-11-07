@@ -47,6 +47,7 @@
                      'Currency' => 'Currency',
                       'Award' => ucfirst(__('awards.award'))] 
                       + ($showLootTables ? ['LootTable' => 'Loot Table'] : []) 
+                      + ($showBorders ? ['Border' => 'Border'] : []) 
                       + ($showRaffles ? ['Raffle' => 'Raffle Ticket'] : []), 
                       (isset($progression) && $progression ? $loot->type : $loot->rewardable_type), 
                       ['class' => 'form-control reward-type', 
