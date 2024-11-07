@@ -11,10 +11,11 @@
 
     <h2>Add-ons</h2>
 
-    @if ($request->status == 'Draft' && $request->user_id == Auth::user()->id && $request->character)
-        <p>Select items and/or currency to add onto your request. These items will be removed from your inventory{{ $request->character->is_myo_slot ? '' : ' and/or character' }} but refunded if removed from the request, the request is rejected, or the
-            request is deleted. If you don't intend to attach any items/currency, click the Save button once to mark this section complete regardless.</p>
-        {!! Form::open(['url' => 'designs/' . $request->id . '/addons']) !!}
+@if($request->status == 'Draft' && $request->user_id == Auth::user()->id && $request->character)
+    <p>Select items and/or currency to add onto your request. These items will be removed from your inventory{{ $request->character->is_myo_slot ? '' : ' and/or character' }} but refunded if removed from the request, the request is rejected, or the request is deleted. If you don't intend to attach any items/currency, click the Save button once to mark this section complete regardless.
+        If you are attaching trait items, make sure that the traits it grants are valid for the species/subtype of the design. Otherwise, the item will be lost without granting a trait.
+    </p>
+    {!! Form::open(['url' => 'designs/'.$request->id.'/addons']) !!}
         @include('widgets._inventory_select', ['user' => Auth::user(), 'inventory' => $inventory, 'categories' => $categories, 'selected' => $request->inventory])
         @include('widgets._bank_select', ['owner' => Auth::user(), 'selected' => $request->userBank])
 
@@ -26,7 +27,7 @@
             {!! Form::submit('Save', ['class' => 'btn btn-primary']) !!}
         </div>
         {!! Form::close() !!}
-    @else
+@else
         <p>Items and/or currency listed have been removed from their holders and will be refunded if the request is rejected.</p>
         @if ($inventory && count($inventory))
             <h3>{!! $request->user->displayName !!}'s Inventory</h3>
@@ -47,7 +48,8 @@
                                     <td class="col-2">
                                         @if (isset($itemRow['asset']) && isset($items[$itemRow['asset']->item_id]->image_url))
                                             <img class="small-icon" src="{{ $items[$itemRow['asset']->item_id]->image_url }}" alt=" {{ $items[$itemRow['asset']->item_id]->name }} ">
-                                        @endif {!! isset($itemRow['asset']) ? $items[$itemRow['asset']->item_id]->name : '<i>Deleted User Item</i>' !!}
+                                        @endif 
+                                        {!! isset($itemRow['asset']) ? $items[$itemRow['asset']->item_id]->name : '<i>Deleted User Item</i>' !!}
                                     <td class="col-4">{!! isset($itemRow['asset']) && array_key_exists('data', $itemRow['asset']->data) ? ($itemRow['asset']->data['data'] ? $itemRow['asset']->data['data'] : 'N/A') : 'N/A' !!}</td>
                                     <td class="col-4">{!! isset($itemRow['asset']) && array_key_exists('notes', $itemRow['asset']->data) ? ($itemRow['asset']->data['notes'] ? $itemRow['asset']->data['notes'] : 'N/A') : 'N/A' !!}</td>
                                     <td class="col-2">{!! $itemRow['quantity'] !!}

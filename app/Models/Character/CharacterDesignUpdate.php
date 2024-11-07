@@ -8,6 +8,9 @@ use App\Models\Rarity;
 use App\Models\Species\Species;
 use App\Models\Species\Subtype;
 use App\Models\User\User;
+use App\Models\User\UserItem;
+use App\Models\Feature\FeatureCategory;
+use App\Models\Feature\Feature;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class CharacterDesignUpdate extends Model {
@@ -370,5 +373,111 @@ class CharacterDesignUpdate extends Model {
         }
 
         return $result;
+    }
+
+    /**
+     * Check if trait is within the attached items.
+     *
+     * @param  string  $type
+     * @return array
+     */
+    public function isAttachedOrOnCharacter($featureId)
+    {
+        $addedItems = UserItem::whereIn('id', array_keys($this->inventory))->get();
+        $featureIds = $addedItems->filter(function ($userItem) {
+            return $userItem->item->hasTag('trait');
+        })->map(function ($userItem) {
+            return $userItem->item->tag('trait')->getData();
+        })->flatten();
+
+        $characterFeatures = $this->character->image->features->pluck('id') ?? [];
+        
+        if($featureIds->contains($featureId) || ($characterFeatures->contains($featureId))){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Get all attached traits.
+     *
+     * @param  string  $type
+     * @return array
+     */
+    public function getAttachedTraitIds()
+    {
+        $addedItems = UserItem::whereIn('id', array_keys($this->inventory))->get();
+        $featureIds = $addedItems->filter(function ($userItem) {
+            return $userItem->item->hasTag('trait');
+        })->map(function ($userItem) {
+            return $userItem->item->tag('trait')->getData();
+        })->flatten()->toArray();
+
+        return $featureIds;
+    }
+
+    /**
+     * Gets the selects list based on attached trait items.
+     *
+     * @param  string  $type
+     * @return array
+     */
+    public function getAttachedTraitSelects()
+    {
+        $selects = [];
+        $addedItems = UserItem::whereIn('id', array_keys($this->inventory))->get();
+        foreach($addedItems as $userItem){
+            if($userItem->item->hasTag('trait')){
+                $features = Feature::whereIn('id', $userItem->item->tag('trait')->getData());
+                $alreadyAddedFeatures = $this->features->whereIn('feature_id', $userItem->item->tag('trait')->getData());
+                $amount = $this->inventory[$userItem->id] - $alreadyAddedFeatures->count();
+                //add the select for each item
+                if($amount > 0){
+                    foreach(range(1,$amount) as $i){
+                        $choices = $features->whereNotIn('id', $alreadyAddedFeatures->pluck('id'))->orderBy('name')->pluck('name', 'id')->toArray();
+                        if(count($choices) > 0) $selects[] = $features->whereNotIn('id', $alreadyAddedFeatures->pluck('id'))->orderBy('name')->pluck('name', 'id')->toArray();
+                    }
+                }
+            }
+        }
+        return $selects;
+    }
+
+    /**
+     * Gets the select list based on attached items.
+     *
+     * @param  string  $type
+     * @return array
+     */
+    public function getAttachedTraitSelect()
+    {
+        $select = [];
+        $addedItems = UserItem::whereIn('id', array_keys($this->inventory))->get();
+        foreach($addedItems as $userItem){
+            if($userItem->item->hasTag('trait')){
+                $features = Feature::whereIn('id', $userItem->item->tag('trait')->getData());
+                //add trait to select
+                $choices = $features->orderBy('name')->pluck('name', 'id')->toArray();
+                $select = $select + $choices;
+            }
+        }
+        return $select;
+    }
+
+    /**
+     * Checks if a trait remover item was added to this request, allowing users to remove locked in traits.
+     *
+     * @param  string  $type
+     * @return array
+     */
+    public function canRemoveTrait()
+    {
+        $addedItems = UserItem::whereIn('id', array_keys($this->inventory))->get();
+        $traitRemover = $addedItems->filter(function ($userItem) {
+            return $userItem->item->hasTag('trait_remover');
+        })->first();
+
+        return isset($traitRemover);
     }
 }

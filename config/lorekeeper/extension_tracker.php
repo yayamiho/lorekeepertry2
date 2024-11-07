@@ -12,7 +12,7 @@ return [
     //     ]),
     //     'version' => '1.0.0',
     // ],
-    
+
     'user_borders' => [
         'key' => 'user_borders',
         'wiki_key' => 'User Borders',
@@ -31,7 +31,7 @@ return [
             'Cylunny' => 'https://toyhou.se/cylunny',
         ]),
         'version' => '1.0.0',
-    ],    
+    ],
 
     'crafting_system' => [
         'key' => 'crafting_system',
@@ -48,8 +48,8 @@ return [
         'key' => 'awards',
         'wiki_key' => 'Awards',
         'creators' => json_encode([
-            'Uri'  => 'https://github.com/preimpression/',
-            'TGI'  => 'https://github.com/tjgallaha/',
+            'Uri' => 'https://github.com/preimpression/',
+            'TGI' => 'https://github.com/tjgallaha/',
             'Ne-wt' => 'https://github.com/ne-wt/',
         ]),
         'version' => '2.0.0',
@@ -93,7 +93,7 @@ return [
     ],
 
 
-    
+
     'mini_clock' => [
         'key' => 'mini_clock',
         'wiki_key' => 'Mini_Clock',
@@ -109,11 +109,12 @@ return [
         'creators' => json_encode([
             'CH3RVB' => 'https://github.com/CH3RVB/',
             'Newt' => 'https://github.com/Ne-wt',
-            'Moif' => 'https://github.com/AW0005',])
+            'Moif' => 'https://github.com/AW0005',
+        ])
     ],
 
     'shop_features' => [
-        'key'      => 'shop_features',
+        'key' => 'shop_features',
         'wiki_key' => 'Shop_Features',
         'creators' => json_encode([
             'Newt' => 'https://github.com/ne-wt/',
@@ -124,11 +125,19 @@ return [
     'pets' => [
         'wiki_key' => 'Pets',
         'creators' => json_encode([
-            'Newt'      => 'https://github.com/ne-wt/',
-            'Mercury'   => 'https://github.com/itinerare/',
-            'Uri'       => 'https://github.com/preimpression/',
+            'Newt' => 'https://github.com/ne-wt/',
+            'Mercury' => 'https://github.com/itinerare/',
+            'Uri' => 'https://github.com/preimpression/',
             'SUPERCOOL' => 'https://github.com/CH3RVB/',
         ]),
         'version' => '2.0.0',
+    ],
+    'trait_item_tag' => [
+        'key' => 'trait_item_tag',
+        'wiki_key' => 'Trait_Item_Tag',
+        'creators' => json_encode([
+            'Cylunny' => 'https://toyhou.se/Cylunny',
+        ]),
+        'version' => '1.0.0',
     ],
 ];

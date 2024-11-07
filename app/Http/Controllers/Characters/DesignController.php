@@ -224,7 +224,9 @@ class DesignController extends Controller {
             'specieses' => ['0' => 'Select '.ucfirst('lorekeeper.species')] + Species::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'subtypes' => ['0' => 'No '.__('lorekeeper.subtype')] + Subtype::where('species_id','=',$r->species_id)->orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
             'rarities' => ['0' => 'Select Rarity'] + Rarity::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
-            'features' => Feature::orderBy('name')->pluck('name', 'id')->toArray()
+            'features' => Feature::orderBy('name')->pluck('name', 'id')->toArray(),
+            'choiceFeatures' => $r->getAttachedTraitSelect(),
+            'itemFeatures' => $r->getAttachedTraitSelects()
         ]);
     }
 

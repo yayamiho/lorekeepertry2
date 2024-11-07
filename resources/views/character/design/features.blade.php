@@ -12,13 +12,15 @@
     <h2>
         Traits</h2>
 
-    @if ($request->status == 'Draft' && $request->user_id == Auth::user()->id)
-        <p>Select the traits for the {{ $request->character->is_myo_slot ? 'created' : 'updated' }} character. 
-            @if ($request->character->is_myo_slot)
-                Some traits may have been restricted for you - you cannot change them.
-            @endif 
-            Staff will not be able to modify these traits for you during approval, so if in doubt, please communicate with them beforehand to make sure that your design is acceptable.</p>
-        {!! Form::open(['url' => 'designs/' . $request->id . '/traits']) !!}
+@if($request->status == 'Draft' && $request->user_id == Auth::user()->id)
+    <p>Select the traits for the {{ $request->character->is_myo_slot ? 'created' : 'updated' }} character. 
+        @if($request->character->is_myo_slot) 
+        Some traits may have been restricted for you - you cannot change them. 
+        @endif 
+        Staff will not be able to modify these traits for you during approval, so if in doubt, please communicate with them beforehand to make sure that your design is acceptable.
+        Once you save, the traits will be locked in.
+    </p>
+    {!! Form::open(['url' => 'designs/'.$request->id.'/traits']) !!}
         <div class="form-group">
             {!! Form::label('species_id',  ucfirst(__('lorekeeper.species'))) !!}
             @if($request->character->is_myo_slot && $request->character->image->species_id)
@@ -52,32 +54,31 @@
 
         <div class="form-group">
             {!! Form::label('Traits') !!}
-            <div><a href="#" class="btn btn-primary mb-2" id="add-feature">Add Trait</a></div>
-            <div id="featureList">
-                {{-- Add in the compulsory traits for MYO slots --}}
-                @if ($request->character->is_myo_slot && $request->character->image->features)
-                    @foreach ($request->character->image->features as $feature)
-                        <div class="mb-2 d-flex align-items-center">
-                            {!! Form::text('', $feature->name, ['class' => 'form-control mr-2', 'disabled']) !!}
-                            {!! Form::text('', $feature->data, ['class' => 'form-control mr-2', 'disabled']) !!}
-                            <div>{!! add_help('This trait is required.') !!}</div>
-                        </div>
-                    @endforeach
-                @endif
 
+            <div id="featureList">
                 {{-- Add in the ones that currently exist --}}
                 @if ($request->features)
                     @foreach ($request->features as $feature)
                         <div class="mb-2 d-flex">
+                                                        <!--- Users no longer assign traits, this is done via addon trait item! Hence, turn this readonly --->
+
                             {!! Form::select('feature_id[]', $features, $feature->feature_id, ['class' => 'form-control mr-2 initial feature-select', 'placeholder' => 'Select Trait']) !!}
                             {!! Form::text('feature_data[]', $feature->data, ['class' => 'form-control mr-2', 'placeholder' => 'Extra Info (Optional)']) !!}
-                            <a href="#" class="remove-feature btn btn-danger mb-2">×</a>
+                        </div>
+                    @endforeach
+                @endif
+                @if(count($itemFeatures) > 0)
+                    @foreach($itemFeatures as $itemFeature)
+                        <div class="mb-2 d-flex">
+                            <!--- These selects are built based on the trait item added and only allow the specified traits to be chosen! --->
+                            {!! Form::select('feature_id[]', $itemFeature, array_key_first($itemFeature), ['class' => 'form-control mr-2 feature-select']) !!}
+                            {!! Form::text('feature_data[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Extra Info (Optional)']) !!}
                         </div>
                     @endforeach
                 @endif
             </div>
             <div class="feature-row hide mb-2">
-                {!! Form::select('feature_id[]', $features, null, ['class' => 'form-control mr-2 feature-select', 'placeholder' => 'Select Trait']) !!}
+                {!! Form::select('feature_id[]', $choiceFeatures, null, ['class' => 'form-control mr-2 feature-select', 'placeholder' => 'Select Trait']) !!}
                 {!! Form::text('feature_data[]', null, ['class' => 'form-control mr-2', 'placeholder' => 'Extra Info (Optional)']) !!}
                 <a href="#" class="remove-feature btn btn-danger mb-2">×</a>
             </div>
@@ -86,7 +87,7 @@
             {!! Form::submit('Save', ['class' => 'btn btn-primary']) !!}
         </div>
         {!! Form::close() !!}
-    @else
+@else
         <div class="mb-1">
             <div class="row">
             <div class="col-md-2 col-4"><h5>{{ ucfirst(__('lorekeeper.species')) }}</h5></div>
@@ -126,6 +127,9 @@
             @endif
             @foreach ($request->features as $feature)
                 <div>
+                            @if($request->canRemoveTrait() || Settings::get('trait_remover_needed') == 0 )<a href="#" class="remove-feature btn btn-danger mb-2">×</a>
+                            @endif
+                    
                     @if ($feature->feature->feature_category_id)
                         <strong>{!! $feature->feature->category->displayName !!}:</strong>
                     @endif 
