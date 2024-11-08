@@ -8,6 +8,10 @@ use Auth;
 
 use App\Models\Item\Item;
 use App\Models\Item\ItemCategory;
+use App\Models\Pet\Pet;
+use App\Models\Pet\PetCategory;
+use App\Models\Border\Border;
+use App\Models\Border\BorderCategory;
 use App\Models\Loot\LootTable;
 use App\Models\Raffle\Raffle;
 use App\Models\Currency\Currency;
@@ -83,6 +87,10 @@ class RecipeController extends Controller
             'recipe' => $recipe,
             'items' => Item::orderBy('name')->pluck('name', 'id'),
             'categories' => ItemCategory::orderBy('name')->pluck('name', 'id'),
+            'pet' => Pet::orderBy('name')->pluck('name', 'id'),
+            'pet_categories' => PetCategory::orderBy('name')->pluck('name', 'id'),
+            'border' => Border::orderBy('name')->pluck('name', 'id'),
+            'border_categories' => BorderCategory::orderBy('name')->pluck('name', 'id'),
             'currencies' => Currency::where('is_user_owned', 1)->orderBy('name')->pluck('name', 'id'),
             'tables' => LootTable::orderBy('name')->pluck('name', 'id'),
             'raffles' => Raffle::where('rolled_at', null)->where('is_active', 1)->orderBy('name')->pluck('name', 'id'),

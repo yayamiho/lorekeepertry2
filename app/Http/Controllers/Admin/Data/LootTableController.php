@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Data;
 
 use App\Http\Controllers\Controller;
 use App\Models\Currency\Currency;
+use App\Models\Border\Border;
 use App\Models\Item\Item;
 use App\Models\Award\Award;
 use App\Models\Item\ItemCategory;
@@ -46,6 +47,7 @@ class LootTableController extends Controller {
             'table'      => new LootTable,
             'items'      => Item::orderBy('name')->pluck('name', 'id'),
             'pets'       => Pet::orderBy('name')->pluck('name', 'id'),
+            'border'       => Border::orderBy('name')->pluck('name', 'id'),
             'categories' => ItemCategory::orderBy('sort', 'DESC')->pluck('name', 'id'),
             'currencies' => Currency::orderBy('name')->pluck('name', 'id'),
             'tables'     => LootTable::orderBy('name')->pluck('name', 'id'),
@@ -74,6 +76,7 @@ class LootTableController extends Controller {
             'items' => Item::orderBy('name')->pluck('name', 'id'),
             'awards' => Award::orderBy('name')->pluck('name', 'id'),
             'pets'       => Pet::orderBy('name')->pluck('name', 'id'),
+            'border'       => Border::orderBy('name')->pluck('name', 'id'),
             'categories' => ItemCategory::orderBy('sort', 'DESC')->pluck('name', 'id'),
             'currencies' => Currency::orderBy('name')->pluck('name', 'id'),
             'tables'     => LootTable::orderBy('name')->pluck('name', 'id'),

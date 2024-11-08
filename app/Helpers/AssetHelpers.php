@@ -564,6 +564,8 @@ function findReward($type, $id, $isCharacter = false) {
             break;
         case 'Raffle':
             $reward = \App\Models\Raffle\Raffle::find($id);
+            case 'Border':
+                $reward = \App\Models\Border\Border::find($id);
             break;
     }
     return $reward;

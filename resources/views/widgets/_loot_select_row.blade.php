@@ -10,6 +10,8 @@
         ->pluck('name', 'id');
 
     $pets = \App\Models\Pet\Pet::orderBy('name')->pluck('name', 'id');
+
+    $borders = \App\Models\Border\Border::orderBy('name')->pluck('name', 'id');
     $variants = \App\Models\Pet\PetVariant::orderBy('variant_name')->pluck('variant_name', 'id')
         ->map(function ($variant, $key) {
             $pet = \App\Models\Pet\PetVariant::find($key)->pet;
@@ -37,13 +39,13 @@
         'Currency' => 'Currency',
         'Award' => ucfirst(__('awards.award')),
         'Pet' => 'Pet',
-        'PetVariant' => 'Pet Variant'
+        'PetVariant' => 'Pet Variant',
+        'Border' => 'Border'
     ]
     + ($showLootTables ? ['LootTable' => 'Loot Table'] : [])
     + ($showRaffles ? ['Raffle' => 'Raffle Ticket'] : [])
     + (isset($showRecipes) && $showRecipes ? ['Recipe' => 'Recipe'] : [])
-    + (isset($showThemes) && $showThemes ? ['Theme' => 'Theme'] : [])
-    + (isset($showBorders) && $showBorders ? ['Border' => 'Border'] : []),
+    + (isset($showThemes) && $showThemes ? ['Theme' => 'Theme'] : []),
     null,
     [
         'class' => 'form-control reward-type',
@@ -62,6 +64,8 @@
     {!! Form::select('rewardable_id[]', $awards, null, ['class' => 'form-control award-select', 'placeholder' => 'Select ' . ucfirst(__('awards.award'))]) !!}
     {!! Form::select('rewardable_id[]', $pets, null, ['class' => 'form-control pet-select', 'placeholder' => 'Select Pet']) !!}
     {!! Form::select('rewardable_id[]', $variants, null, ['class' => 'form-control pet-variant-select', 'placeholder' => 'Select Pet Variant']) !!}
+    {!! Form::select('rewardable_id[]', $borders, null, ['class' => 'form-control border-select', 'placeholder' => 'Select Border']) !!}
+
     @if ($showLootTables)
         {!! Form::select('rewardable_id[]', $tables, null, ['class' => 'form-control table-select', 'placeholder' => 'Select Loot Table']) !!}
     @endif
@@ -73,8 +77,5 @@
     @endif
     @if(isset($showThemes) && $showThemes)
         {!! Form::select('rewardable_id[]', $themes, null, ['class' => 'form-control theme-select', 'placeholder' => 'Select Theme']) !!}
-    @endif
-    @if(isset($showBorders) && $showBorders)
-        {!! Form::select('rewardable_id[]', $borders, null, ['class' => 'form-control border-select', 'placeholder' => 'Select Border']) !!}
     @endif
 </div>

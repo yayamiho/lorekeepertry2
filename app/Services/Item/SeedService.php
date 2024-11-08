@@ -9,6 +9,8 @@ use App\Models\Item\Item;
 use App\Models\Currency\Currency;
 use App\Models\Loot\LootTable;
 use App\Models\Raffle\Raffle;
+use App\Models\Pet\Pet;
+use App\Models\Border\Border;
 
 use App\Models\Cultivation\CultivationArea;
 use App\Models\Cultivation\CultivationPlot;

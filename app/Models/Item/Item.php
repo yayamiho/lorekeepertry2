@@ -486,6 +486,9 @@ class Item extends Model {
                     case 'Item':
                         $type = 'App\Models\Item\Item';
                         break;
+                        case 'Pet':
+                            $type = 'App\Models\Pet\Pet';
+                            break;
                     case 'Currency':
                         $type = 'App\Models\Currency\Currency';
                         break;
@@ -495,6 +498,9 @@ class Item extends Model {
                     case 'Raffle':
                         $type = 'App\Models\Raffle\Raffle';
                         break;
+                            case 'Border':
+                                $type = 'App\Models\Border\Border';
+                                break;
                 }
                 $asset = $type::find($reward->rewardable_id);
                 $assets[] = ['asset' => $asset, 'quantity' => $reward->quantity ];

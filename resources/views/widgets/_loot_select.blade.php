@@ -5,6 +5,7 @@
     $characterCurrencies = \App\Models\Currency\Currency::where('is_character_owned', 1)->orderBy('sort_character', 'DESC')->pluck('name', 'id');
     $items = \App\Models\Item\Item::orderBy('name')->pluck('name', 'id');
     $pets = \App\Models\Pet\Pet::orderBy('name')->pluck('name', 'id');
+    $borders = \App\Models\Border\Border::orderBy('name')->pluck('name', 'id');
     $variants = \App\Models\Pet\PetVariant::orderBy('variant_name')->pluck('variant_name', 'id')->map(function ($variant, $key) {
         $pet = \App\Models\Pet\PetVariant::find($key)->pet;
         return $variant . ' (' . $pet->name . ' variant)';
@@ -18,10 +19,10 @@
     if ($showRaffles) {
         $raffles = \App\Models\Raffle\Raffle::where('rolled_at', null)->where('is_active', 1)->orderBy('name')->pluck('name', 'id');
     }
-    if(isset($showBorders) && $showBorders){
-    
+    if (isset($showBorders) && $showBorders) {
+
         $borders = \App\Models\Border\Border::orderBy('name')->pluck('name', 'id');
-        }
+    }
 @endphp
 
 <div class="text-right mb-3">
@@ -41,17 +42,25 @@
         @if ($loots)
             @foreach ($loots as $loot)
                 <tr class="loot-row">
-                    <td>{!! Form::select('rewardable_type[]', ['Item' => 'Item',
-                    'Pet'=>'Pet',
-                    'PetVariant'=>'Pet Variant',
-                     'Currency' => 'Currency',
-                      'Award' => ucfirst(__('awards.award'))] 
-                      + ($showLootTables ? ['LootTable' => 'Loot Table'] : []) 
-                      + ($showBorders ? ['Border' => 'Border'] : []) 
-                      + ($showRaffles ? ['Raffle' => 'Raffle Ticket'] : []), 
-                      (isset($progression) && $progression ? $loot->type : $loot->rewardable_type), 
-                      ['class' => 'form-control reward-type', 
-                      'placeholder' => (isset($progression) && $progression ? 'Select Progression Type' : 'Select Reward Type')]) !!}
+                    <td>{!! Form::select(
+                    'rewardable_type[]',
+                    [
+                        'Item' => 'Item',
+                        'Pet' => 'Pet',
+                        'PetVariant' => 'Pet Variant',
+                        'Currency' => 'Currency',
+                        'Border' => 'Border',
+                        'Award' => ucfirst(__('awards.award'))
+                    ]
+                    + ($showLootTables ? ['LootTable' => 'Loot Table'] : [])
+                    + ($showBorders ? ['Border' => 'Border'] : [])
+                    + ($showRaffles ? ['Raffle' => 'Raffle Ticket'] : []),
+                    (isset($progression) && $progression ? $loot->type : $loot->rewardable_type),
+                    [
+                        'class' => 'form-control reward-type',
+                        'placeholder' => (isset($progression) && $progression ? 'Select Progression Type' : 'Select Reward Type')
+                    ]
+                ) !!}
                     </td>
                     <td class="loot-row-select">
                         @if($loot->rewardable_type == 'Item')
