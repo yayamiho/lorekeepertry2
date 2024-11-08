@@ -12,7 +12,10 @@
     <h2>Comments</h2>
 
     @if ($request->status == 'Draft' && $request->user_id == Auth::user()->id)
-        <p>Enter an optional comment about your submission (e.g. calculations) that staff will consider when reviewing your request. If you don't have a comment, click the Save button once to mark this section complete regardless.</p>
+        <p>Enter an optional comment about your submission that staff will consider when reviewing your request. If you don't have a comment, click the Save button once to mark this section complete regardless.</p>
+        
+        <h6 style="color:rgb(229, 69, 64) !important">WARNING!!</h6> 
+        <p>If you use the trait Insectoid or Multi, briefly comment on how it is used, as it will serve as a content warning for one of our mods.<br> Failure to comply may result in an instant rejection.</p>
         {!! Form::open(['url' => 'designs/' . $request->id . '/comments']) !!}
         <div class="form-group">
             {!! Form::label('Comments (Optional)') !!}
