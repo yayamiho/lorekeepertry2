@@ -46,6 +46,7 @@ class LootTableController extends Controller {
         return view('admin.loot_tables.create_edit_loot_table', [
             'table'      => new LootTable,
             'items'      => Item::orderBy('name')->pluck('name', 'id'),
+            'award'      => Award::Item::orderBy('name')->pluck('name', 'id'),
             'pets'       => Pet::orderBy('name')->pluck('name', 'id'),
             'border'       => Border::orderBy('name')->pluck('name', 'id'),
             'categories' => ItemCategory::orderBy('sort', 'DESC')->pluck('name', 'id'),

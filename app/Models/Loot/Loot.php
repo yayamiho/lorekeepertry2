@@ -4,20 +4,26 @@ namespace App\Models\Loot;
 
 use App\Models\Currency\Currency;
 use App\Models\Item\Item;
+use App\Models\Award\Award;
 use App\Models\Item\ItemCategory;
 use App\Models\Border\Border;
 use App\Models\Pet\Pet;
 use App\Models\Model;
 
-class Loot extends Model {
+class Loot extends Model
+{
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'loot_table_id', 'rewardable_type', 'rewardable_id',
-        'quantity', 'weight', 'data',
+        'loot_table_id',
+        'rewardable_type',
+        'rewardable_id',
+        'quantity',
+        'weight',
+        'data',
     ];
 
     /**
@@ -33,9 +39,9 @@ class Loot extends Model {
      */
     public static $createRules = [
         'rewardable_type' => 'required',
-        'rewardable_id'   => 'required',
-        'quantity'        => 'required|integer|min:1',
-        'weight'          => 'required|integer|min:1',
+        'rewardable_id' => 'required',
+        'quantity' => 'required|integer|min:1',
+        'weight' => 'required|integer|min:1',
     ];
 
     /**
@@ -45,9 +51,9 @@ class Loot extends Model {
      */
     public static $updateRules = [
         'rewardable_type' => 'required',
-        'rewardable_id'   => 'required',
-        'quantity'        => 'required|integer|min:1',
-        'weight'          => 'required|integer|min:1',
+        'rewardable_id' => 'required',
+        'quantity' => 'required|integer|min:1',
+        'weight' => 'required|integer|min:1',
     ];
 
     /**********************************************************************************************
@@ -59,12 +65,13 @@ class Loot extends Model {
     /**
      * Get the reward attached to the loot entry.
      */
-    public function reward() {
+    public function reward()
+    {
         switch ($this->rewardable_type) {
             case 'Item':
                 return $this->belongsTo('App\Models\Item\Item', 'rewardable_id');
             case 'Award':
-                return $this->belongsTo('App\Models\Award\Award', 'rewardable_id');
+                return $this->belongsTo(Award::class, 'rewardable_id');
             case 'ItemRarity':
                 return $this->belongsTo(Item::class, 'rewardable_id');
             case 'Currency':
@@ -73,8 +80,8 @@ class Loot extends Model {
                 return $this->belongsTo(LootTable::class, 'rewardable_id');
             case 'Pet':
                 return $this->belongsTo(Pet::class, 'rewardable_id');
-                case 'Border':
-                    return $this->belongsTo(Border::class, 'rewardable_id');
+            case 'Border':
+                return $this->belongsTo(Border::class, 'rewardable_id');
             case 'ItemCategory':
                 return $this->belongsTo(ItemCategory::class, 'rewardable_id');
             case 'ItemCategoryRarity':
@@ -98,7 +105,8 @@ class Loot extends Model {
      *
      * @return array
      */
-    public function getDataAttribute() {
+    public function getDataAttribute()
+    {
         if (!$this->attributes['data']) {
             return null;
         }

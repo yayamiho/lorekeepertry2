@@ -76,6 +76,7 @@ Route::group(['prefix' => 'user', 'namespace' => 'Users'], function () {
     Route::get('{name}/recipe-logs', 'UserController@getUserRecipeLogs');
     Route::get('{name}/shops', 'UserController@getUserShops');
     Route::get('{name}/border-logs', 'UserController@getUserBorderLogs');
+    Route::get('{name}/collection-logs', 'UserController@getUserCollectionLogs');
 });
 
 /**************************************************************************************************
@@ -144,6 +145,10 @@ Route::group(['prefix' => 'world'], function () {
     Route::get('borders', 'WorldController@getBorders');
     Route::get('borders/{id}', 'WorldController@getBorder');
     Route::get('check-border', 'WorldController@getBorderPreview');
+
+    Route::get('collections', 'WorldController@getCollections');
+    Route::get('collections/{id}', 'WorldController@getCollection');
+    Route::get('collection-categories', 'WorldController@getCollectionCategories');
 });
 
 Route::group(['prefix' => 'prompts'], function () {

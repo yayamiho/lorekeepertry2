@@ -49,6 +49,8 @@
                             </a>
                             <a class="dropdown-item" href="{{ url('awardcase') }}">
                                 {{ ucfirst(__('awards.awards')) }}
+                            <a class="dropdown-item" href="{{ url('collection') }}">
+                                Collections
                             </a>
                         </div>
                     </li>

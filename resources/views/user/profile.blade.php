@@ -124,30 +124,7 @@
                 </div>
                 <div class="text-right"><a href="{{ $user->url . '/bank' }}">View all...</a></div>
             </div>
-        </div>
-        <!--<div class="card profile-inventory profile-assets-card">
-            <div class="card-body text-center">
-                <h5 class="card-title">Inventory</h5>
-                <div class="profile-assets-content">
-                    @if (count($items))
-                        <div class="row">
-                            @foreach ($items as $item)
-                                <div class="col-md-3 col-6 profile-inventory-item">
-                                    @if ($item->imageUrl)
-                                        <img src="{{ $item->imageUrl }}" data-toggle="tooltip" title="{{ $item->name }}" alt="{{ $item->name }}" />
-                                    @else
-                                        <p>{{ $item->name }}</p>
-                                    @endif
-                                </div>
-                            @endforeach
-                        </div>
-                    @else
-                        <div>No items owned.</div>
-                    @endif
-                </div>
-                <div class="text-right"><a href="{{ $user->url . '/inventory' }}">View all...</a></div>
-            </div>
-        </div>-->
+        </div>  
     </div>
 
     <h2>

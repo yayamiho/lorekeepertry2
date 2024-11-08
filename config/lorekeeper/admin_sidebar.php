@@ -240,8 +240,11 @@ return [
         
                 'name' => 'Pets',
                 'url'  => 'admin/data/pets',
+            ],[
+                'name' => 'Collections',
+                'url' => 'admin/data/collections'
             ],
-        ],
+        ]
     ],
     'Raffles'    => [
         'power' => 'manage_raffles',

@@ -349,3 +349,12 @@ Route::group(['prefix' => __('cultivation.cultivation')], function() {
     Route::post('plots/harvest/{plotId}', 'CultivationController@postHarvestPlot');
 
 });
+/**************************************************************************************************
+    Collection
+**************************************************************************************************/
+
+Route::group(['prefix' => 'collection', 'namespace' => 'Users'], function() {
+    Route::get('/', 'CollectionController@getIndex');
+    Route::get('complete/{id}', 'CollectionController@getCompleteCollection');
+    Route::post('complete/{id}', 'CollectionController@postCompleteCollection');
+});
