@@ -103,45 +103,6 @@
 
 <div class="card mb-3">
     <div class="card-header h2">
-        Rewards
-    </div>
-    <div class="card-body">
-        @if ($isClaim)
-            <p>Select the rewards you would like to claim.</p>
-        @else
-            <p>Note that any rewards added here are <u>in addition</u> to the default prompt rewards. If you do not require any additional rewards, you can leave this blank.</p>
-        @endif
-
-        {{-- previous input --}}
-        @if (old('rewardable_type'))
-            @php
-                $loots = [];
-                foreach (old('rewardable_type') as $key => $type) {
-                    if (!isset(old('rewardable_id')[$key])) {
-                        continue;
-                    }
-                    $loots[] = (object) [
-                        'rewardable_type' => $type,
-                        'rewardable_id' => old('rewardable_id')[$key],
-                        'quantity' => old('quantity')[$key] ?? 1,
-                    ];
-                }
-            @endphp
-        @endif
-        @if ($isClaim)
-            @include('widgets._loot_select', ['loots' => $submission->id ? $submission->rewards : $loots ?? null, 'showLootTables' => false, 'showRaffles' => true])
-        @else
-            @include('widgets._loot_select', ['loots' => $submission->id ? $submission->rewards : $loots ?? null, 'showLootTables' => false, 'showRaffles' => false])
-        @endif
-
-        @if (!$isClaim)
-            <div id="rewards" class="mb-3"></div>
-        @endif
-    </div>
-</div>
-
-<div class="card mb-3">
-    <div class="card-header h2">
         <a href="#" class="btn btn-outline-info float-right" id="addCharacter">Add Character</a>
         Characters
     </div>

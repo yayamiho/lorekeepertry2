@@ -24,27 +24,6 @@
                         {!! Form::label('slug[]', 'Character Code') !!}
                         {!! Form::select('slug[]', $characters, null, ['class' => 'form-control character-code', 'placeholder' => 'Select Character']) !!}
                     </div>
-                    <div class="character-rewards hide">
-                        <h4>Character Rewards</h4>
-                        <table class="table table-sm">
-                            <thead>
-                                <tr>
-                                    @if ($expanded_rewards)
-                                        <th width="35%">Reward Type</th>
-                                        <th width="35%">Reward</th>
-                                    @else
-                                        <th width="70%">Reward</th>
-                                    @endif
-                                    <th width="30%">Amount</th>
-                                </tr>
-                            </thead>
-                            <tbody class="character-rewards">
-                            </tbody>
-                        </table>
-                        <div class="text-right">
-                            <a href="#" class="btn btn-outline-primary btn-sm add-reward">Add Reward</a>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

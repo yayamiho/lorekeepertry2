@@ -122,7 +122,7 @@
                 <div>No {{ __('awards.awards') }} earned.</div>
                 @endif
                 </div>
-                <div class="text-right"><a href="{{ $user->url . '/bank' }}">View all...</a></div>
+                <div class="text-right"><a href="{{ $user->url . '/awardcase' }}">View all...</a></div>
             </div>
         </div>  
     </div>

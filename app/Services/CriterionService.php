@@ -10,7 +10,8 @@ use App\Models\Criteria\DefaultCriteria;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
-class CriterionService extends Service {
+class CriterionService extends Service
+{
     /*
     |--------------------------------------------------------------------------
     | Criterion Service
@@ -25,9 +26,10 @@ class CriterionService extends Service {
      *
      * @param array $data
      *
-     * @return \App\Models\Criterion\Criterion|bool
+     * @return \App\Models\Criteria\Criterion|bool
      */
-    public function createCriterion($data) {
+    public function createCriterion($data)
+    {
         DB::beginTransaction();
 
         try {
@@ -52,9 +54,10 @@ class CriterionService extends Service {
      * @param array $data
      * @param mixed $criterion
      *
-     * @return \App\Models\Criterion\Criterion|bool
+     * @return \App\Models\Criteria\Criterion|bool
      */
-    public function updateCriterion($criterion, $data) {
+    public function updateCriterion($criterion, $data)
+    {
         DB::beginTransaction();
 
         try {
@@ -87,9 +90,10 @@ class CriterionService extends Service {
      *
      * @param array $data
      *
-     * @return \App\Models\Criterion\Criterion|bool
+     * @return \App\Models\Criteria\Criterion|bool
      */
-    public function createCriterionStep($data) {
+    public function createCriterionStep($data)
+    {
         DB::beginTransaction();
 
         try {
@@ -118,9 +122,9 @@ class CriterionService extends Service {
                 $step->input_calc_type = 'multiplicative';
 
                 CriterionStepOption::create([
-                    'name'              => $data['type'],
-                    'amount'            => 1,
-                    'is_active'         => 1,
+                    'name' => $data['type'],
+                    'amount' => 1,
+                    'is_active' => 1,
                     'criterion_step_id' => $step->id,
                 ]);
             }
@@ -141,9 +145,10 @@ class CriterionService extends Service {
      * @param array $data
      * @param mixed $step
      *
-     * @return \App\Models\Criterion\Criterion|bool
+     * @return \App\Models\Criteria\Criterion|bool
      */
-    public function updateCriterionStep($step, $data) {
+    public function updateCriterionStep($step, $data)
+    {
         DB::beginTransaction();
 
         try {
@@ -158,9 +163,9 @@ class CriterionService extends Service {
                     $step->input_calc_type = 'multiplicative';
 
                     CriterionStepOption::create([
-                        'name'              => $data['type'],
-                        'amount'            => 1,
-                        'is_active'         => 1,
+                        'name' => $data['type'],
+                        'amount' => 1,
+                        'is_active' => 1,
                         'criterion_step_id' => $step->id,
                     ]);
                 }
@@ -218,9 +223,10 @@ class CriterionService extends Service {
      *
      * @param array $data
      *
-     * @return \App\Models\Criterion\Criterion|bool
+     * @return \App\Models\Criteria\Criterion|bool
      */
-    public function createCriterionOption($data) {
+    public function createCriterionOption($data)
+    {
         DB::beginTransaction();
 
         try {
@@ -246,9 +252,10 @@ class CriterionService extends Service {
      * @param array $data
      * @param mixed $option
      *
-     * @return \App\Models\Criterion\Criterion|bool
+     * @return \App\Models\Criteria\Criterion|bool
      */
-    public function updateCriterionOption($option, $data) {
+    public function updateCriterionOption($option, $data)
+    {
         DB::beginTransaction();
 
         try {
@@ -268,7 +275,8 @@ class CriterionService extends Service {
     }
 
     /** Deletes a Criterion (and it's associated steps and options) */
-    public function deleteCriterion($criterion) {
+    public function deleteCriterion($criterion)
+    {
         DB::beginTransaction();
 
         try {
@@ -289,7 +297,8 @@ class CriterionService extends Service {
     }
 
     /** Deletes a step (and it's associated options) */
-    public function deleteCriterionStep($step) {
+    public function deleteCriterionStep($step)
+    {
         DB::beginTransaction();
 
         try {
@@ -310,7 +319,8 @@ class CriterionService extends Service {
     }
 
     /** Deletes an option */
-    public function deleteCriterionOption($option) {
+    public function deleteCriterionOption($option)
+    {
         DB::beginTransaction();
 
         try {
@@ -325,7 +335,8 @@ class CriterionService extends Service {
     }
 
     /** Populates criterion relationships for prompts, galleries, etc. */
-    public function populateCriteria($data, $entity, $relationshipClass) {
+    public function populateCriteria($data, $entity, $relationshipClass)
+    {
         // clear out old relationships
         $entity->criteria()->delete();
 
@@ -336,10 +347,10 @@ class CriterionService extends Service {
                 foreach ($default->criteria as $criterion) {
                     $relationshipClass::create([
                         // so it can be prompt_id or gallery_id
-                        strtolower(class_basename($entity)).'_id' => $entity->id,
-                        'criterion_id'                            => $criterion->criterion->id,
-                        'min_requirements'                        => json_encode($criterion->minRequirements),
-                        'criterion_currency_id'                   => $criterion->criterion_currency_id ?? null,
+                        strtolower(class_basename($entity)) . '_id' => $entity->id,
+                        'criterion_id' => $criterion->criterion->id,
+                        'min_requirements' => json_encode($criterion->minRequirements),
+                        'criterion_currency_id' => $criterion->criterion_currency_id ?? null,
                     ]);
                 }
             }
@@ -348,10 +359,10 @@ class CriterionService extends Service {
             foreach ($data['criterion_id'] as $key => $criterionId) {
                 $relationshipClass::create([
                     // so it can be prompt_id or gallery_id
-                    strtolower(class_basename($entity)).'_id' => $entity->id,
-                    'criterion_id'                            => $criterionId,
-                    'min_requirements'                        => isset($data['criterion'][$criterionId]) ? json_encode($data['criterion'][$criterionId]) : null,
-                    'criterion_currency_id'                   => $data['criterion_currency_id'][$criterionId] ?? null,
+                    strtolower(class_basename($entity)) . '_id' => $entity->id,
+                    'criterion_id' => $criterionId,
+                    'min_requirements' => isset($data['criterion'][$criterionId]) ? json_encode($data['criterion'][$criterionId]) : null,
+                    'criterion_currency_id' => $data['criterion_currency_id'][$criterionId] ?? null,
                 ]);
             }
         }
@@ -364,9 +375,10 @@ class CriterionService extends Service {
      *
      * @param array $data
      *
-     * @return \App\Models\Criterion\Criterion|bool
+     * @return \App\Models\Criteria\Criterion|bool
      */
-    public function createCriterionDefault($data) {
+    public function createCriterionDefault($data)
+    {
         DB::beginTransaction();
 
         try {
@@ -388,9 +400,10 @@ class CriterionService extends Service {
      * @param array $data
      * @param mixed $default
      *
-     * @return \App\Models\Criterion\Criterion|bool
+     * @return \App\Models\Criteria\Criterion|bool
      */
-    public function updateCriterionDefault($default, $data) {
+    public function updateCriterionDefault($default, $data)
+    {
         DB::beginTransaction();
 
         try {
@@ -408,7 +421,8 @@ class CriterionService extends Service {
     }
 
     /** Deletes a Criterion (and it's associated steps and options) */
-    public function deleteCriterionDefault($default) {
+    public function deleteCriterionDefault($default)
+    {
         DB::beginTransaction();
 
         try {
@@ -430,9 +444,10 @@ class CriterionService extends Service {
      * @param mixed $sort
      * @param mixed $model
      */
-    private function handleSort($sort, $model) {
+    private function handleSort($sort, $model)
+    {
         $ids = explode(',', $sort);
-        $steps = $model::whereIn('id', $ids)->orderByRaw(DB::raw('FIELD(id, '.implode(',', $ids).')'))->get();
+        $steps = $model::whereIn('id', $ids)->orderBy(DB::raw('FIELD(id, ' . implode(',', $ids) . ')'))->get();
 
         if (count($steps) != count($ids)) {
             throw new \Exception('Invalid step included in sorting order.');
@@ -447,7 +462,8 @@ class CriterionService extends Service {
     }
 
     /** Handles setting the active setting on a given object */
-    private function handleActive($isActive, $object) {
+    private function handleActive($isActive, $object)
+    {
         if ($isActive) {
             $object->is_active = 1;
         } else {

@@ -4,14 +4,25 @@ namespace App\Models\Criteria;
 
 use App\Models\Model;
 
-class CriterionStep extends Model {
+class CriterionStep extends Model
+{
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name', 'is_active', 'summary', 'description', 'parsed_description', 'type', 'calc_type', 'input_calc_type', 'order', 'has_image', 'criterion_id',
+        'name',
+        'is_active',
+        'summary',
+        'description',
+        'parsed_description',
+        'type',
+        'calc_type',
+        'input_calc_type',
+        'order',
+        'has_image',
+        'criterion_id',
     ];
 
     /**
@@ -48,7 +59,8 @@ class CriterionStep extends Model {
     /**
      * Get the currency for this criterion.
      */
-    public function criterion() {
+    public function criterion()
+    {
         return $this->belongsTo('App\Models\Criteria\Criterion', 'criterion_id');
     }
 
@@ -57,7 +69,8 @@ class CriterionStep extends Model {
      *
      * @param mixed|null $minRequirement
      */
-    public function options($minRequirement = null) {
+    public function options($minRequirement = null)
+    {
         $query = $this->hasMany('App\Models\Criteria\CriterionStepOption', 'criterion_step_id')->orderBy('order');
         if ($minRequirement) {
             $collection = $query->get();
@@ -79,7 +92,8 @@ class CriterionStep extends Model {
      *
      * @return string
      */
-    public function getImageDirectoryAttribute() {
+    public function getImageDirectoryAttribute()
+    {
         return 'images/data/criteria';
     }
 
@@ -88,8 +102,9 @@ class CriterionStep extends Model {
      *
      * @return string
      */
-    public function getImageFileNameAttribute() {
-        return $this->id.'-image.png';
+    public function getImageFileNameAttribute()
+    {
+        return $this->id . '-image.png';
     }
 
     /**
@@ -97,7 +112,8 @@ class CriterionStep extends Model {
      *
      * @return string
      */
-    public function getImagePathAttribute() {
+    public function getImagePathAttribute()
+    {
         return public_path($this->imageDirectory);
     }
 
@@ -106,12 +122,13 @@ class CriterionStep extends Model {
      *
      * @return string
      */
-    public function getImageUrlAttribute() {
+    public function getImageUrlAttribute()
+    {
         if (!$this->has_image) {
             return null;
         }
 
-        return asset($this->imageDirectory.'/'.$this->ImageFileName);
+        return asset($this->imageDirectory . '/' . $this->ImageFileName);
     }
 
     /**********************************************************************************************
@@ -127,7 +144,8 @@ class CriterionStep extends Model {
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeActive($query) {
+    public function scopeActive($query)
+    {
         return $query->where('is_active', 1);
     }
 }

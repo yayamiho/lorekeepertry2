@@ -56,6 +56,7 @@ return [
             'engine'         => null,
             'options'        => array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+                PDO::ATTR_EMULATE_PREPARES => true,
             ]),
         ],
 
@@ -117,6 +118,7 @@ return [
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'predis'),
+            
         ],
 
         'default' => [

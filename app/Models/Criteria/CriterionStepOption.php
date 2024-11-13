@@ -4,14 +4,22 @@ namespace App\Models\Criteria;
 
 use App\Models\Model;
 
-class CriterionStepOption extends Model {
+class CriterionStepOption extends Model
+{
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name', 'is_active', 'criterion_step_id', 'summary', 'description', 'parsed_description', 'amount', 'order',
+        'name',
+        'is_active',
+        'criterion_step_id',
+        'summary',
+        'description',
+        'parsed_description',
+        'amount',
+        'order',
     ];
 
     /**
@@ -48,7 +56,8 @@ class CriterionStepOption extends Model {
     /**
      * Get the currency for this criterion.
      */
-    public function step() {
+    public function step()
+    {
         return $this->belongsTo('App\Models\Criteria\CriterionStep', 'criterion_step_id');
     }
 
@@ -65,7 +74,8 @@ class CriterionStepOption extends Model {
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeActive($query) {
+    public function scopeActive($query)
+    {
         return $query->where('is_active', 1);
     }
 }

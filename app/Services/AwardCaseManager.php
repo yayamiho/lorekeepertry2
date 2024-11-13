@@ -97,7 +97,7 @@ class AwardCaseManager extends Service
                         }
                         else
                         {
-                            throw new \Exception("Failed to credit ".__('awards.awards')." to ".$user->name.".");
+                            //throw new \Exception("Failed to credit ".__('awards.awards')." to ".$user->name.".");
                         }
                     }
                 }
@@ -550,14 +550,6 @@ class AwardCaseManager extends Service
                     break;
                 case 'Award':
                     $reward = Award::find($loot->type_id);
-                    break;
-                case 'LootTable':
-                    if (!$isStaff) break;
-                    $reward = LootTable::find($loot->type_id);
-                    break;
-                case 'Raffle':
-                    if (!$isStaff) break;
-                    $reward = Raffle::find($loot->type_id);
                     break;
             }
             if(!$reward) continue;

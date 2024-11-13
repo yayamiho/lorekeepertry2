@@ -12,24 +12,39 @@
         <div class="col-lg-9 col-7">{!! $character->category->displayName !!}</div>
     </div>
 @endif
-<div class="row no-gutters">
+<div class="row no-gutters" style="height:29.59px">
     <div class="col-lg-3 col-5">
         <h5 class="mb-0">Created</h5>
     </div>
     <div class="col-lg-9 col-7">{!! format_date($character->created_at) !!}</div>
+</div>
+<div class="row no-gutters">
+    <div class="col-lg-3 col-5">
+        <h5 class="mb-0">Era</h5>
+    </div>
+    <div class="col-lg-9 col-7">
+        @if ($character->parsed_description)
+            <div class="parsed-text descriptioneditingparse">{!! $character->parsed_description !!}</div>
+        @else
+            <div class="parsed-text descriptioneditingparse"> </div>
+        @endif
+    </div>
 </div>
 
 <hr />
 
 
 <h5>
-    <i class="text-{{ $character->is_giftable ? 'success far fa-circle' : 'danger fas fa-times' }} fa-fw mr-2"></i> {{ $character->is_giftable ? 'Can' : 'Cannot' }} be gifted
+    <i class="text-{{ $character->is_giftable ? 'success far fa-circle' : 'danger fas fa-times' }} fa-fw mr-2"></i>
+    {{ $character->is_giftable ? 'Can' : 'Cannot' }} be gifted
 </h5>
 <h5>
-    <i class="text-{{ $character->is_tradeable ? 'success far fa-circle' : 'danger fas fa-times' }} fa-fw mr-2"></i> {{ $character->is_tradeable ? 'Can' : 'Cannot' }} be traded
+    <i class="text-{{ $character->is_tradeable ? 'success far fa-circle' : 'danger fas fa-times' }} fa-fw mr-2"></i>
+    {{ $character->is_tradeable ? 'Can' : 'Cannot' }} be traded
 </h5>
 <h5>
-    <i class="text-{{ $character->is_sellable ? 'success far fa-circle' : 'danger fas fa-times' }} fa-fw mr-2"></i> {{ $character->is_sellable ? 'Can' : 'Cannot' }} be sold
+    <i class="text-{{ $character->is_sellable ? 'success far fa-circle' : 'danger fas fa-times' }} fa-fw mr-2"></i>
+    {{ $character->is_sellable ? 'Can' : 'Cannot' }} be sold
 </h5>
 @if ($character->sale_value > 0)
     <div class="row no-gutters">
@@ -49,8 +64,15 @@
         <div class="col-lg-9 col-7 pl-1">Cannot be transferred until {!! format_date($character->transferrable_at) !!}</div>
     </div>
 @endif
+
 @if (Auth::check() && Auth::user()->hasPower('manage_characters'))
     <div class="mt-3">
-        <a href="#" class="btn btn-outline-info btn-sm edit-stats" data-{{ $character->is_myo_slot ? 'id' : 'slug' }}="{{ $character->is_myo_slot ? $character->id : $character->slug }}"><i class="fas fa-cog"></i> Edit</a>
+        <a href="#" class="btn btn-outline-info btn-sm edit-description" data-{{ $character->is_myo_slot ? 'id' : 'slug' }}="{{ $character->is_myo_slot ? $character->id : $character->slug }}"><i class="fas fa-cog"></i> Edit Era</a>
+    </div>
+    @endif
+
+@if (Auth::check() && Auth::user()->hasPower('manage_characters'))
+    <div class="mt-3">
+        <a href="#" class="btn btn-outline-info btn-sm edit-stats" data-{{ $character->is_myo_slot ? 'id' : 'slug' }}="{{ $character->is_myo_slot ? $character->id : $character->slug }}"><i class="fas fa-cog"></i> Edit Others</a>
     </div>
 @endif

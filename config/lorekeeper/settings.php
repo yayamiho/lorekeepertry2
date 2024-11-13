@@ -36,7 +36,7 @@ return [
     | site wherever the name needs to be displayed.
     |
     */
-    'site_name'                                         => 'Lorekeeper',
+    'site_name'                                         => 'Mizalgaya',
 
     /*
     |--------------------------------------------------------------------------
@@ -63,7 +63,7 @@ return [
     | will still work provided users link the relevant alias(es).
     |
     */
-    'require_alias'                                     => 1,
+    'require_alias'                                     => 0,
 
     /*
     |--------------------------------------------------------------------------
@@ -123,8 +123,8 @@ return [
     |
     */
     'character_codes'                                   => '{category}-{number}',
-    'character_number_digits'                           => 3,
-    'character_pull_number'                             => 'all',
+    'character_number_digits'                           => 1,
+    'character_pull_number'                             => 'category',
 
     'reset_character_status_on_transfer'                => 0,
     'reset_character_profile_on_transfer'               => 0,

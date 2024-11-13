@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-    {{ $page->title }}
+{{ $page->title }}
 @endsection
 
 @section('content')
@@ -16,23 +16,13 @@
     {!! $page->parsed_text !!}
 </div>
 
-@if($page->can_comment)
-    @comments(['model' => $page,
-            'perPage' => 5
+@if ($page->can_comment)
+    <div class="container">
+        @comments([
+            'model' => $page,
+            'perPage' => 5,
+            'allow_dislikes' => $page->allow_dislikes,
         ])
-@endif
-
-    <div class="site-page-content parsed-text">
-        {!! $page->parsed_text !!}
     </div>
-
-    @if ($page->can_comment)
-        <div class="container">
-            @comments([
-                'model' => $page,
-                'perPage' => 5,
-                'allow_dislikes' => $page->allow_dislikes,
-            ])
-        </div>
-    @endif
+@endif
 @endsection

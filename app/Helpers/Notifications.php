@@ -27,7 +27,7 @@ class Notifications {
     public function create($type, $user, $data) {
         DB::beginTransaction();
 
-        try {
+        /*try {
             $notification = Notification::create([
                 'user_id'               => $user->id,
                 'notification_type_id'  => Notification::getNotificationId($type),
@@ -43,7 +43,7 @@ class Notifications {
             return true;
         } catch (\Exception $e) {
             $this->setError('error', $e->getMessage());
-        }
+        }*/
         DB::rollback();
 
         return false;

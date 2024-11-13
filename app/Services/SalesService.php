@@ -9,7 +9,8 @@ use App\Models\User\User;
 use Illuminate\Support\Facades\DB;
 use Validator;
 
-class SalesService extends Service {
+class SalesService extends Service
+{
     /*
     |--------------------------------------------------------------------------
     | Sales Service
@@ -27,7 +28,8 @@ class SalesService extends Service {
      *
      * @return bool|Sales
      */
-    public function createSales($data, $user) {
+    public function createSales($data, $user)
+    {
         DB::beginTransaction();
 
         try {
@@ -79,7 +81,8 @@ class SalesService extends Service {
      *
      * @return bool|Sales
      */
-    public function updateSales($sales, $data, $user) {
+    public function updateSales($sales, $data, $user)
+    {
         DB::beginTransaction();
 
         try {
@@ -132,47 +135,58 @@ class SalesService extends Service {
      */
     private function processCharacters($sales, $data)
     {
-        foreach($data['slug'] as $key=>$slug) {
+        foreach ($data['slug'] as $key => $slug) {
             $character = Character::myo(0)->visible()->where('slug', $slug)->first();
 
             // Assemble data
             $charData[$key] = [];
             $charData[$key]['type'] = $data['sale_type'][$key];
-            switch($charData[$key]['type']) {
+            switch ($charData[$key]['type']) {
                 case 'flatsale':
                     $charData[$key]['price'] = $data['price'][$key];
                     break;
                 case 'auction':
                     $charData[$key]['starting_bid'] = $data['starting_bid'][$key];
                     $charData[$key]['min_increment'] = $data['min_increment'][$key];
-                    if(isset($data['autobuy'][$key])) $charData[$key]['autobuy'] = $data['autobuy'][$key];
-                    if(isset($data['end_point'][$key])) $charData[$key]['end_point'] = $data['end_point'][$key];
+                    if (isset($data['autobuy'][$key]))
+                        $charData[$key]['autobuy'] = $data['autobuy'][$key];
+                    if (isset($data['end_point'][$key]))
+                        $charData[$key]['end_point'] = $data['end_point'][$key];
                     break;
                 case 'ota':
-                    if(isset($data['autobuy'][$key])) $charData[$key]['autobuy'] = $data['autobuy'][$key];
-                    if(isset($data['end_point'][$key])) $charData[$key]['end_point'] = $data['end_point'][$key];
-					if(isset($data['minimum'][$key])) $charData[$key]['minimum'] = $data['minimum'][$key];
+                    if (isset($data['autobuy'][$key]))
+                        $charData[$key]['autobuy'] = $data['autobuy'][$key];
+                    if (isset($data['end_point'][$key]))
+                        $charData[$key]['end_point'] = $data['end_point'][$key];
+                    if (isset($data['minimum'][$key]))
+                        $charData[$key]['minimum'] = $data['minimum'][$key];
                     break;
                 case 'xta':
-                    if(isset($data['autobuy'][$key])) $charData[$key]['autobuy'] = $data['autobuy'][$key];
-                    if(isset($data['end_point'][$key])) $charData[$key]['end_point'] = $data['end_point'][$key];
-					if(isset($data['minimum'][$key])) $charData[$key]['minimum'] = $data['minimum'][$key];
+                    if (isset($data['autobuy'][$key]))
+                        $charData[$key]['autobuy'] = $data['autobuy'][$key];
+                    if (isset($data['end_point'][$key]))
+                        $charData[$key]['end_point'] = $data['end_point'][$key];
+                    if (isset($data['minimum'][$key]))
+                        $charData[$key]['minimum'] = $data['minimum'][$key];
                     break;
                 case 'flaffle':
                     $charData[$key]['price'] = $data['price'][$key];
                     break;
                 case 'pwyw':
-                    if(isset($data['minimum'][$key])) $charData[$key]['minimum'] = $data['minimum'][$key];
+                    if (isset($data['minimum'][$key]))
+                        $charData[$key]['minimum'] = $data['minimum'][$key];
                     break;
             }
 
             // Validate data
             $validator = Validator::make($charData[$key], SalesCharacter::$rules);
-            if($validator->fails()) throw new \Exception($validator->errors()->first());
+            if ($validator->fails())
+                throw new \Exception($validator->errors()->first());
 
             // Record data/attach the character to the sales post
             SalesCharacter::create([
                 'character_id' => $character->id,
+                'image_id' => $data['image_id'][$key] ?? $character->image->id,
                 'sales_id' => $sales->id,
                 'type' => $charData[$key]['type'],
                 'data' => json_encode($charData[$key]),
@@ -190,7 +204,8 @@ class SalesService extends Service {
      *
      * @return bool
      */
-    public function deleteSales($sales) {
+    public function deleteSales($sales)
+    {
         DB::beginTransaction();
 
         try {
@@ -210,7 +225,8 @@ class SalesService extends Service {
      *
      * @return bool
      */
-    public function updateQueue() {
+    public function updateQueue()
+    {
         $count = Sales::shouldBeVisible()->count();
         if ($count) {
             DB::beginTransaction();
@@ -235,7 +251,8 @@ class SalesService extends Service {
      *
      * @return bool
      */
-    private function alertUsers() {
+    private function alertUsers()
+    {
         User::query()->update(['is_sales_unread' => 1]);
 
         return true;

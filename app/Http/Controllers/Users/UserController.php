@@ -30,6 +30,7 @@ use App\Models\Award\AwardCategory;
 use App\Models\Award\AwardLog;
 use App\Models\Character\CharacterCategory;
 use App\Models\Collection\CollectionCategory;
+use App\Models\Border\Border;
 
 use App\Models\Gallery\GalleryFavorite;
 use App\Models\Shop\UserShop;
