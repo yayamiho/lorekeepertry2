@@ -13,6 +13,8 @@ use App\Models\Pet\PetCategory;
 use App\Models\Shop\Shop;
 use App\Models\Shop\ShopLog;
 use App\Models\Shop\ShopStock;
+use App\Models\Shop\UserItemDonation;
+use App\Models\SitePage;
 use App\Models\User\UserItem;
 use App\Services\ShopManager;
 use Illuminate\Http\Request;
