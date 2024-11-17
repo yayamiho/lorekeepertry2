@@ -49,6 +49,7 @@ Home
 
                 <li class="list-group-item"><a href="{{ url('world/recipes') }}">All Recipes</a></li>
                 <li class="list-group-item"><a href="{{ url('world/collections') }}">Collections</a></li>
+                <li class="list-group-item"><a href="{{ url('world/'.__('volumes.library')) }}">{{ ucfirst(__('volumes.library')) }}</a></li>
             </ul>
         </div>
     </div>

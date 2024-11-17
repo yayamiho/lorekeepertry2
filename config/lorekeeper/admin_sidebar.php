@@ -244,6 +244,10 @@ return [
                 'name' => 'Collections',
                 'url' => 'admin/data/collections'
             ],
+            [
+                'name' => 'Library',
+                'url' => 'admin/data/volumes'
+            ],
         ]
     ],
     'Raffles'    => [
