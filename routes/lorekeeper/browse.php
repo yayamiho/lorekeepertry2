@@ -229,3 +229,10 @@ Route::group(['prefix' => 'gallery'], function () {
 Route::group(['prefix' => 'reports', 'namespace' => 'Users'], function () {
     Route::get('/bug-reports', 'ReportController@getBugIndex');
 });
+
+/**************************************************************************************************
+    Terms accept
+**************************************************************************************************/
+Route::group(['prefix' => 'terms'], function() {
+    Route::get('/accept', 'TermsController@acceptTerms');
+});

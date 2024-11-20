@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models\User;
+use Config;
 
 use App\Models\Character\Character;
 use App\Models\Character\CharacterBookmark;
@@ -58,7 +59,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $fillable = [
         'name', 'alias', 'rank_id', 'email', 'email_verified_at', 'password', 'is_news_unread', 'is_banned', 'has_alias', 'avatar', 'is_sales_unread', 'theme_id', 'decorator_theme_id', 'birthday',
-        'is_deactivated', 'deactivater_id', 'border_id', 'border_variant_id', 'bottom_border_id', 'top_border_id',
+        'is_deactivated', 'deactivater_id', 'border_id', 'border_variant_id', 'bottom_border_id', 'top_border_id', 'has_accepted_terms',
     ];
 
     /**

@@ -24,7 +24,7 @@ return [
     | Do not change this value!
     |
     */
-    'version'                                           => '3.0.0',
+    'version' => '3.0.0',
 
     /*
     |--------------------------------------------------------------------------
@@ -36,7 +36,7 @@ return [
     | site wherever the name needs to be displayed.
     |
     */
-    'site_name'                                         => 'Mizalgaya',
+    'site_name' => 'Mizalgaya',
 
     /*
     |--------------------------------------------------------------------------
@@ -48,7 +48,7 @@ return [
     | It is not, however, displayed on the site itself. This should be kept short and snappy!
     |
     */
-    'site_desc'                                         => 'A Lorekeeper ARPG',
+    'site_desc' => 'A Lorekeeper ARPG',
 
     /*
     |--------------------------------------------------------------------------
@@ -63,7 +63,7 @@ return [
     | will still work provided users link the relevant alias(es).
     |
     */
-    'require_alias'                                     => 0,
+    'require_alias' => 0,
 
     /*
     |--------------------------------------------------------------------------
@@ -122,13 +122,13 @@ return [
     |       Default: 0/Disabled, 1 to enable.
     |
     */
-    'character_codes'                                   => '{category}-{number}',
-    'character_number_digits'                           => 1,
-    'character_pull_number'                             => 'category',
+    'character_codes' => '{category}-{number}',
+    'character_number_digits' => 1,
+    'character_pull_number' => 'category',
 
-    'reset_character_status_on_transfer'                => 0,
-    'reset_character_profile_on_transfer'               => 0,
-    'clear_myo_slot_name_on_approval'                   => 0,
+    'reset_character_status_on_transfer' => 0,
+    'reset_character_profile_on_transfer' => 0,
+    'clear_myo_slot_name_on_approval' => 0,
 
     /*
     |--------------------------------------------------------------------------
@@ -154,13 +154,13 @@ return [
     | 'masterlist_image_background' => '#ffffff',
     |
     */
-    'watermark_masterlist_images'                       => 0,
+    'watermark_masterlist_images' => 0,
 
-    'masterlist_image_dimension'                        => 0,
-    'masterlist_image_dimension_target'                 => 'shorter',
+    'masterlist_image_dimension' => 0,
+    'masterlist_image_dimension_target' => 'shorter',
 
-    'masterlist_image_format'                           => null,
-    'masterlist_image_background'                       => '#ffffff',
+    'masterlist_image_format' => null,
+    'masterlist_image_background' => '#ffffff',
 
     /*
     |--------------------------------------------------------------------------
@@ -179,9 +179,9 @@ return [
     | 'masterlist_fullsizes_format' => null,
     |
     */
-    'store_masterlist_fullsizes'                        => 0,
-    'masterlist_fullsizes_cap'                          => 0,
-    'masterlist_fullsizes_format'                       => null,
+    'store_masterlist_fullsizes' => 0,
+    'masterlist_fullsizes_cap' => 0,
+    'masterlist_fullsizes_format' => null,
 
     /*
     |--------------------------------------------------------------------------
@@ -196,12 +196,12 @@ return [
     | Expects the whole of the character to be visible in the thumbnail.
     |
     */
-    'masterlist_thumbnails'                             => [
-        'width'  => 200,
+    'masterlist_thumbnails' => [
+        'width' => 200,
         'height' => 200,
     ],
 
-    'watermark_masterlist_thumbnails'                   => 0,
+    'watermark_masterlist_thumbnails' => 0,
 
     /*
     |--------------------------------------------------------------------------
@@ -224,9 +224,9 @@ return [
     |
     */
 
-    'watermark_resizing'                                => 0,
-    'watermark_percent'                                 => 0.9,
-    'watermark_resizing_thumb'                          => 0,
+    'watermark_resizing' => 0,
+    'watermark_percent' => 0.9,
+    'watermark_resizing_thumb' => 0,
 
     /*
     |--------------------------------------------------------------------------
@@ -242,7 +242,7 @@ return [
     | Simply change to "1" to enable, or keep at "0" to disable.
     |
     */
-    'masterlist_image_automation'                       => 0,
+    'masterlist_image_automation' => 0,
 
     /*
     |--------------------------------------------------------------------------
@@ -279,7 +279,7 @@ return [
     | 'gallery_images_format' => null,
     |
     */
-    'gallery_images_cap'    => 0,
+    'gallery_images_cap' => 0,
     'gallery_images_format' => null,
 
     /*
@@ -292,7 +292,7 @@ return [
     | there are limits on data storage, so raising this is not recommended.
     |
     */
-    'trade_asset_limit'                                 => 20,
+    'trade_asset_limit' => 20,
 
     /*
     |--------------------------------------------------------------------------
@@ -309,7 +309,7 @@ return [
     |       Expiry: Time (in months) before items are automatically deleted from the donation shop. Set to 0 to disable expiry. Default: 0.
     |
     */
-    'default_purchase_limit'                            => 99,
+    'default_purchase_limit' => 99,
 
     'donation_shop' => [
         'item_donations' => 2,
@@ -325,7 +325,26 @@ return [
     | Symbol for the (real world) currency used for sales posts.
     |
     */
-    'currency_symbol'                                   => '$',
+    'currency_symbol' => '$',
+
+    /*
+        |--------------------------------------------------------------------------
+        | Terms Popup
+        |--------------------------------------------------------------------------
+        |
+        | Defines the content of the terms popup that appears on your site. 
+        | For the text field, some html is fine.
+        |
+        | 0: do not show terms popup ever. 
+        | 1: Show terms popup until the visitor or user agreed.
+        */
+
+    'show_terms_popup' => 1,
+    'terms_popup' => [
+        "title" => "Wait a second!",
+        "text" => "This closed species and site are rated 18+. By proceeding and interacting in any way with this closed species, you are confirming you are at least 18 years old.",
+        "button" => "Accept"
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -340,8 +359,8 @@ return [
     |
     */
 
-    'allow_username_changes'                            => 0,
-    'username_change_cooldown'                          => 30,
+    'allow_username_changes' => 0,
+    'username_change_cooldown' => 30,
 
     /*
     |--------------------------------------------------------------------------
@@ -352,7 +371,7 @@ return [
     | 1: Use WYSIWYG editor. 0: Use markdown / plain text editor.
     |
     */
-    'wysiwyg_comments'                                  => 0,
+    'wysiwyg_comments' => 0,
 
     /*
     |--------------------------------------------------------------------------
@@ -362,7 +381,7 @@ return [
     | Whether or not to allow gallery submissions on prompts.
     |
     */
-    'allow_gallery_submissions_on_prompts'              => 1,
+    'allow_gallery_submissions_on_prompts' => 1,
 
     /*
     |--------------------------------------------------------------------------
@@ -375,5 +394,5 @@ return [
     | This is intended to be a Discord webhook, but can be used with other services with minor modifications.
     |
     */
-    'site_logging_webhook'                              => env('SITE_LOGGING_WEBHOOK', null),
+    'site_logging_webhook' => env('SITE_LOGGING_WEBHOOK', null),
 ];

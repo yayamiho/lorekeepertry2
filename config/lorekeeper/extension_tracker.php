@@ -24,6 +24,16 @@ return [
     'alternate_site_designs' => [
         'key' => 'alternate_site_designs',
         'wiki_key' => 'Alternate Site Designs',
+            'creators' => json_encode([
+            'Cylunny' => 'https://toyhou.se/cylunny',
+        ]),
+        'version' => '1.0.0', 
+    ],
+
+
+    'terms_popup' => [
+        'key' => 'terms_popup',
+        'wiki_key' => 'Terms Popup',
         'creators' => json_encode([
             'Cylunny' => 'https://toyhou.se/cylunny',
         ]),
