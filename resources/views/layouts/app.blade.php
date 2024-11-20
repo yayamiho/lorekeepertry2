@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <?php
-    header('Permissions-Policy: interest-cohort=()');
+header('Permissions-Policy: interest-cohort=()');
     ?>
 
     <!-- CSRF Token -->
@@ -20,21 +20,27 @@
 
     <!-- Primary Meta Tags -->
     <meta name="title" content="{{ config('lorekeeper.settings.site_name', 'Lorekeeper') }} -@yield('title')">
-    <meta name="description" content="@if (View::hasSection('meta-desc')) @yield('meta-desc') @else {{ config('lorekeeper.settings.site_desc', 'A Lorekeeper ARPG') }} @endif">
+    <meta name="description"
+        content="@if (View::hasSection('meta-desc')) @yield('meta-desc') @else {{ config('lorekeeper.settings.site_desc', 'A Lorekeeper ARPG') }} @endif">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ config('app.url', 'http://localhost') }}">
-    <meta property="og:image" content="@if (View::hasSection('meta-img')) @yield('meta-img') @else {{ asset('images/meta-image.png') }} @endif">
+    <meta property="og:image"
+        content="@if (View::hasSection('meta-img')) @yield('meta-img') @else {{ asset('images/meta-image.png') }} @endif">
     <meta property="og:title" content="{{ config('lorekeeper.settings.site_name', 'Lorekeeper') }} -@yield('title')">
-    <meta property="og:description" content="@if (View::hasSection('meta-desc')) @yield('meta-desc') @else {{ config('lorekeeper.settings.site_desc', 'A Lorekeeper ARPG') }} @endif">
+    <meta property="og:description"
+        content="@if (View::hasSection('meta-desc')) @yield('meta-desc') @else {{ config('lorekeeper.settings.site_desc', 'A Lorekeeper ARPG') }} @endif">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="{{ config('app.url', 'http://localhost') }}">
-    <meta property="twitter:image" content="@if (View::hasSection('meta-img')) @yield('meta-img') @else {{ asset('images/meta-image.png') }} @endif">
-    <meta property="twitter:title" content="{{ config('lorekeeper.settings.site_name', 'Lorekeeper') }} -@yield('title')">
-    <meta property="twitter:description" content="@if (View::hasSection('meta-desc')) @yield('meta-desc') @else {{ config('lorekeeper.settings.site_desc', 'A Lorekeeper ARPG') }} @endif">
+    <meta property="twitter:image"
+        content="@if (View::hasSection('meta-img')) @yield('meta-img') @else {{ asset('images/meta-image.png') }} @endif">
+    <meta property="twitter:title"
+        content="{{ config('lorekeeper.settings.site_name', 'Lorekeeper') }} -@yield('title')">
+    <meta property="twitter:description"
+        content="@if (View::hasSection('meta-desc')) @yield('meta-desc') @else {{ config('lorekeeper.settings.site_desc', 'A Lorekeeper ARPG') }} @endif">
 
     <!-- No AI scraping directives -->
     <meta name="robots" content="noai">
@@ -87,9 +93,11 @@
     @endif
     @if ($theme?->has_css)
         <style type="text/css" media="screen">
-            @php include_once($theme?->cssUrl)
-            @endphp
-            {{-- css in style tag to so that order matters --}}
+            @php include_once($theme?->cssUrl) @endphp {
+                    {
+                    -- css in style tag to so that order matters --
+                }
+            }
         </style>
     @endif
     @if (!$theme?->prioritize_css)
@@ -102,9 +110,11 @@
     @endif
     @if ($conditionalTheme?->has_css)
         <style type="text/css" media="screen">
-            @php include_once($conditionalTheme?->cssUrl)
-            @endphp
-            {{-- css in style tag to so that order matters --}}
+            @php include_once($conditionalTheme?->cssUrl) @endphp {
+                    {
+                    -- css in style tag to so that order matters --
+                }
+            }
         </style>
     @endif
     @if (!$conditionalTheme?->prioritize_css)
@@ -116,9 +126,11 @@
     @endif
     @if ($decoratorTheme?->has_css)
         <style type="text/css" media="screen">
-            @php include_once($decoratorTheme?->cssUrl)
-            @endphp
-            {{-- css in style tag to so that order matters --}}
+            @php include_once($decoratorTheme?->cssUrl) @endphp {
+                    {
+                    -- css in style tag to so that order matters --
+                }
+            }
         </style>
     @endif
     @if (!$decoratorTheme?->prioritize_css)
@@ -129,13 +141,15 @@
 
 <body>
     <div id="app">
-        <div class="site-header-image" id="header" style="background-image: url('{{ asset('images/header.png') }}'); position: relative;">
-        <img id="logo" src="{{ asset('images/logo.png') }}">
-            @include('layouts._clock')
-        </div>
-        @include('layouts._nav')
+            <div class="site-header-image" id="header"
+                style="background-image: url('{{ asset('images/header.png') }}'); position: relative;">
+                <img id="logo" src="{{ asset('images/logo.png') }}">
+                @include('layouts._clock')
+            </div>
+            @include('layouts._nav')
         @if (View::hasSection('sidebar'))
-            <div class="site-mobile-header bg-secondary"><a href="#" class="btn btn-sm btn-outline-light" id="mobileMenuButton">Menu <i class="fas fa-caret-right ml-1"></i></a></div>
+            <div class="site-mobile-header bg-secondary"><a href="#" class="btn btn-sm btn-outline-light"
+                    id="mobileMenuButton">Menu <i class="fas fa-caret-right ml-1"></i></a></div>
         @endif
 
         <main class="container-fluid" id="main">
@@ -191,7 +205,7 @@
         @yield('scripts')
         @include('layouts._pagination_js')
         <script>
-            $(function() {
+            $(function () {
                 $('[data-toggle="tooltip"]').tooltip({
                     html: true
                 });
@@ -201,7 +215,7 @@
                         super(colorpicker, options);
 
                         if (this.colorpicker.inputHandler.hasInput()) {
-                            const onBlur = function(colorpicker, fallback) {
+                            const onBlur = function (colorpicker, fallback) {
                                 return () => {
                                     colorpicker.setValue(colorpicker.blurFallback._original.color);
                                 }
@@ -262,39 +276,40 @@
                 });
                 var $mobileMenuButton = $('#mobileMenuButton');
                 var $sidebar = $('#sidebar');
-                $('#mobileMenuButton').on('click', function(e) {
+                $('#mobileMenuButton').on('click', function (e) {
                     e.preventDefault();
                     $sidebar.toggleClass('active');
                 });
 
-                $('.inventory-log-stack').on('click', function(e) {
+                $('.inventory-log-stack').on('click', function (e) {
                     e.preventDefault();
                     loadModal("{{ url('items') }}/" + $(this).data('id') + "?read_only=1", $(this).data('name'));
                 });
 
                 $('.spoiler-text').hide();
-                $('.spoiler-toggle').click(function() {
+                $('.spoiler-toggle').click(function () {
                     $(this).next().toggle();
                 });
             });
 
-                // CLOCK
-                function time() {
-                    setInterval(function() { 
-                        var date = new Date(); // initial date, this acts kinda like a first carbon instance so we can preform functions on it
-                        var time = new Date(date.getTime() - (3 * (60*60*1000)));  // preform function on first date (basically get time in timestamp format, the 60*60*1000 is an offset of +1 hour. To do other timezones just convert it to the necessary amount of hours +- GMT-3
-                        var cycle = (time.getUTCHours()) >= 12 ? ' PM' : ' AM'; // this gets the hour in military time so if it's greater than 12 it's pm
-                        // substr is a function that'll knock of certain letters from a given input. 
-                        // Because ours is -2, if we have 001, it'll read as 01. If we have 042, it'll be 42
-                        // we want this because getUTCSeconds() for example gives a single integer value for values < 10 (ex 1 second shows as 1)
-                        // this doesn't look correct so we basically ''force'' it to be correct by adding and (sometimes) removed the extra 0
-                        // we do getUTC so that it doesn't change per person and is universal
-                        // you can see more here https://stackoverflow.com/a/39418437/11052835
-                        var display = (time.getUTCHours()) + ":" +  ('0' + time.getUTCMinutes()).substr(-2) + ":" +  ('0' + time.getUTCSeconds()).substr(-2); // make it look pretty
-                        $("#clock").text(display); // set the div to new time
-                    }, 1000)} // times it out for 1 second so loop
-                
-                setInterval(time(), 1000); // loop
+            // CLOCK
+            function time() {
+                setInterval(function () {
+                    var date = new Date(); // initial date, this acts kinda like a first carbon instance so we can preform functions on it
+                    var time = new Date(date.getTime() - (3 * (60 * 60 * 1000)));  // preform function on first date (basically get time in timestamp format, the 60*60*1000 is an offset of +1 hour. To do other timezones just convert it to the necessary amount of hours +- GMT-3
+                    var cycle = (time.getUTCHours()) >= 12 ? ' PM' : ' AM'; // this gets the hour in military time so if it's greater than 12 it's pm
+                    // substr is a function that'll knock of certain letters from a given input. 
+                    // Because ours is -2, if we have 001, it'll read as 01. If we have 042, it'll be 42
+                    // we want this because getUTCSeconds() for example gives a single integer value for values < 10 (ex 1 second shows as 1)
+                    // this doesn't look correct so we basically ''force'' it to be correct by adding and (sometimes) removed the extra 0
+                    // we do getUTC so that it doesn't change per person and is universal
+                    // you can see more here https://stackoverflow.com/a/39418437/11052835
+                    var display = (time.getUTCHours()) + ":" + ('0' + time.getUTCMinutes()).substr(-2) + ":" + ('0' + time.getUTCSeconds()).substr(-2); // make it look pretty
+                    $("#clock").text(display); // set the div to new time
+                }, 1000)
+            } // times it out for 1 second so loop
+
+            setInterval(time(), 1000); // loop
         </script>
     </div>
 </body>

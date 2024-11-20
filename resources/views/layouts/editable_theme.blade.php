@@ -2,11 +2,18 @@
     $titleColor = $theme->themeEditor->title_color ?? null;
     $navBarColor = $theme->themeEditor->nav_color ?? null; 
     $navTextColor  = $theme->themeEditor->nav_text_color ?? null; 
+
     $headerImageDisplay = $theme->themeEditor->header_image_display ?? null;
+    $headerImage = $theme->header_image_url ?? null; 
+    $headerSize = $theme->themeEditor->header_size ?? null; 
+
     $logoImageDisplay = $theme->themeEditor->logo_image_display ?? null;
+    $logoImage = $theme->logo_image_url ?? null; 
+
     $backgroundColor = $theme->themeEditor->background_color ?? null;
     $backgroundImage = $theme->backgroundImageUrl ?? null; 
     $backgroundSize = $theme->themeEditor->background_size ?? null; 
+
     $mainMarginTop = ($headerImageDisplay == 'none') ? 50 : 0;
     $mainColor = $theme->themeEditor->main_color ?? null;  
     $mainTextColor = $theme->themeEditor->main_text_color ?? null;  
@@ -24,10 +31,13 @@
 /** Style the site header and nav */
 .site-header-image{
     @if($headerImageDisplay) display: {{ $headerImageDisplay }}; @endif
+    @if($headerImage) background-image: url('{{ $headerImage }}')!important; @endif
+    @if($headerSize) background-size: 100%; @endif
 }
 /** Style logo */
 .site-header-image #logo{
     @if($logoImageDisplay) display: {{ $logoImageDisplay }}; @endif
+    @if ($logoImage) content: url('{{ $logoImage }}'); @endif
 }
 
 .bg-dark, .sidebar .sidebar-header, .sidebar a.active, .sidebar a.active:hover {

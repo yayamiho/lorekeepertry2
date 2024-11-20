@@ -120,6 +120,7 @@ main > .row {
 .sidebar {
     text-align: right;
     padding-right: 0px;
+    border-radius: 20px;
 }
 
 .sidebar ul {

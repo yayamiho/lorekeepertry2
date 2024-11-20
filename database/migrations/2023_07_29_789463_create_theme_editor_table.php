@@ -24,6 +24,7 @@ class CreateThemeEditorTable extends Migration
 
             $table->string('header_image_display')->default("inline");
             $table->string('header_image_url')->default("/images/header.png");
+            $table->string('header_size')->default('cover');
             
             $table->string('logo_image_display')->default("inline");
             $table->string('logo_image_url')->default("/images/logo.png");
