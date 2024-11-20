@@ -49,7 +49,10 @@ class AddNullableToThemeEditor extends Migration {
             $table->string('nav_text_color')->default("#ffffff")->change();
 
             $table->string('header_image_display')->default("inline")->change();
-            $table->string('header_image_url')->default("/images/header.png")->change();
+            $table->string('header_image_url')->default("/images/header.png")->change()
+            ;
+            $table->string('logo_image_display')->default("inline")->change();
+            $table->string('logo_image_url')->default("/images/logo.png")->change();
 
             $table->string('background_color')->default("#ddd")->change();
             $table->string('background_image_url')->default('')->change();

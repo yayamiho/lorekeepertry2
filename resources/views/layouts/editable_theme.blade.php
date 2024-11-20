@@ -3,6 +3,7 @@
     $navBarColor = $theme->themeEditor->nav_color ?? null; 
     $navTextColor  = $theme->themeEditor->nav_text_color ?? null; 
     $headerImageDisplay = $theme->themeEditor->header_image_display ?? null;
+    $logoImageDisplay = $theme->themeEditor->logo_image_display ?? null;
     $backgroundColor = $theme->themeEditor->background_color ?? null;
     $backgroundImage = $theme->backgroundImageUrl ?? null; 
     $backgroundSize = $theme->themeEditor->background_size ?? null; 
@@ -23,6 +24,10 @@
 /** Style the site header and nav */
 .site-header-image{
     @if($headerImageDisplay) display: {{ $headerImageDisplay }}; @endif
+}
+/** Style logo */
+#logo{
+    @if($logoImageDisplay) display: {{ $logoImageDisplay }}; @endif
 }
 
 .bg-dark, .sidebar .sidebar-header, .sidebar a.active, .sidebar a.active:hover {

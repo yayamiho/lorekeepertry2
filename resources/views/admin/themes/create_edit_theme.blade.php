@@ -157,6 +157,37 @@ Conditional Themes will be layered on top of a users base theme, and under a use
     </div>
 </div>
 
+<h5>Logo Image</h5>
+<p>The Logo Image can be uploaded directly or specified by url. Finally you can turn the logo off entirely.</p>
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            @if($theme->has_logo) <a href="{{ $theme->logoImageUrl }}"><i class="fas fa-link"></i></a> @endif
+            {!! Form::label('Logo Image') !!}
+            <div>{!! Form::file('logo') !!}</div>
+            <div class="text-muted">Logo image.</div>
+            @if($theme->has_logo)
+                <div class="form-check">
+                    {!! Form::checkbox('remove_logo', 1, false, ['class' => 'form-check-input']) !!}
+                    {!! Form::label('remove_logo', 'Remove current logo', ['class' => 'form-check-label']) !!}
+                </div>
+            @endif
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            {!! Form::label('Logo Image Url') !!}
+            {!! Form::text('logo_image_url', $theme->themeEditor->logo_image_url ?? '', ['class' => 'form-control']) !!}
+        </div>
+    </div>
+    <div class="col-md-4">
+        {!! Form::label('Show logo image') !!}
+        <div class="form-group">
+            {!! Form::checkbox('logo_image_display', 1,  $theme->themeEditor?->logo_image_display == 'inline' ?? 1, ['class' => 'form-check-input form-control', 'data-toggle' => 'toggle']) !!}
+        </div>
+    </div>
+</div>
+
 <h5>Background Image</h5>
 <p>The Background Image can be uploaded directly or specified by url. If you only specify a color there will be no background image.</p>
 

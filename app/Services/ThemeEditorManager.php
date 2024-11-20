@@ -31,8 +31,10 @@ class ThemeEditorManager extends Service
 
         try {
             $data['header_image_display'] = (isset($data['header_image_display'])) ?  'inline' : 'none'; 
+            $data['logo_image_display'] = (isset($data['logo_image_display'])) ?  'inline' : 'none'; 
             $data['background_size'] = (isset($data['background_size'])) ?  'cover' : 'auto'; 
             $data['header_image_url'] = (isset($data['header_image_url'])) ? $data['header_image_url'] : '';
+            $data['logo_image_url'] = (isset($data['logo_image_url'])) ? $data['logo_image_url'] : '';
             $data['background_image_url'] = (isset($data['background_image_url'])) ? $data['background_image_url'] : '';
 
             $theme = ThemeEditor::create($data);
@@ -59,8 +61,10 @@ class ThemeEditorManager extends Service
 
         try {
             $data['header_image_display'] = (isset($data['header_image_display'])) ?  'inline' : 'none'; 
+            $data['logo_image_display'] = (isset($data['logo_image_display'])) ?  'inline' : 'none';
             $data['background_size'] = (isset($data['background_size'])) ?  'cover' : 'auto'; 
             $data['header_image_url'] = (isset($data['header_image_url'])) ? $data['header_image_url'] : ''; 
+            $data['logo_image_url'] = (isset($data['logo_image_url'])) ? $data['logo_image_url'] : ''; 
             $data['background_image_url'] = (isset($data['background_image_url'])) ? $data['background_image_url'] : ''; 
             $data['is_released'] = (isset($data['is_released'])) ? 1 : 0;
 
