@@ -32,7 +32,7 @@
 .site-header-image{
     @if($headerImageDisplay) display: {{ $headerImageDisplay }}; @endif
     @if($headerImage) background-image: url('{{ $headerImage }}')!important; @endif
-    @if($headerSize) background-size: 100%; @endif
+    @if($headerSize) background-size: 100% {{ $headerSize }} !important; @endif
 }
 /** Style logo */
 .site-header-image #logo{
@@ -77,10 +77,13 @@
 
 /** Style main background */
 
-#main {
+#app {
     @if($backgroundImage) background-image: url('{{ $backgroundImage }}'); @endif
     @if($backgroundColor) background-color: {{ $backgroundColor }} !important; @endif
-    @if($backgroundSize) background-size: 100% {{ $backgroundSize }}; @endif
+    @if($backgroundSize)
+     background-size: 100% {{ $backgroundSize }} !important; 
+     background-attachment:fixed;
+    @endif
     background-repeat: repeat;
 }
 
