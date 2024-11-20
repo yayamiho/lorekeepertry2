@@ -13,6 +13,13 @@ Use STRG+SHIFT+R to hard refresh and reload the css or you may be unable to see 
     padding: 1.4em 0 !important;
 }
 
+.sidebar ul {
+    list-style-type: none;
+    display: inline-block;
+    padding-top: 30px;
+    width: 100%;
+}
+
 .site-header-image {
     background-size: contain;
     border-top-right-radius: 30px;
@@ -20,11 +27,6 @@ Use STRG+SHIFT+R to hard refresh and reload the css or you may be unable to see 
     margin-top: 20px !important;
 }
 
-.site-header-image, #headerNav {
-    margin: auto;
-    width: 100%;
-    max-width: 66.6666666667%;
-}
 
 .main-content,
 .sidebar {
@@ -34,4 +36,22 @@ Use STRG+SHIFT+R to hard refresh and reload the css or you may be unable to see 
 .main-content {
     border-bottom-right-radius: 30px;
     border-bottom-left-radius: 30px;
+}
+
+/* responsive for mobile */
+
+@media (min-width: 1243px) {
+    .site-header-image, #headerNav {
+        margin: auto;
+        width: 100%;
+        max-width: 66.6666666667%;
+    }
+}
+
+@media (max-width: 1243px) {
+    .site-header-image, #headerNav {
+        margin: auto;
+        width: 100%;
+        max-width: 100%;
+    }
 }
