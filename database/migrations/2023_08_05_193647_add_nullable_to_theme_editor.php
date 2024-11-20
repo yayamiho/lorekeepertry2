@@ -18,6 +18,9 @@ class AddNullableToThemeEditor extends Migration {
 
             $table->string('header_image_display')->nullable()->default(null)->change();
             $table->string('header_image_url')->nullable()->default(null)->change();
+            
+            $table->string('logo_image_display')->nullable()->default(null)->change();
+            $table->string('logo_image_url')->nullable()->default(null)->change();
 
             $table->string('background_color')->nullable()->default(null)->change();
             $table->string('background_image_url')->nullable()->default(null)->change();

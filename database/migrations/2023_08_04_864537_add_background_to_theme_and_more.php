@@ -19,6 +19,11 @@ class AddBackgroundToThemeAndMore extends Migration {
             $table->boolean('has_background')->default(0);
             $table->string('extension_background',5)->nullable()->default(null);
         });
+
+        Schema::table('themes', function (Blueprint $table) {
+            $table->boolean('has_logo')->default(0);
+            $table->string('extension_logo',5)->nullable()->default(null);
+        });
     }
 
     /**
@@ -34,6 +39,11 @@ class AddBackgroundToThemeAndMore extends Migration {
         Schema::table('themes', function (Blueprint $table) {
             $table->dropColumn('has_background');
             $table->dropColumn('extension_background');
+        });
+
+        Schema::table('themes', function (Blueprint $table) {
+            $table->dropColumn('has_logo');
+            $table->dropColumn('extension_logo');
         });
     }
 }

@@ -26,7 +26,7 @@
     @if($headerImageDisplay) display: {{ $headerImageDisplay }}; @endif
 }
 /** Style logo */
-#logo{
+.site-header-image #logo{
     @if($logoImageDisplay) display: {{ $logoImageDisplay }}; @endif
 }
 

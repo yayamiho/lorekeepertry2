@@ -26,6 +26,7 @@ class CreateThemesTable extends Migration
             $table->boolean('has_header')->default(0); // header image uploaded to the theme folder
             $table->boolean('has_logo')->default(0); // logo image uploaded to the theme folder
             $table->string('extension',5)->nullable()->default(null); // Header image extension
+            $table->string('extension_logo',5)->nullable()->default(null); // Header image extension
 
             $table->text('creators'); // JSON Credits to creators
 

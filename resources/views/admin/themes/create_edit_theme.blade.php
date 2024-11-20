@@ -166,12 +166,6 @@ Conditional Themes will be layered on top of a users base theme, and under a use
             {!! Form::label('Logo Image') !!}
             <div>{!! Form::file('logo') !!}</div>
             <div class="text-muted">Logo image.</div>
-            @if($theme->has_logo)
-                <div class="form-check">
-                    {!! Form::checkbox('remove_logo', 1, false, ['class' => 'form-check-input']) !!}
-                    {!! Form::label('remove_logo', 'Remove current logo', ['class' => 'form-check-label']) !!}
-                </div>
-            @endif
         </div>
     </div>
     <div class="col-md-4">

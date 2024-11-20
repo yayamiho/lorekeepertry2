@@ -20,7 +20,7 @@ class Theme extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'hash', 'is_default', 'is_active', 'has_css', 'has_header', 'has_logo', 'has_background', 'extension', 'extension_background', 'creators', 'prioritize_css', 'link_id', 'link_type', 'is_user_selectable', 'theme_type'
+        'name', 'hash', 'is_default', 'is_active', 'has_css', 'has_header', 'has_logo', 'has_background', 'extension', 'extension_logo', 'extension_background', 'creators', 'prioritize_css', 'link_id', 'link_type', 'is_user_selectable', 'theme_type'
     ];
 
     /**
@@ -202,7 +202,7 @@ class Theme extends Model
      */
     public function getLogoImageFileNameAttribute()
     {
-        return $this->id . '-logo.'.$this->extension;
+        return $this->id . '-logo.'.$this->extension_logo;
     }
 
     /**
@@ -239,7 +239,7 @@ class Theme extends Model
     public function getLogoImageUrlAttribute()
     {
         if (!$this->has_logo && !$this->themeEditor?->logo_image_url) return asset('images/logo.png');
-        return $this->extension ? asset($this->imageDirectory . '/' . $this->logoImageFileName . '?' . $this->hash) : $this->themeEditor?->logo_image_url;
+        return $this->extension_logo ? asset($this->imageDirectory . '/' . $this->logoImageFileName . '?' . $this->hash) : $this->themeEditor?->logo_image_url;
     }
 
     /**

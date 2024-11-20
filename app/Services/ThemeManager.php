@@ -79,7 +79,7 @@ class ThemeManager extends Service
                 $this->handleImage($header, $theme->imagePath, $theme->headerImageFileName, null);
             }
             if ($logo) {
-                $theme->extension = $logo->getClientOriginalExtension();
+                $theme->extension_logo = $logo->getClientOriginalExtension();
                 $theme->update();
                 $this->handleImage($logo, $theme->imagePath, $theme->logoImageFileName, null);
             }
@@ -128,7 +128,7 @@ class ThemeManager extends Service
             }
             $logo = null;
             if(isset($data['logo']) && $data['logo']) {
-                if (isset($theme->extension)) $old = $theme->logoImageFileName;
+                if (isset($theme->extension_logo)) $old = $theme->logoImageFileName;
                 else $old = null;
                 $data['has_logo'] = 1;
                 $logo = $data['logo'];
@@ -164,7 +164,7 @@ class ThemeManager extends Service
                 $this->handleImage($header, $theme->imagePath, $theme->headerImageFileName, $old);
             }
             if ($logo) {
-                $theme->extension = $logo->getClientOriginalExtension();
+                $theme->extension_logo = $logo->getClientOriginalExtension();
                 $theme->update();
                 $this->handleImage($logo, $theme->imagePath, $theme->logoImageFileName, $old);
             }
@@ -235,7 +235,7 @@ class ThemeManager extends Service
         // Remove Logo
         if(isset($data['remove_logo']) && isset($theme->extension) && $data['remove_logo'])
         {
-            $data['extension'] = null;
+            $data['extension_logo'] = null;
             $this->deleteImage($theme->imagePath, $theme->logoImageFileName);
             unset($data['remove_image']);
             $data['has_logo'] = 0;
