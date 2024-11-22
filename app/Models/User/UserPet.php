@@ -91,7 +91,7 @@ class UserPet extends Model {
     /**
      * Get the pet's pet drop data.
      */
-    public function drops() {
+    /*public function drops() {
         if (!$this->pet->dropData) {
             return $this->belongsTo('App\Models\Loot\Loot', 'rewardable_id', 'loot_table_id')->whereNull('loot_table_id');
         }
@@ -120,7 +120,7 @@ class UserPet extends Model {
         }
 
         return $this->hasOne(PetDrop::class, 'user_pet_id');
-    }
+    }*/
 
     /**
      * Get the user that drew the pet art.

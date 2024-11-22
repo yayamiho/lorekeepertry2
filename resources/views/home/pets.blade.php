@@ -67,7 +67,7 @@ Pets
                                     @if ($pet->pivot->evolution_id)
                                         <span data-toggle="tooltip"
                                             title="This pet has evolved. Stage
-                                                                                                                                                                                            {{ $pet->evolutions->where('id', $pet->pivot->evolution_id)->first()->evolution_stage }}."><i
+                                                                                                                                                                                                                                                                            {{ $pet->evolutions->where('id', $pet->pivot->evolution_id)->first()->evolution_stage }}."><i
                                                 class="fas fa-angle-double-up ml-1"></i>
                                         </span>
                                     @endif
@@ -75,17 +75,24 @@ Pets
                             </div>
 
                             @if ($pet->pivot->character_id)
-
                                 @if (config('lorekeeper.pets.pet_bonding_enabled'))
-                                    <div class="progress mb-2">
-                                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
-                                            style="width: {{ ($pet->pivot->level?->nextLevel?->bonding_required ? ($pet->pivot->level?->bonding / $pet->pivot->level?->nextLevel?->bonding_required) : 1 * 100) . '%' }}"
-                                            aria-valuenow="{{ $pet->pivot->level?->bonding }}" aria-valuemin="0"
-                                            aria-valuemax="{{ $pet->pivot->level?->nextLevel?->bonding_required ?? 100 }}">
-                                            {{ $pet->level?->nextLevel?->bonding_required ? ($pet->pivot->level?->bonding . '/' . $pet->pivot->level?->nextLevel?->bonding_required) : $pet->pivot->level?->levelName }}
-                                        </div>
-                                    </div>
-                                    {{ $pet->pivot->level?->levelName }}
+
+                                    @php
+  $petData = \App\Models\User\UserPet::where('id', $pet->pivot->id)->first();
+  $level = \App\Models\Pet\PetLevel::where('level', $petData->level->bonding_level)->first();
+@endphp
+<div class="progress mb-2">
+  <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+      style="width: {{ ($petData->level?->nextLevel?->bonding_required ? ($petData->level?->bonding / $petData->level?->nextLevel?->bonding_required) * 100 : 1 * 100) . '%' }}"
+      aria-valuenow="{{ $petData->level?->bonding }}" aria-valuemin="0" aria-valuemax="{{ $petData->level?->nextLevel?->bonding_required ?? 100 }}">
+      {{ $petData->level?->nextLevel?->bonding_required ? ($petData->level?->bonding .'/'. $petData->level?->nextLevel?->bonding_required) : $petData->level?->levelName }}
+  </div>
+</div>
+<div style="margin-top:-5px; margin-bottom:5px; font-style:italic">
+  {{ !isset($level) ? config('lorekeeper.pets.initial_level_name') : $level->name }}
+</div>
+
+
                                     @if ($pet->pivot->bonded_at && Carbon\Carbon::parse($pet->pivot->bonded_at)->isToday())
                                         <span class="alert alert-warning mb-0" style="padding:0.25rem .5rem">Bonded Today</span>
                                     @else
