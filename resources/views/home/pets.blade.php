@@ -13,9 +13,13 @@
 
     <p>These are your pets. Click on a pet to view more details and actions you can perform on it.</p>
 
-    <div class="text-right">
-        {!! Form::open(['url' => 'pets/collect-all']) !!}
-        {!! Form::submit('Collect All Pet Drops', ['class' => 'btn btn-success my-3']) !!}
+    <div class="d-flex justify-content-center">
+        <!--{!! Form::open(['url' => 'pets/collect-all']) !!}
+        {!! Form::submit('Collect All Pet Drops', ['class' => 'btn btn-success my-3 mx-1']) !!}
+        {!! Form::close() !!}-->
+
+        {!! Form::open(['url' => 'pets/bond-all']) !!}
+        {!! Form::submit('Bond With All Pets', ['class' => 'btn btn-success my-3 mx-1 bond-all-button']) !!}
         {!! Form::close() !!}
     </div>
 
@@ -49,6 +53,15 @@
                                         @endif
                                     </a>
                                 </div>
+                                @if ($pet->pivot->character_id)
+                                    <div>
+                                        @if ($pet->pivot->bonded_at && Carbon\Carbon::parse($pet->pivot->bonded_at)->isToday())
+                                            <span class="badge badge-success">Bonded Today</span>
+                                        @else
+                                            <span class="badge badge-info text-white">Can Be Bonded With</span>
+                                        @endif
+                                    </div>
+                                @endif
 
                             </div>
                         @endforeach

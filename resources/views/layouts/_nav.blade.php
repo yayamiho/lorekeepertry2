@@ -3,7 +3,8 @@
         <a class="navbar-brand" href="{{ url('/') }}">
             {{ config('lorekeeper.settings.site_name', 'Lorekeeper') }}
         </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
             <span class="navbar-toggler-icon"></span>
         </button>
 
@@ -12,144 +13,166 @@
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
                     @if (Auth::check() && Auth::user()->is_news_unread && config('lorekeeper.extensions.navbar_news_notif'))
-                        <a class="nav-link d-flex text-warning" href="{{ url('news') }}"><strong>News</strong><i class="fas fa-bell"></i></a>
+                        <a class="nav-link d-flex text-warning" href="{{ url('news') }}"><strong>News</strong><i
+                                class="fas fa-bell"></i></a>
                     @else
                         <a class="nav-link" href="{{ url('news') }}">News</a>
                     @endif
                 </li>
                 <li class="nav-item">
                     @if (Auth::check() && Auth::user()->is_sales_unread && config('lorekeeper.extensions.navbar_news_notif'))
-                        <a class="nav-link d-flex text-warning" href="{{ url('sales') }}"><strong>Sales</strong><i class="fas fa-bell"></i></a>
+                        <a class="nav-link d-flex text-warning" href="{{ url('sales') }}"><strong>Sales</strong><i
+                                class="fas fa-bell"></i></a>
                     @else
                         <a class="nav-link" href="{{ url('sales') }}">Sales</a>
                     @endif
                 </li>
                 @if (Auth::check())
+                    <!-- ACCOUNT -->
                     <li class="nav-item dropdown">
-                        <a id="inventoryDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                            Home
+                        <a id="inventoryDropdown" class="nav-link dropdown-toggle" href="#" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                            Account
                         </a>
 
                         <div class="dropdown-menu" aria-labelledby="inventoryDropdown">
+                            <a class="dropdown-item" href="{{ url('inventory') }}">
+                                Inventory
+                            </a>
+                            <a class="dropdown-item" href="{{ url('pets') }}">
+                                Pets
+                            </a>
+                            <a class="dropdown-item" href="{{ url('bank') }}">
+                                Bank
+                            </a>
+                            @if(Auth::check())
+                                @if(Auth::user()->shops()->count() && Settings::get('user_shop_limit') == 1)
+                                    <a class="dropdown-item" href="{{ url(Auth::user()->shops()->first()->editUrl) }}">
+                                        My Shop
+                                    </a>
+                                @else
+                                    <a class="dropdown-item" href="{{ url('user-shops') }}">
+                                        My Shops
+                                    </a>
+                                @endif
+                            @endif
+                            <a class="dropdown-item" href="{{ url('trades/open') }}">
+                                Trades
+                            </a>
+                            <a class="dropdown-item" href="{{ url('awardcase') }}">
+                                {{ ucfirst(__('awards.awards')) }}
+                            </a>
+                            <a class="dropdown-item" href="{{ url('collection') }}">
+                                Collections
+                            </a>
+
+                            <div class="dropdown-divider"></div>
+
                             <a class="dropdown-item" href="{{ url('characters') }}">
                                 My Characters
                             </a>
                             <a class="dropdown-item" href="{{ url('characters/myos') }}">
                                 My MYO Slots
                             </a>
-                            <a class="dropdown-item" href="{{ url('pets') }}">
-                                My Pets
+                            <a class="dropdown-item" href="{{ url('designs') }}">
+                                Design Approvals
                             </a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="{{ url('inventory') }}">
-                                Inventory
-                            </a>
-                            <a class="dropdown-item" href="{{ url('bank') }}">
-                                Bank
-                            </a>
-                            <a class="dropdown-item" href="{{ url('awardcase') }}">
-                                {{ ucfirst(__('awards.awards')) }}
-                            <a class="dropdown-item" href="{{ url('collection') }}">
-                                Collections
+                            <a class="dropdown-item" href="{{ url('characters/transfers/incoming') }}">
+                                Character Transfers
                             </a>
                         </div>
                     </li>
+
+                    <!-- PLAY -->
                     <li class="nav-item dropdown">
-                        <a id="queueDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                            Activity
+                        <a id="queueDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false" v-pre>
+                            Play
                         </a>
                         <div class="dropdown-menu" aria-labelledby="queueDropdown">
-                            <a class="dropdown-item" href="{{ url('submissions') }}">
-                                Prompt Submissions
+                            <a class="dropdown-item" href="{{ url('info/which-waystone') }}">
+                                Which Waystone
                             </a>
-                            <a class="dropdown-item" href="{{ url('submissions?type=draft') }}">
-                                Submission Drafts
+                            <a class="dropdown-item" href="{{ url('gallery') }}">
+                                Gallery
                             </a>
-                            <a class="dropdown-item" href="{{ url('claims') }}">
-                                Claims
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{{ url('prompts/prompts') }}">
+                                Prompts
                             </a>
-                            <a class="dropdown-item" href="{{ url('claims?type=draft') }}">
-                                Claim Drafts
+                            <a class="dropdown-item" href="{{ url('shops') }}">
+                                Shops
                             </a>
-                            <a class="dropdown-item" href="{{ url('reports') }}">
-                                Reports
+                            <a class="dropdown-item" href="{{ url('user-shops/shop-index') }}">
+                                All User Shops
                             </a>
-                            <a class="dropdown-item" href="{{ url('designs') }}">
-                                Design Approvals
+                            <a class="dropdown-item" href="{{ url(__('cultivation.cultivation')) }}">
+                                Cultivation
                             </a>
                             <a class="dropdown-item" href="{{ url('crafting') }}">
                                 Crafting
                             </a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="{{ url('characters/transfers/incoming') }}">
-                                Character Transfers
-                            </a>
-                            <a class="dropdown-item" href="{{ url('trades/open') }}">
-                                Trades
+                            <a class="dropdown-item" href="{{ url('raffles') }}">
+                                Raffles
                             </a>
                         </div>
                     </li>
                 @endif
+
+                <!-- INFO -->
+
                 <li class="nav-item dropdown">
-                    <a id="browseDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                        Browse
+                    <a id="browseDropdown" class="nav-link dropdown-toggle" href="#" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                        Info
                     </a>
 
                     <div class="dropdown-menu" aria-labelledby="browseDropdown">
                         <a class="dropdown-item" href="{{ url('users') }}">
-                            Users
+                            User Index
                         </a>
-                        <a class="dropdown-item" href="{{ url('masterlist') }}">
-                            Character Masterlist
+                        <a class="dropdown-item" href="{{ url('sublist/NPC') }}">
+                            NPC Masterlist
                         </a>
-                        <a class="dropdown-item" href="{{ url('myos') }}">
-                            MYO Slot Masterlist
+                        <a class="dropdown-item" href="{{ url('sublist/PRE') }}">
+                            PRE Masterlist
+                        </a>
+                        <a class="dropdown-item" href="{{ url('sublist/MYO') }}">
+                            MYO Masterlist
                         </a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="{{ url('raffles') }}">
-                            Raffles
+                        <a class="dropdown-item" href="{{ url('world') }}">
+                            Encyclopedia
                         </a>
-                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{{ url('world') }}">
+                            Guides
+                        </a>
+                        <a class="dropdown-item" href="{{ url('world/library?bookshelf_id=1') }}">
+                            Lore
+                        </a>
+                    </div>
+                </li>
+                <!-- COMMUNITY -->
+                <li class="nav-item dropdown">
+                    <a id="loreDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false" v-pre>
+                        Community
+                    </a>
+
+                    <div class="dropdown-menu" aria-labelledby="loreDropdown">
+                    <a class="dropdown-item" href="{{ url('info/rules') }}">
+                            Rules
+                        </a>
+                        <a class="dropdown-item" href="{{ url('info/find-us') }}">
+                            Find Us
+                        </a>
+                        <a class="dropdown-item" href="{{ url('info/feedback') }}">
+                            Feedback
+                        </a>
                         <a class="dropdown-item" href="{{ url('reports/bug-reports') }}">
                             Bug Reports
                         </a>
                     </div>
-                </li>
-                <li class="nav-item dropdown">
-                    <a id="loreDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                        World
-                    </a>
-
-                    <div class="dropdown-menu" aria-labelledby="loreDropdown">
-                        <a class="dropdown-item" href="{{ url('world') }}">
-                            Encyclopedia
-                        </a>
-                        <a class="dropdown-item" href="{{ url('prompts/prompts') }}">
-                            Prompts
-                        </a>
-                        <a class="dropdown-item" href="{{ url('shops') }}">
-                            Shops
-                        </a>
-                        @if(Auth::check())
-                            @if(Auth::user()->shops()->count() && Settings::get('user_shop_limit') == 1)
-                                <a class="dropdown-item" href="{{ url(Auth::user()->shops()->first()->editUrl) }}">
-                                    My Shop
-                                </a>
-                            @else
-                                <a class="dropdown-item" href="{{ url('user-shops') }}">
-                                    My Shops
-                                </a>
-                            @endif
-                        @endif
-                        <a class="dropdown-item" href="{{ url('user-shops/shop-index') }}">
-                            All User Shops
-                        <a class="dropdown-item" href="{{ url(__('cultivation.cultivation')) }}">
-                            {{__('cultivation.cultivation')}}
-                        </a>
-                    </div>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url('gallery') }}">Gallery</a>
                 </li>
             </ul>
 
@@ -173,12 +196,14 @@
                     @endif
                     @if (Auth::user()->notifications_unread)
                         <li class="nav-item">
-                            <a class="nav-link btn btn-secondary btn-sm" href="{{ url('notifications') }}"><span class="fas fa-envelope"></span> {{ Auth::user()->notifications_unread }}</a>
+                            <a class="nav-link btn btn-secondary btn-sm" href="{{ url('notifications') }}"><span
+                                    class="fas fa-envelope"></span> {{ Auth::user()->notifications_unread }}</a>
                         </li>
                     @endif
 
                     <li class="nav-item dropdown">
-                        <a id="browseDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                        <a id="browseDropdown" class="nav-link dropdown-toggle" href="#" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                             Submit
                         </a>
 
@@ -192,11 +217,29 @@
                             <a class="dropdown-item" href="{{ url('reports/new') }}">
                                 Submit Report
                             </a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{{ url('submissions?type=draft') }}">
+                                Submission Drafts
+                            </a>
+                            <a class="dropdown-item" href="{{ url('claims?type=draft') }}">
+                                Claim Drafts
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{{ url('submissions') }}">
+                                My Prompts
+                            </a>
+                            <a class="dropdown-item" href="{{ url('claims') }}">
+                                My Claims
+                            </a>
+                            <a class="dropdown-item" href="{{ url('reports') }}">
+                                My Reports
+                            </a>
                         </div>
                     </li>
 
                     <li class="nav-item dropdown">
-                        <a id="navbarDropdown" class="nav-link dropdown-toggle" href="{{ Auth::user()->url }}" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                        <a id="navbarDropdown" class="nav-link dropdown-toggle" href="{{ Auth::user()->url }}" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                             {{ Auth::user()->name }} <span class="caret"></span>
                         </a>
 
@@ -213,8 +256,9 @@
                             <a class="dropdown-item" href="{{ url('account/settings') }}">
                                 Settings
                             </a>
-                            <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
-                                                document.getElementById('logout-form').submit();">
+                            <a class="dropdown-item" href="{{ route('logout') }}"
+                                onclick="event.preventDefault();
+                                                                                                                                                document.getElementById('logout-form').submit();">
                                 {{ __('Logout') }}
                             </a>
 

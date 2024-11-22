@@ -236,3 +236,8 @@ Route::group(['prefix' => 'reports', 'namespace' => 'Users'], function () {
 Route::group(['prefix' => 'terms'], function() {
     Route::get('/accept', 'TermsController@acceptTerms');
 });
+
+/**************************************************************************************************
+    USER PETS
+**************************************************************************************************/
+Route::get('userpets', 'UserPetsController@getUserPets');

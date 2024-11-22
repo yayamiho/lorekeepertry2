@@ -760,4 +760,83 @@ class PetManager extends Service {
             ]
         );
     }
+
+    /**
+ * Bonds with all pets.
+ *
+ * @param mixed $user
+ * @param mixed $pets
+ */
+public function bondAllPets($pets, $user) {
+    DB::beginTransaction();
+
+    try {
+        if (!config('lorekeeper.pets.pet_bonding_enabled')) {
+            throw new \Exception('Pet bonding is not enabled.');
+        }
+
+        foreach ($pets as $pet) {
+            if ($pet->bonded_at && $pet->bonded_at->isToday()) {
+                continue;
+            }
+
+            $pet->bonded_at = Carbon::now();
+            $pet->save();
+
+            if (!$pet->level) {
+                $pet->level()->create([
+                    'bonding_level'   => 0,
+                    'bonding'         => 0,
+                ]);
+                $pet = $pet->fresh();
+            }
+            $bonding = $pet->level->bonding + 1;
+
+            // check if meets bonding requirement for next level
+            if ($pet->level->nextLevel && $bonding >= $pet->level->nextLevel?->bonding_required) {
+                // check if this level has rewards, or if it has pet rewards for this pet
+                $nextLevel = $pet->level->nextLevel;
+                $nextLevelRewards = $pet->level->nextLevel->rewards;
+                $petRewards = isset($nextLevel->pets()->where('pet_id', $pet->pet->id)->first()->rewards) ? $nextLevel->pets()->where('pet_id', $pet->pet->id)->first()->rewards : null;
+                if ($nextLevelRewards || $petRewards) {
+                    $assets = createAssetsArray();
+
+                    if ($nextLevelRewards) {
+                        foreach ($nextLevelRewards as $reward) {
+                            addAsset($assets, findReward($reward->rewardable_type, $reward->rewardable_id), $reward->quantity);
+                        }
+                    }
+
+                    if ($petRewards) {
+                        foreach ($petRewards as $reward) {
+                            addAsset($assets, findReward($reward->rewardable_type, $reward->rewardable_id), $reward->quantity);
+                        }
+                    }
+
+                    // function fillUserAssets($assets, $sender, $recipient, $logType, $data) {
+                    fillUserAssets($assets, null, $pet->user, 'Pet Level Up', ['data' => 'Received rewards from leveling up '.$pet->pet->name]);
+
+                    flash('You received: '.createRewardsString($assets))->success();
+                }
+
+                // level up
+                $pet->level->bonding_level += 1;
+                $pet->level->bonding = 0;
+                $pet->level->save();
+
+                flash('Your pet '.$pet->pet_name ? $pet->pet_name : $pet->pet->name.' has leveled up! They are now level '.$pet->level->level->level.'.')->success();
+            } else {
+                $pet->level->bonding = $bonding;
+                $pet->level->save();
+            }
+        }
+
+        return $this->commitReturn(true);
+    } catch (\Exception $e) {
+        $this->setError('error', $e->getMessage());
+    }
+
+    return $this->rollbackReturn(false);
+}
+
 }

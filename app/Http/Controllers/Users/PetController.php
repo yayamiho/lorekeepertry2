@@ -17,7 +17,8 @@ use App\Services\PetManager;
 use Auth;
 use Illuminate\Http\Request;
 
-class PetController extends Controller {
+class PetController extends Controller
+{
     /*
     |--------------------------------------------------------------------------
     | Pet Controller
@@ -32,15 +33,16 @@ class PetController extends Controller {
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getIndex() {
+    public function getIndex()
+    {
         $categories = PetCategory::orderBy('sort', 'DESC')->get();
-        $pets = count($categories) ? Auth::user()->pets()->orderByRaw('FIELD(pet_category_id,'.implode(',', $categories->pluck('id')->toArray()).')')->orderBy('pet_name')->get()->groupBy('pet_category_id') : Auth::user()->pets()->orderBy('pet_name')->get()->groupBy('pet_category_id');
+        $pets = count($categories) ? Auth::user()->pets()->orderByRaw('FIELD(pet_category_id,' . implode(',', $categories->pluck('id')->toArray()) . ')')->orderBy('pet_name')->get()->groupBy('pet_category_id') : Auth::user()->pets()->orderBy('pet_name')->get()->groupBy('pet_category_id');
 
         return view('home.pets', [
-            'categories'        => $categories->keyBy('id'),
-            'pets'              => $pets,
-            'userOptions'       => User::visible()->where('id', '!=', Auth::user()->id)->orderBy('name')->pluck('name', 'id')->toArray(),
-            'user'              => Auth::user(),
+            'categories' => $categories->keyBy('id'),
+            'pets' => $pets,
+            'userOptions' => User::visible()->where('id', '!=', Auth::user()->id)->orderBy('name')->pluck('name', 'id')->toArray(),
+            'user' => Auth::user(),
             'userCreditOptions' => ['' => 'Select User'] + User::visible()->orderBy('name')->get()->pluck('verified_name', 'id')->toArray(),
         ]);
     }
@@ -52,7 +54,8 @@ class PetController extends Controller {
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getStack(Request $request, $id) {
+    public function getStack(Request $request, $id)
+    {
         $stack = UserPet::withTrashed()->where('id', $id)->with('pet')->first();
         $chara = Character::myo()->where('user_id', $stack->user_id)->pluck('slug', 'id');
 
@@ -75,12 +78,12 @@ class PetController extends Controller {
         $splices = UserItem::where('user_id', $stack->user_id)->whereIn('item_id', $tags)->where('count', '>', 0)->with('item')->get()->pluck('item.name', 'id');
 
         return view('home._pet_stack', [
-            'stack'             => $stack,
-            'chara'             => $chara,
-            'user'              => Auth::user(),
-            'userOptions'       => ['' => 'Select User'] + User::visible()->where('id', '!=', $stack ? $stack->user_id : 0)->orderBy('name')->get()->pluck('verified_name', 'id')->toArray(),
-            'readOnly'          => $readOnly,
-            'splices'           => $splices,
+            'stack' => $stack,
+            'chara' => $chara,
+            'user' => Auth::user(),
+            'userOptions' => ['' => 'Select User'] + User::visible()->where('id', '!=', $stack ? $stack->user_id : 0)->orderBy('name')->get()->pluck('verified_name', 'id')->toArray(),
+            'readOnly' => $readOnly,
+            'splices' => $splices,
             'userCreditOptions' => ['' => 'Select User'] + User::visible()->orderBy('name')->get()->pluck('verified_name', 'id')->toArray(),
         ]);
     }
@@ -93,7 +96,8 @@ class PetController extends Controller {
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postTransfer(Request $request, PetManager $service, $id) {
+    public function postTransfer(Request $request, PetManager $service, $id)
+    {
         if ($service->transferStack(Auth::user(), User::visible()->where('id', $request->get('user_id'))->first(), UserPet::where('id', $id)->first())) {
             flash('Pet transferred successfully.')->success();
         } else {
@@ -113,7 +117,8 @@ class PetController extends Controller {
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postDelete(Request $request, PetManager $service, $id) {
+    public function postDelete(Request $request, PetManager $service, $id)
+    {
         if ($service->deleteStack(Auth::user(), UserPet::where('id', $id)->first())) {
             flash('Pet deleted successfully.')->success();
         } else {
@@ -133,7 +138,8 @@ class PetController extends Controller {
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postName(Request $request, PetManager $service, $id) {
+    public function postName(Request $request, PetManager $service, $id)
+    {
         if ($service->nameStack(UserPet::find($id), $request->get('name'))) {
             flash('Pet named successfully.')->success();
         } else {
@@ -153,7 +159,8 @@ class PetController extends Controller {
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postAttach(Request $request, PetManager $service, $id) {
+    public function postAttach(Request $request, PetManager $service, $id)
+    {
         if ($service->attachStack(UserPet::find($id), $request->get('id'))) {
             flash('Pet attached successfully.')->success();
         } else {
@@ -173,7 +180,8 @@ class PetController extends Controller {
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postDetach(Request $request, PetManager $service, $id) {
+    public function postDetach(Request $request, PetManager $service, $id)
+    {
         if ($service->detachStack(UserPet::find($id))) {
             flash('Pet detached successfully.')->success();
         } else {
@@ -194,7 +202,8 @@ class PetController extends Controller {
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postVariant(Request $request, PetManager $service, $id, $isStaff = false) {
+    public function postVariant(Request $request, PetManager $service, $id, $isStaff = false)
+    {
         $pet = UserPet::find($id);
         if ($service->editVariant($request->input('variant_id'), $pet, $request->input('stack_id'), $request->input('is_staff'))) {
             flash('Pet variant changed successfully.')->success();
@@ -216,7 +225,8 @@ class PetController extends Controller {
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postEvolution(Request $request, PetManager $service, $id, $isStaff = false) {
+    public function postEvolution(Request $request, PetManager $service, $id, $isStaff = false)
+    {
         $pet = UserPet::find($id);
         if ($service->editEvolution($request->input('evolution_id'), $pet, $request->input('stack_id'), $request->input('is_staff'))) {
             flash('Pet evolution changed successfully.')->success();
@@ -236,7 +246,8 @@ class PetController extends Controller {
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getSelector($id) {
+    public function getSelector($id)
+    {
         return view('widgets._pet_select', [
             'user' => Auth::user(),
         ]);
@@ -249,7 +260,8 @@ class PetController extends Controller {
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getPetPage($id) {
+    public function getPetPage($id)
+    {
         $pet = UserPet::findOrFail($id);
         $user = $pet->user;
 
@@ -269,12 +281,12 @@ class PetController extends Controller {
         $splices = UserItem::where('user_id', $user->id)->whereIn('item_id', $tags)->where('count', '>', 0)->with('item')->get()->pluck('item.name', 'id');
 
         return view('user.pet', [
-            'user'        => $user,
-            'pet'         => $pet,
-            'drops'       => $pet->drops,
+            'user' => $user,
+            'pet' => $pet,
+            'drops' => $pet->drops,
             'userOptions' => User::where('id', '!=', $user->id)->orderBy('name')->pluck('name', 'id')->toArray(),
-            'logs'        => $user->getPetLogs(),
-            'splices'     => $splices,
+            'logs' => $user->getPetLogs(),
+            'splices' => $splices,
         ]);
     }
 
@@ -286,7 +298,8 @@ class PetController extends Controller {
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postClaimPetDrops(PetDropService $service, $id) {
+    public function postClaimPetDrops(PetDropService $service, $id)
+    {
         $pet = UserPet::findOrFail($id);
         if (!Auth::check() || $pet->user_id != Auth::user()->id) {
             abort(404);
@@ -312,7 +325,8 @@ class PetController extends Controller {
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postClaimAllPetDrops(PetDropService $service) {
+    public function postClaimAllPetDrops(PetDropService $service)
+    {
         $user_pet_ids = UserPet::where('user_id', Auth::user()->id)->pluck('id');
         $pet_drops = PetDrop::whereIn('user_pet_id', $user_pet_ids)->where('drops_available', '>', 0)->pluck('user_pet_id');
         $pets = UserPet::whereIn('id', $pet_drops)->get();
@@ -328,7 +342,7 @@ class PetController extends Controller {
             }
         }
         if (createRewardsString($rewards)) {
-            flash('You received: '.createRewardsString($rewards))->info();
+            flash('You received: ' . createRewardsString($rewards))->info();
         } else {
             flash('No drops to claim.')->info();
         }
@@ -342,7 +356,8 @@ class PetController extends Controller {
      *
      * @param mixed $id
      */
-    public function postCustomImage($id, Request $request, PetManager $service) {
+    public function postCustomImage($id, Request $request, PetManager $service)
+    {
         $pet = UserPet::findOrFail($id);
         $data = $request->only(['image', 'remove_image', 'artist_id', 'artist_url', 'remove_credit']);
 
@@ -366,7 +381,8 @@ class PetController extends Controller {
      *
      * @param mixed $id
      */
-    public function postDescription($id, Request $request, PetManager $service) {
+    public function postDescription($id, Request $request, PetManager $service)
+    {
         $pet = UserPet::findOrFail($id);
 
         if ($service->editCustomImageDescription($pet, $request->only(['description']))) {
@@ -383,7 +399,8 @@ class PetController extends Controller {
     /**
      * Bonds with a pet.
      */
-    public function postBond($id, Request $request, PetManager $service) {
+    public function postBond($id, Request $request, PetManager $service)
+    {
         $pet = UserPet::findOrFail($id);
 
         if ($service->bondPet($pet, Auth::user())) {
@@ -396,4 +413,44 @@ class PetController extends Controller {
 
         return redirect()->back();
     }
+    
+    /**
+     * Claims pet drops.
+     *
+     * @param App\Services\PetDropService $service
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postBondAllPets(PetManager $service)
+    {
+        $pets = Auth::user()->bondablePets()->get();
+
+        if (!$pets->count()) {
+            flash('You have no pets to bond with.')->info();
+        } else {
+            $i = 0;
+
+            foreach ($pets as $pet) {
+                if ($pet->bonded_at && !$pet->bonded_at->isToday()) {
+                    continue;
+                }
+                $i++;
+            }
+
+            if ($pets->count() == $i) {
+                flash('You have already bonded with all your pets today.')->info();
+            } else {
+                if ($service->bondAllPets($pets, Auth::user())) {
+                    flash('All pets bonded with successfully.')->success();
+                } else {
+                    foreach ($service->errors()->getMessages()['error'] as $error) {
+                        flash($error)->error();
+                    }
+                }
+            }
+        }
+
+        return redirect()->back();
+    }
+
 }

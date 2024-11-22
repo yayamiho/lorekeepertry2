@@ -7,7 +7,7 @@
             @if ($pet->pet_name)
                 <span class="text-light badge badge-dark mb-2 p-2" style="font-size:95%;">
                     {!! $pet->pet_name !!}
-                </span> the
+                </span> 
             @endif
             {!! $pet->pet->displayName !!}
             <div class="progress mb-2">

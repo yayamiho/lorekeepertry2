@@ -100,6 +100,8 @@ Route::group(['prefix' => 'pets', 'namespace' => 'Users'], function () {
     Route::post('view/{id}/edit', 'PetController@postEditPetProfile')->where('id', '[0-9]+');
 
     Route::post('bond/{id}', 'PetController@postBond');
+    Route::post('bond-all', 'PetController@postBondAllPets');
+
 });
 
 Route::group(['prefix' => 'characters', 'namespace' => 'Users'], function () {

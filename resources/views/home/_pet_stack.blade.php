@@ -78,7 +78,8 @@
                         <a class="card-title h5 collapse-title" data-toggle="collapse" href="#attachForm">
                             @if ($stack->user_id != $user->id)
                                 [ADMIN]
-                            @endif Detach Pet from Character
+                            @endif 
+                            Detach Pet from Character
                         </a>
                         {!! Form::open(['url' => 'pets/detach/' . $stack->id, 'id' => 'attachForm', 'class' => 'collapse']) !!}
                         <p>This pet is currently attached to {!! $stack->character->displayName !!}, do you want to detach them?</p>
@@ -90,7 +91,8 @@
                         <a class="card-title h5 collapse-title" data-toggle="collapse" href="#attachForm">
                             @if ($stack->user_id != $user->id)
                                 [ADMIN]
-                            @endif Attach Pet to Character
+                            @endif 
+                            Attach Pet to Character
                         </a>
                         {!! Form::open(['url' => 'pets/attach/' . $stack->id, 'id' => 'attachForm', 'class' => 'collapse']) !!}
                         <p>Attach this pet to a character you own! They'll appear on the character's page and any stat bonuses will automatically be applied.</p>
@@ -140,7 +142,10 @@
                 @if ($user->hasPower('edit_inventories'))
                     {{-- variant --}}
                     <li class="list-group-item">
-                        <a class="card-title h5 collapse-title" data-toggle="collapse" href="#variantForm">[ADMIN] Change Pet Variant</a>
+                        @if ($stack->user_id != $user->id)
+                                [ADMIN]
+                            @endif  
+                            Change Pet Variant</a>
                         {!! Form::open(['url' => 'pets/variant/' . $stack->id, 'id' => 'variantForm', 'class' => 'collapse']) !!}
                         {!! Form::hidden('is_staff', 1) !!}
                         <p>
