@@ -64,7 +64,10 @@ class AddSiteSettings extends Command
         $this->info('*********************'."\n");
 
         $this->line("Adding site settings...existing entries will be skipped.\n");
-        
+
+        $this->addSiteSetting('bondAll_pets', 10, 'Number of pets a player must have before unlocking the ond all button');
+
+
         $this->addSiteSetting('is_registration_open', 1, '0: Registration closed, 1: Registration open. When registration is closed, invitation keys can still be used to register.');
 
         $this->addSiteSetting('transfer_cooldown', 0, 'Number of days to add to the cooldown timer when a character is transferred.');
