@@ -70,7 +70,7 @@
         <div id="criterion-section" class="{{ Request::get('prompt_id') || $submission->prompt_id ? '' : 'hide' }}">
             <div class="card-header h2">Criteria Rewards <button class="btn  btn-outline-info float-right add-calc" type="button">Add Criterion</a></div>
             <div class="card-body">
-                <p>Criteria can be used in addition to or in replacment of rewards. They take input on what you are turning in for the prompt in order to calculate your final reward.</p>
+                <p>Criteria can be used in addition to or in replacement of rewards. They take input on what you are turning in for the prompt in order to calculate your final reward.</p>
                 <p>Criteria may populate in with pre-selected minimum requirements for this prompt. </p>
                 <div id="criteria">
                     @if ($submission->id && $submission->data['criterion'])

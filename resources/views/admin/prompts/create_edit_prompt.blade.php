@@ -113,7 +113,7 @@
 
     <h3 class="mt-5">Criteria Rewards <button class="btn btn-primary float-right add-calc" type="button">+ Criterion</button></h3>
     <p>
-        Criteria can be used in addition to or in replacment of rewards. They can be created under the "criterion" section of the admin panel,
+        Criteria can be used in addition to or in replacement of rewards. They can be created under the "criterion" section of the admin panel,
         and allow for dynamic reward amounts to be generated based on user / admin selected criteria like the type of art, or the number of words.
     </p>
     <div id="criteria">
@@ -127,7 +127,7 @@
                         {!! Form::select('criterion_id[]', $criteria, $criterion->criterion_id, ['class' => 'form-control criterion-select', 'placeholder' => 'Select a Criterion to set Minimum Requirements']) !!}
                     </div>
                     <div>
-                        <button class="btn btn-danger delete-calc" type="button"><i class="fas fa-trash"></i></button>
+                    <button class="btn btn-danger delete-calc" type="button"><i class="fas fa-trash"></i></button>
                     </div>
                 </div>
                 <div id="collapsable-{{ $criterion->id }}" class="form collapse">
