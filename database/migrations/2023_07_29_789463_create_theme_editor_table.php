@@ -25,7 +25,7 @@ class CreateThemeEditorTable extends Migration
             $table->string('header_image_display')->default("inline");
             $table->string('header_image_url')->default("/images/header.png");
             $table->string('header_size')->default('cover');
-            
+
             $table->string('logo_image_display')->default("inline");
             $table->string('logo_image_url')->default("/images/logo.png");
 
@@ -39,6 +39,10 @@ class CreateThemeEditorTable extends Migration
             $table->string('card_color')->default('#fff');
             $table->string('card_header_color')->default('#f1f1f1');
             $table->string('card_text_color')->default('#000');
+
+
+            $table->string('sidebar_header_color')->default('#fff');
+            $table->string('sidebar_text_color')->default('#f1f1f1');
 
             $table->string('link_color')->default('#000');
             $table->string('primary_button_color')->default('#007bff');

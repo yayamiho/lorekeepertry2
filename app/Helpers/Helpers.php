@@ -77,9 +77,9 @@ function breadcrumbs($links) {
  *
  * @return string
  */
-function format_date($timestamp, $showTime = true) {
-    return $timestamp->format('j F Y'.($showTime ? ', H:i:s' : '')).($showTime ? ' <abbr data-toggle="tooltip" title="GMT-3'.$timestamp->timezone->toOffsetName().'">'.strtoupper($timestamp->timezone->getAbbreviatedName($timestamp->isDST())).'</abbr>' : '');
-}
+    function format_date($timestamp, $showTime = true) {
+        return $timestamp->format('j F Y' . ($showTime ? ', H:i:s' : '')) . ' GMT-3';
+    }
 
 function pretty_date($timestamp, $showTime = true) {
     return '<abbr data-toggle="tooltip" title="'.$timestamp->format('F j Y'.($showTime ? ', H:i:s' : '')).' '.strtoupper($timestamp->timezone->getAbbreviatedName($timestamp->isDST())).'">'.$timestamp->diffForHumans().'</abbr>';

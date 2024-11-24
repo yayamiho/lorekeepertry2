@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use Auth;
+
 use App\Facades\Notifications;
 use App\Models\Character\CharacterItem;
 use App\Models\Item\Item;
