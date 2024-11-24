@@ -13,6 +13,8 @@
 
     <div class="row">
         @include('widgets._news', ['textPreview' => true])
+
+        @include('widgets._sales')
     </div>
 
     @include('widgets._recent_gallery_submissions', ['gallerySubmissions' => $gallerySubmissions])
