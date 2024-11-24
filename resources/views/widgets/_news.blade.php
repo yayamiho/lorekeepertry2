@@ -1,4 +1,4 @@
-<div class="card mb-4">
+<div class="card mb-4" style="width:calc(100%/2)">
     <div class="card-header">
         <h4 class="mb-0"><i class="fas fa-newspaper"></i> Recent News</h4>
     </div>
@@ -12,7 +12,7 @@
                         <span class="ml-2 small">Posted {!! $news->post_at ? pretty_date($news->post_at) : pretty_date($news->created_at) !!} || Last edited {!! pretty_date($news->updated_at) !!}</span>
                     </span>
                     @if($textPreview)
-                        <p class="pl-3">{!! substr(strip_tags(str_replace("<br />", "&nbsp;", $news->parsed_text)), 0, 300) !!}... <a href="{!! $news->url !!}">Read more <i class="fas fa-arrow-right"></i></a></p>
+                        <p class="pl-3">{!! substr(strip_tags(str_replace("<br />", "&nbsp;", $news->parsed_text)), 0, 100) !!}... <a href="{!! $news->url !!}">Read more <i class="fas fa-arrow-right"></i></a></p>
                     @endif
                 </div>
             @endforeach
