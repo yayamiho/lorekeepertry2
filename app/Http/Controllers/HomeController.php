@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Gallery\GallerySubmission;
+use App\Models\News;
 use App\Models\SitePage;
 use App\Services\LinkService;
 use App\Services\UserService;
@@ -37,6 +38,8 @@ class HomeController extends Controller {
         return view('welcome', [
             'about'               => SitePage::where('key', 'about')->first(),
             'gallerySubmissions'  => $gallerySubmissions,
+            'about' => SitePage::where('key', 'about')->first(),
+            'newses'   => News::visible()->orderBy('updated_at', 'DESC')->take(2)->get(),
         ]);
     }
 

@@ -163,7 +163,14 @@ return [
         'key' => 'trait_item_tag',
         'wiki_key' => 'Trait_Item_Tag',
         'creators' => json_encode([
-            'Cylunny' => 'https://toyhou.se/Cylunny',
+            'Cylunny' => 'https://toyhou.se/Cylunny',]),
+        ],
+
+    'news_widget' => [
+        'key' => 'news_widget',
+        'wiki_key' => 'News_Widget',
+        'creators' => json_encode([
+            'Min' => 'https://github.com/liwoyadan/',
         ]),
         'version' => '1.0.0',
     ],
