@@ -132,7 +132,7 @@
                             User Index
                         </a>
                         <a class="dropdown-item" href="{{ url('sublist/NPC') }}">
-                            NPC Masterlist
+                            NPCs
                         </a>
                         <a class="dropdown-item" href="{{ url('sublist/PRE') }}">
                             PRE Masterlist

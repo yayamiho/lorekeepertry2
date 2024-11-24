@@ -42,6 +42,7 @@ class CreateThemeEditorTable extends Migration
 
             $table->string('sidebar_section_header_color')->default('#fff');
             $table->string('sidebar_text_color')->default('#f1f1f1');
+            $table->string('sidebar_header_text_color')->default('#f1f1f1');
             $table->string('sidebar_border')->default('none');
             $table->string('sidebar_border_color')->default('#f1f1f1');
 

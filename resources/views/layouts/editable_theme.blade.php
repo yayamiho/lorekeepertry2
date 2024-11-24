@@ -25,6 +25,7 @@
 
     $sidebarSectionHeaderColor = $theme->themeEditor->sidebar_section_header_color ?? null;  
     $sidebarTextColor = $theme->themeEditor->sidebar_text_color ?? null; 
+    $sidebarHeaderTextColor = $theme->themeEditor->sidebar_header_text_color ?? null; 
     $sidebarBorderDisplay = $theme->themeEditor->sidebar_border ?? null;
     $sidebarBorderColor = $theme->themeEditor->sidebar_border_color ?? null;
 
@@ -90,6 +91,10 @@
 
 .sidebar a, .sidebar-section-header {
     @if($sidebarTextColor) color: {{ $sidebarTextColor }} !important; @endif
+}
+
+.sidebar-header a {
+    @if($sidebarHeaderTextColor) color: {{$sidebarHeaderTextColor}} !important; @endif
 }
 
 .sidebar ul li {

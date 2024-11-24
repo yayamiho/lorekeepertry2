@@ -36,6 +36,7 @@ class AddNullableToThemeEditor extends Migration {
 
             $table->string('sidebar_section_header_color')->default(null)->change();
             $table->string('sidebar_text_color')->default(null)->change();
+            $table->string('sidebar_header_text_color')->default(null)->change();
             $table->string('sidebar_border')->default(null)->change();
             $table->string('sidebar_border_color')->default(null)->change();
 ;

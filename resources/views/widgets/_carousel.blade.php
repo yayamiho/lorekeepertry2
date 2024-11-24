@@ -1,4 +1,6 @@
-<div id="carouselDashboard" class="carousel slide" data-ride="carousel" data-interval="{{ Settings::get('carousel_speed') }}">
+<div id="carouselDashboard" 
+style="width:calc(100%/3*2);"
+class="carousel slide" data-ride="carousel" data-interval="{{ Settings::get('carousel_speed') }}">
     <div class="carousel-inner">
         @foreach (\App\Models\Carousel\Carousel::where('is_visible', 1)->orderBy('sort', 'DESC')->get() as $carousel)
             @if ($loop->first)
