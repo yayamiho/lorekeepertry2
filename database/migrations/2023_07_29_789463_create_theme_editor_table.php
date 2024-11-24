@@ -40,9 +40,11 @@ class CreateThemeEditorTable extends Migration
             $table->string('card_header_color')->default('#f1f1f1');
             $table->string('card_text_color')->default('#000');
 
-
-            $table->string('sidebar_header_color')->default('#fff');
+            $table->string('sidebar_section_header_color')->default('#fff');
             $table->string('sidebar_text_color')->default('#f1f1f1');
+            $table->string('sidebar_border')->default('none');
+            $table->string('sidebar_border_color')->default('#f1f1f1');
+
 
             $table->string('link_color')->default('#000');
             $table->string('primary_button_color')->default('#007bff');

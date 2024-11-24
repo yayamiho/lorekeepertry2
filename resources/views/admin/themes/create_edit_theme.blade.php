@@ -373,6 +373,53 @@
     </div>
 </div>
 <hr>
+<h5>Sidebar Content</h5>
+<p>These colors also affect list groups and the sidebar.</p>
+<div class="row">
+    <div class="col-md-3">
+        <div class="form-group">
+            {!! Form::label('Select sidebar section header color') !!}
+            <div class="input-group cp">
+                {!! Form::text('sidebar_section_header_color', $theme->themeEditor->sidebar_section_header_color ?? null, ['class' => 'form-control']) !!}
+                <span class="input-group-append">
+                    <span class="input-group-text colorpicker-input-addon"><i></i></span>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            {!! Form::label('Select sidebar text color') !!}
+            <div class="input-group cp">
+                {!! Form::text('sidebar_text_color', $theme->themeEditor->sidebar_text_color ?? null, ['class' => 'form-control']) !!}
+                <span class="input-group-append">
+                    <span class="input-group-text colorpicker-input-addon"><i></i></span>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            {!! Form::label('Select sidebar border color') !!}
+            <div class="input-group cp">
+                {!! Form::text('sidebar_border_color', $theme->themeEditor->sidebar_border_color ?? null, ['class' => 'form-control']) !!}
+                <span class="input-group-append">
+                    <span class="input-group-text colorpicker-input-addon"><i></i></span>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="form-group">
+            {!! Form::label('Select sidebar border display') !!}
+            <div class="form-group">
+                {!! Form::checkbox('sidebar_border', 1, $theme->themeEditor ? $theme->themeEditor?->sidebar_border == 'solid' : 1, ['class' => 'form-check-input form-control', 'data-toggle' => 'toggle']) !!}
+            </div>
+        </div>
+    </div>
+</div>
+<hr>
 <h5>Links & Buttons</h5>
 <p>Primary and secondary buttons will use the same text color as links.</p>
 <div class="row">

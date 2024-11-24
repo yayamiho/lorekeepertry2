@@ -16,11 +16,18 @@
 
     $mainMarginTop = ($headerImageDisplay == 'none') ? 50 : 0;
     $mainColor = $theme->themeEditor->main_color ?? null;  
-    $mainTextColor = $theme->themeEditor->main_text_color ?? null;  
+    $mainTextColor = $theme->themeEditor->main_text_color ?? null; 
+
     $cardColor = $theme->themeEditor->card_color ?? null;  
     $cardTextColor = $theme->themeEditor->card_text_color ?? null;  
     $cardHeaderColor = $theme->themeEditor->card_header_color ?? null;  
     $cardHeaderTextColor = $theme->themeEditor->card_header_text_color ?? null;  
+
+    $sidebarSectionHeaderColor = $theme->themeEditor->sidebar_section_header_color ?? null;  
+    $sidebarTextColor = $theme->themeEditor->sidebar_text_color ?? null; 
+    $sidebarBorderDisplay = $theme->themeEditor->sidebar_border ?? null;
+    $sidebarBorderColor = $theme->themeEditor->sidebar_border_color ?? null;
+
     $linkColor = $theme->themeEditor->link_color ?? null;  
     $primaryButtonColor = $theme->themeEditor->primary_button_color ?? null;  
     $secondaryButtonColor = $theme->themeEditor->secondary_button_color ?? null;
@@ -73,6 +80,21 @@
 
 .card-header .card-title a, .card-header .card-title, .card-header a {
     @if($cardHeaderTextColor) color: {{ $cardHeaderTextColor }} !important; @endif
+}
+
+/** Style sidebar */
+
+.sidebar-section-header {
+    @if($sidebarSectionHeaderColor) background-color: {{ $sidebarSectionHeaderColor }} !important; @endif
+}
+
+.sidebar a, .sidebar-section-header {
+    @if($sidebarTextColor) color: {{ $sidebarTextColor }} !important; @endif
+}
+
+.sidebar ul li {
+    @if($sidebarBorderDisplay) border-style: {{$sidebarBorderDisplay}}; @endif
+    @if($sidebarBorderColor) border-color: {{$sidebarBorderColor}}; @endif
 }
 
 /** Style main background */

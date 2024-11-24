@@ -34,6 +34,12 @@ class AddNullableToThemeEditor extends Migration {
             $table->string('card_header_color')->nullable()->default(null)->change();
             $table->string('card_text_color')->nullable()->default(null)->change();
 
+            $table->string('sidebar_section_header_color')->default(null)->change();
+            $table->string('sidebar_text_color')->default(null)->change();
+            $table->string('sidebar_border')->default(null)->change();
+            $table->string('sidebar_border_color')->default(null)->change();
+;
+
             $table->string('link_color')->nullable()->default(null)->change();
             $table->string('primary_button_color')->nullable()->default(null)->change();
             $table->string('secondary_button_color')->nullable()->default(null)->change();

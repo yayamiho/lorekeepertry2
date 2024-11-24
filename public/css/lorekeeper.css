@@ -165,8 +165,11 @@ main>.row {
 
 .sidebar ul li {
     background-color: white;
+
     border-top-left-radius: 20px;
     border-bottom-left-radius: 20px;
+    border: 1px;
+
     margin-bottom: 1em;
     padding: 0.4em 0;
 
