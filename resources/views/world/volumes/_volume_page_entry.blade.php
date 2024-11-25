@@ -1,4 +1,4 @@
-<div class="card mb-3">
+<div class="card mb-3" style="background-color:rgba(0,0,0,0) !important">
     <div class="card-body">
         @if (Auth::check() && Auth::user()->hasPower('edit_data'))
             <a data-toggle="tooltip" title="[ADMIN] Edit {{ __('volumes.volume') }}" href="{{ url('admin/data/volumes/edit/') . '/' . $volume->id }}" class="mb-2 float-right"><i class="fas fa-crown"></i></a>

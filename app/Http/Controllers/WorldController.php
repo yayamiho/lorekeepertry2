@@ -30,6 +30,7 @@ use App\Models\Volume\Book;
 use App\Models\Volume\Bookshelf;
 use App\Models\Volume\BookTag;
 use App\Models\Volume\Volume;
+use App\Models\Recipe\Recipe;
 
 use App\Models\Collection\Collection;
 use App\Models\Collection\CollectionCategory;

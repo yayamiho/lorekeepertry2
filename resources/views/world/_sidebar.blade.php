@@ -13,25 +13,24 @@
         <div class="sidebar-item"><a href="{{ url('world/character-categories') }}" class="{{ set_active('world/character-categories*') }}">Character Categories</a></div>
     </li>
     <li class="sidebar-section">
-        <div class="sidebar-section-header">Items</div>
+        <div class="sidebar-section-header">Assets</div>
         <div class="sidebar-item"><a href="{{ url('world/item-categories') }}" class="{{ set_active('world/item-categories*') }}">Item Categories</a></div>
         <div class="sidebar-item"><a href="{{ url('world/items') }}" class="{{ set_active('world/items*') }}">All Items</a></div>
         <div class="sidebar-item"><a href="{{ url('world/currencies') }}" class="{{ set_active('world/currencies*') }}">Currencies</a></div>
-        <div class="sidebar-item"><a href="{{ url('world/border-categories') }}" class="{{ set_active('world/border-categories*') }}">User Border Categories</a></div>
-        <div class="sidebar-item"><a href="{{ url('world/borders') }}" class="{{ set_active('world/borders*') }}">User Borders</a></div>
-        <div class="sidebar-item"><a href="{{ url('world/collections') }}" class="{{ set_active('world/collections*') }}">Collections</a></div>
-        <div class="sidebar-item"><a href="{{ url('world/collection-categories') }}" class="{{ set_active('world/collection-categories*') }}">Collection Categories</a></div>
-        <div class="sidebar-item"><a href="{{ url('world/'.__('volumes.library')) }}" class="{{ set_active('world/'.__('volumes.library')) }}">{{ ucfirst(__('volumes.library')) }}</a></div>
-        <div class="sidebar-item"><a href="{{ url('world/'.__('volumes.library').'/'.__('volumes.volumes')) }}" class="{{ set_active('world/'.__('volumes.library').'/'.__('volumes.volumes')) }}">All {{ ucfirst(__('volumes.volumes')) }}</a></div>
-    </li>
-    <li class="sidebar-section">
-        <div class="sidebar-section-header">{{ ucfirst(__('awards.awards')) }}</div>
-        <div class="sidebar-item"><a href="{{ url('world/'. __('awards.award') .'-categories') }}" class="{{ set_active('world/'. __('awards.award') .'-categories*') }}">{{ ucfirst(__('awards.award')) }} Categories</a></div>
-        <div class="sidebar-item"><a href="{{ url('world/'. __('awards.awards')) }}" class="{{ set_active('world/'. __('awards.awards') .'*') }}">All {{ ucfirst(__('awards.awards')) }} </a></div>
-    </li>
-    <li class="sidebar-section">
-        <div class="sidebar-section-header">Recipes</div>
-        <div class="sidebar-item"><a href="{{ url('world/recipes') }}" class="{{ set_active('world/recipes*') }}">All Recipes</a></div>
+        
+        <div class="sidebar-item"><a href="{{ url('world/recipes') }}" class="{{ set_active('world/recipes*') }}">Recipes</a></div>
         <div class="sidebar-item"><a href="{{ url('world/pets') }}" class="{{ set_active('world/pets*') }}">Pets</a></div>
+        
+        <div class="sidebar-item"><a href="{{ url('world/collections') }}" class="{{ set_active('world/collections*') }}">Collections</a></div>
+        <div class="sidebar-item"><a href="{{ url('world/borders') }}" class="{{ set_active('world/borders*') }}">User Borders</a></div>
+        <div class="sidebar-item"><a href="{{ url('world/'. __('awards.awards')) }}" class="{{ set_active('world/'. __('awards.awards') .'*') }}">Awards </a></div>
+        <!--<div class="sidebar-item"><a href="{{ url('world/'.__('volumes.library').'/'.__('volumes.volumes')) }}" class="{{ set_active('world/'.__('volumes.library').'/'.__('volumes.volumes')) }}">All {{ ucfirst(__('volumes.volumes')) }}</a></div>-->
+    </li>
+    <li class="sidebar-section">
+        <div class="sidebar-section-header">Library</div>
+        
+        <div class="sidebar-item"><a href="{{ url('world/'.__('volumes.library')) }}" class="{{ set_active('world/'.__('volumes.library')) }}">Library</a></div>
+        <div class="sidebar-item"><a href="{{ url('world/library?bookshelf_id=1')}}" class="{{ set_active('world/'.__('volumes.library')) }}">Lore</a></div>        
+        <div class="sidebar-item"><a href="{{ url('world/library?bookshelf_id=2')}}" class="{{ set_active('world/'.__('volumes.library')) }}">Guides</a></div>
     </li>
 </ul>
