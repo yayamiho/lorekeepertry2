@@ -142,6 +142,8 @@
                 @if ($user->hasPower('edit_inventories'))
                     {{-- variant --}}
                     <li class="list-group-item">
+                    <a class="card-title h5 collapse-title" data-toggle="collapse" href="#variantForm">
+                            
                         @if ($stack->user_id != $user->id)
                                 [ADMIN]
                             @endif  
@@ -171,7 +173,11 @@
                     </li>
                     {{-- evolution --}}
                     <li class="list-group-item">
-                        <a class="card-title h5 collapse-title" data-toggle="collapse" href="#evolutionForm">[ADMIN] Change Pet Evolution</a>
+                        <a class="card-title h5 collapse-title" data-toggle="collapse" href="#evolutionForm">
+                            @if ($stack->user_id != $user->id)
+                                [ADMIN]
+                            @endif  
+                             Change Pet Evolution</a>
                         {!! Form::open(['url' => 'pets/evolution/' . $stack->id, 'id' => 'evolutionForm', 'class' => 'collapse']) !!}
                         {!! Form::hidden('is_staff', 1) !!}
                         <p>
@@ -197,7 +203,11 @@
                     </li>
                     {{-- custom pet image --}}
                     <li class="list-group-item">
-                        <a class="card-title h5 collapse-title" data-toggle="collapse" href="#imageForm">[ADMIN] Change Image</a>
+                        <a class="card-title h5 collapse-title" data-toggle="collapse" href="#imageForm">
+                        @if ($stack->user_id != $user->id)
+                                [ADMIN]
+                            @endif  
+                             Change Image</a>
                         {!! Form::open(['url' => 'pets/image/' . $stack->id, 'id' => 'imageForm', 'class' => 'collapse', 'files' => true]) !!}
                         <div class="form-group">
                             {!! Form::label('Image') !!}
