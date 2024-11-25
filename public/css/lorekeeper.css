@@ -741,8 +741,21 @@ tr.accountbound {
     animation-duration: 1s;
 }
 
-/* NEWS **********************************************************/
+/* DASHBOARD **********************************************************/
 
+.dashboard-button{
+    width: 250px;
+}
+
+.dashboard-button:hover{
+    filter: brightness(105%);
+}
+
+@media (max-width: 767px){
+    .dashboard-button{
+        width: 125px;
+    }
+}
 
 /* TRANSFERS *************************************************************************************/
 

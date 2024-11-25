@@ -1,7 +1,7 @@
 <div class="card mb-4" style="width:calc(100%/2)">
     <div class="card-header d-flex flex-column flex-sm-row justify-content-between align-items-center">
         <h4 class="mb-0"><i class="fas fa-money-bill-wave"></i> Recent Sales</h4>
-        <a href="{{ url('sales') }}" class="btn btn-primary">View All Sales <i class="fas fa-arrow-right"></i></a>
+        <!--<a href="{{ url('sales') }}" class="btn btn-primary">View All Sales <i class="fas fa-arrow-right"></i></a>-->
     </div>
 
     <div class="card-body pt-0">
