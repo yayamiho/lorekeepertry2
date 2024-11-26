@@ -119,8 +119,6 @@ return [
         'version' => '2.0.0', // Big update with Cylunny's Theme manager + Moif's work merging the two!
     ],
 
-
-
     'mini_clock' => [
         'key' => 'mini_clock',
         'wiki_key' => 'Mini_Clock',
@@ -171,6 +169,13 @@ return [
         'wiki_key' => 'News_Widget',
         'creators' => json_encode([
             'Min' => 'https://github.com/liwoyadan/',
+        ]),
+    ],
+    'choice_box_tag' => [
+        'key' => 'Choice_Box_Tag',
+        'wiki_key' => 'Choice_Box_Tag',
+        'creators' => json_encode([
+            'Mercury' => 'https://github.com/itinerare/',
         ]),
         'version' => '1.0.0',
     ],
