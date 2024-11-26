@@ -193,6 +193,7 @@ CREATE TABLE `characters` (
   `parsed_description` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `name` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `is_gift_art_allowed` tinyint(1) NOT NULL DEFAULT 0,
+  `is_nsfw_allowed` tinyint(1) NOT NULL DEFAULT 0,
   `is_trading` tinyint(1) NOT NULL DEFAULT 0,
   `owner_alias` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT 'null',
   `character_image_id` int(10) unsigned DEFAULT NULL,

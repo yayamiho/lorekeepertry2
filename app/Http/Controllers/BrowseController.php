@@ -280,6 +280,20 @@ class BrowseController extends Controller {
                     break;
             }
         }
+        if ($request->get('is_nsfw_allowed')) {
+            switch ($request->get('is_nsfw_allowed')) {
+                case 1:
+                    $query->where('is_nsfw_allowed', 1);
+                    break;
+                case 2:
+                    $query->where('is_nsfw_allowed', 2);
+                    break;
+                case 3:
+                    $query->where('is_nsfw_allowed', '>=', 1);
+                    break;
+            }
+        }
+
 
         switch ($request->get('sort')) {
             default:
@@ -521,6 +535,19 @@ class BrowseController extends Controller {
                     break;
                 case 3:
                     $query->where('is_gift_writing_allowed', '>=', 1);
+                    break;
+            }
+        }
+        if ($request->get('is_nsfw_allowed')) {
+            switch ($request->get('is_nsfw_allowed')) {
+                case 1:
+                    $query->where('is_nsfw_allowed', 1);
+                    break;
+                case 2:
+                    $query->where('is_nsfw_allowed', 2);
+                    break;
+                case 3:
+                    $query->where('is_nsfw_allowed', '>=', 1);
                     break;
             }
         }

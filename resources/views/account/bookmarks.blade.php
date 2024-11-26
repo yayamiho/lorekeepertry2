@@ -77,6 +77,12 @@ Bookmarks
                                 {{$bookmark->character->is_gift_writing_allowed == 1 ? 'Gift writing is allowed' : 'Ask First before gift writing'}}
                             </div>
                         @endif
+                        @if($bookmark->character->is_nsfw_allowed > 0 && !$bookmark->character->is_myo_slot)
+                            <div><i
+                                    class="{{$bookmark->character->is_nsfw_allowed == 1 ? 'text-success' : 'text-warning'}} far fa-circle fa-fw mr-2"></i>
+                                {{$bookmark->character->is_nsfw_allowed == 1 ? 'NSFW is allowed' : 'Ask First before doing NSFW'}}
+                            </div>
+                        @endif
                         @if($bookmark->character->is_trading)
                             <div><i class="text-success far fa-circle fa-fw mr-2"></i> Open for trades</div>
                         @endif

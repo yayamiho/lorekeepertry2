@@ -34,7 +34,7 @@ class Character extends Model {
         'owner_alias', 'number', 'slug', 'description', 'parsed_description',
         'is_sellable', 'is_tradeable', 'is_giftable',
         'sale_value', 'transferrable_at', 'is_visible',
-        'is_gift_art_allowed', 'is_gift_writing_allowed', 'is_trading', 'sort',
+        'is_gift_art_allowed', 'is_gift_writing_allowed', 'is_nsfw_allowed', 'is_trading', 'sort',
         'is_myo_slot', 'name', 'trade_id', 'owner_url',
     ];
 
@@ -388,6 +388,8 @@ class Character extends Model {
         if (!$this->is_myo_slot) {
             $artCode = $this->is_gift_art_allowed == 1 ? 'badge-success' : ($this->is_gift_art_allowed == 2 ? 'badge-warning text-light' : 'badge-danger');
             $writingCode = $this->is_gift_writing_allowed == 1 ? 'badge-success' : ($this->is_gift_writing_allowed == 2 ? 'badge-warning text-light' : 'badge-danger');
+            $nsfwCode = $this->is_nsfw_allowed == 1 ? 'badge-success' : ($this->is_nsfw_allowed == 2 ? 'badge-warning text-light' : 'badge-danger');
+
             $nonMyoSection = "<span class='badge ".$artCode."'><i class='fas fa-pencil-ruler'></i></span> <span class='badge ".$writingCode."'><i class='fas fa-file-alt'></i></span> ";
         }
 

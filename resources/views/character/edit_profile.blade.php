@@ -58,6 +58,12 @@
                     ) !!}
                     {!! Form::select('is_gift_writing_allowed', [0 => 'No', 1 => 'Yes', 2 => 'Ask First'], $character->is_gift_writing_allowed, ['class' => 'form-control user-select']) !!}
                 </div>
+                <div class="col-md form-group">
+                    {!! Form::label('is_nsfw_allowed', 'Allow NSFW', ['class' => 'form-check-label mb-3']) !!} {!! add_help(
+                        'This will place the character on the list of characters that can be given NSFW gifts. This does not have any other functionality, but allow users to easily know whether you are ok with NSFW for this particular character.',
+                    ) !!}
+                    {!! Form::select('is_nsfw_allowed', [0 => 'No', 1 => 'Yes', 2 => 'Ask First'], $character->is_nsfw_allowed, ['class' => 'form-control user-select']) !!}
+                </div>
             </div>
         @endif
         @if ($character->is_tradeable || $character->is_sellable)

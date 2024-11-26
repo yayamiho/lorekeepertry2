@@ -69,6 +69,10 @@
                     {!! Form::label('is_gift_writing_allowed', 'Gift Writing Status: ') !!}
                     {!! Form::select('is_gift_writing_allowed', [0 => 'Any', 2 => 'Ask First', 1 => 'Yes', 3 => 'Yes OR Ask First'], Request::get('is_gift_writing_allowed'), ['class' => 'form-control', 'style' => 'width: 250px']) !!}
                 </div>
+                <div class="masterlist-search-field">
+                    {!! Form::label('is_nsfw_allowed', 'NSFW Status: ') !!}
+                    {!! Form::select('is_nsfw_allowed', [0 => 'Any', 2 => 'Ask First', 1 => 'Yes', 3 => 'Yes OR Ask First'], Request::get('is_nsfw_allowed'), ['class' => 'form-control', 'style' => 'width: 250px']) !!}
+                </div>
             @endif
             <br />
             {{-- Setting the width and height on the toggles as they don't seem to calculate correctly if the div is collapsed. --}}

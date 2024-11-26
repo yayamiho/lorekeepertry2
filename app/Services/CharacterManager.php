@@ -200,6 +200,7 @@ class CharacterManager extends Service
             $characterData['sale_value'] = isset($data['sale_value']) ? $data['sale_value'] : 0;
             $characterData['is_gift_art_allowed'] = 0;
             $characterData['is_gift_writing_allowed'] = 0;
+            $characterData['is_nsfw_allowed'] = 0;
             $characterData['is_trading'] = 0;
             $characterData['parsed_description'] = parse($data['description']);
             if($isMyo) $characterData['is_myo_slot'] = 1;
@@ -1271,6 +1272,8 @@ class CharacterManager extends Service
 
                 $character->is_gift_art_allowed = isset($data['is_gift_art_allowed']) && $data['is_gift_art_allowed'] <= 2 ? $data['is_gift_art_allowed'] : 0;
                 $character->is_gift_writing_allowed = isset($data['is_gift_writing_allowed']) && $data['is_gift_writing_allowed'] <= 2 ? $data['is_gift_writing_allowed'] : 0;
+                $character->is_nsfw_allowed = isset($data['is_nsfw_allowed']) && $data['is_nsfw_allowed'] <= 2 ? $data['is_nsfw_allowed'] : 0;
+
                 $character->is_trading = isset($data['is_trading']);
                 $character->save();
             }
@@ -1714,6 +1717,7 @@ class CharacterManager extends Service
             $character->update([
                 'is_gift_art_allowed'     => 0,
                 'is_gift_writing_allowed' => 0,
+                'is_nsfw_allowed' => 0,
                 'is_trading'              => 0,
             ]);
         }
