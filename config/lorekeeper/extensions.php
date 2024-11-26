@@ -57,7 +57,7 @@ return [
     ],
 
     // Group Traits By Category - Uri
-    'traits_by_category'            => 0,
+    'traits_by_category'            => 1,
 
     // Character Reward Expansion - Uri
     'character_reward_expansion'    => [
@@ -68,7 +68,7 @@ return [
     // Awards - Uri
     'awards' => [
         'user_featured'             => 1,   // Number of awards displayed prominently on the user profile
-        'character_featured'        => 1,   // Number of awards displayed prominently on the character page
+        'character_featured'        => 0,   // Number of awards displayed prominently on the character page
     ],
 
     // MYO Image Hide/Remove - Mercury
@@ -109,14 +109,14 @@ return [
     ],
 
     // collapsible admin sidebar - Newt
-    'collapsible_admin_sidebar' => 0,
+    'collapsible_admin_sidebar' => 1,
 
     // use gravatar for user avatars - Newt
     'use_gravatar' => 0,
 
     // Use ReCaptcha to check new user registrations - Mercury
     // Requires site key and secret be set in your .env file!
-    'use_recaptcha' => 0,
+    'use_recaptcha' => 1,
 
     // Show Small Badges on the User's Characters/MYO Slots Page
     // Indicating Trading Status (and Gift Art & Gift Writing Status)
