@@ -1,4 +1,4 @@
-<div class="card h-100"  style="background:rgba(0,0,0,0) !important">
+<div class="card h-100">
     <div class="m-1">
         <div class="row">
             <div class="col-md-6 text-center align-self-center">

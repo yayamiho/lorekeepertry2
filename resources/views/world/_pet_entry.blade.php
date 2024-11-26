@@ -6,7 +6,7 @@
     @endif
     <div class="{{ $pet->imageUrl ? 'col-md-9' : 'col-12' }}">
         <h2 class="h3">{!! $pet->displayName !!} @if ($pet->category)
-                <i class="h4"> ({!! $pet->category->displayName !!})</i>
+                <i class="h4"> ({!! $pet->category->displayName !!})</i> 
             @endif
         </h2>
         <div class="world-entry-text">

@@ -197,7 +197,7 @@ class Pet extends Model {
      * @return string
      */
     public function getUrlAttribute() {
-        return url('world/pets?name='.$this->name);
+        return url('world/bestiary?name='.$this->name);
     }
 
     /**
@@ -206,7 +206,7 @@ class Pet extends Model {
      * @return string
      */
     public function getIdUrlAttribute() {
-        return url('world/pets/'.$this->id);
+        return url('world/bestiary/'.$this->id);
     }
 
     /**

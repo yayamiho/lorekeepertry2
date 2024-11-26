@@ -1,4 +1,4 @@
-<div class="card mb-3" style="background:rgba(0,0,0,0) !important">
+<div class="card mb-3">
     <div class="card-header">
         <x-admin-edit title="News Post" :object="$news" />
         <h2 class="card-title mb-0">{!! $news->displayName !!}</h2>

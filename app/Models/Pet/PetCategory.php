@@ -113,6 +113,6 @@ class PetCategory extends Model {
      * @return string
      */
     public function getSearchUrlAttribute() {
-        return url('world/pets?pet_category_id='.$this->id);
+        return url('world/bestiary?pet_category_id='.$this->id);
     }
 }

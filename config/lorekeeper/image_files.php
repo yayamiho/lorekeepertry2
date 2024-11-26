@@ -77,9 +77,14 @@ return [
         'description' => 'Image used for the donation shop. PNG format, should be the same size as other shop images.',
         'filename' => 'donation_shop.png'
     ],
-    'buttom_bottom' => [
-        'name' => 'Bottom Image',
-        'description' => 'Image used for the bottom shop. PNG format, should be the same size as other shop images.',
-        'filename' => 'buttom_bottom.png'
+    'discord' => [
+        'name' => 'Discord',
+        'description' => 'Image used for the discord link. PNG format, should be the same size as other dashboard button images.',
+        'filename' => 'discord.png'
+    ],
+    'supporter' => [
+        'name' => 'Supporter',
+        'description' => 'Image used for the supporters link. PNG format, should be the same size as other dashboard button images.',
+        'filename' => 'supporter.png'
     ],
 ];

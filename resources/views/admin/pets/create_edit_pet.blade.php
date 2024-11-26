@@ -98,9 +98,7 @@
                                                 <div class="h5 my-2">{{ $variant->variant_name }}</div>
                                                 <div>
                                                     <a href="#" class="btn btn-sm btn-primary edit-variant" data-id="{{ $variant->id }}"><i class="fas fa-cog mr-1"></i>Edit</a>
-                                                    @if ($variant->dropData)
-                                                        <a href="{{ url('/admin/data/pets/drops/edit/') . '/' . $pet->id . '#variant-' . $variant->id }}" class="btn btn-sm btn-primary"><i class="fas fa-gift mr-1"></i>Drops</a>
-                                                    @endif
+                                                    
                                                 </div>
                                             </div>
                                         </div>

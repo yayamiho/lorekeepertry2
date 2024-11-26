@@ -20,7 +20,7 @@ Home
                 <li class="list-group-item"><a href="{{ url('world/subtypes') }}">Subtypes</a></li>
                 <li class="list-group-item"><a href="{{ url('world/rarities') }}">Rarities</a></li>
                 <li class="list-group-item"><a href="{{ url('world/trait-categories') }}">Trait Categories</a></li>
-                <li class="list-group-item"><a href="{{ url('world/traits') }}">All Traits</a></li>
+                <li class="list-group-item"><a href="{{ url('world/traits') }}">Traits</a></li>
                 @if (config('lorekeeper.extensions.visual_trait_index.enable_universal_index'))
                     <li class="list-group-item"><a href="{{ url('world/universaltraits') }}">Universal Trait Index</a></li>
                 @endif
@@ -37,19 +37,21 @@ Home
             </div>
             <ul class="list-group list-group-flush">
                 <li class="list-group-item"><a href="{{ url('world/item-categories') }}">Item Categories</a></li>
-                <li class="list-group-item"><a href="{{ url('world/items') }}">All Items</a></li>
-                <li class="list-group-item"><a
+                <li class="list-group-item"><a href="{{ url('world/items') }}">Items</a></li>
+                <!--<li class="list-group-item"><a
                         href="{{ url('world/' . __('awards.award') . '-categories') }}">{{ ucfirst(__('awards.award')) }}
-                        Categories</a></li>
-                <li class="list-group-item"><a href="{{ url('world/' . __('awards.awards')) }}">All
-                        {{ ucfirst(__('awards.awards')) }}</a></li>
+                        Categories</a></li>-->
                 <li class="list-group-item"><a href="{{ url('world/currencies') }}">Currencies</a></li>
                 <li class="list-group-item"><a href="{{ url('world/pet-categories') }}">Pet Categories</a></li>
-                <li class="list-group-item"><a href="{{ url('world/pets') }}">All Pets</a></li>
+                <li class="list-group-item"><a href="{{ url('world/bestiary') }}">Bestiary</a></li>
 
-                <li class="list-group-item"><a href="{{ url('world/recipes') }}">All Recipes</a></li>
+                <li class="list-group-item"><a href="{{ url('world/recipes') }}">Recipes</a></li>
                 <li class="list-group-item"><a href="{{ url('world/collections') }}">Collections</a></li>
-                <li class="list-group-item"><a href="{{ url('world/'.__('volumes.library')) }}">{{ ucfirst(__('volumes.library')) }}</a></li>
+                <li class="list-group-item"><a href="{{ url('world/' . __('awards.awards')) }}">
+                        {{ ucfirst(__('awards.awards')) }}</a></li>
+                        
+                <li class="list-group-item"><a
+                        href="{{ url('world/' . __('volumes.library')) }}">{{ ucfirst(__('volumes.library')) }}</a></li>
             </ul>
         </div>
     </div>

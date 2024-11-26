@@ -123,15 +123,6 @@
                             @foreach ($drop->pet->variants()->has('dropData')->get() as $variant)
                                 <tr id="variant-{{ $variant->id }}">
                                     <td>{{ $variant->variant_name }}</td>
-                                    <td>
-                                        @if ($variant->dropData->rewards())
-                                            @foreach ($variant->dropData->rewardString() as $label => $string)
-                                                {!! '<b>' . $label . ':</b> ' . implode(', ', $string) . ($loop->last ? '' : '<br />') !!}
-                                            @endforeach
-                                        @else
-                                            <i>No rewards set.</i>
-                                        @endif
-                                    </td>
                                     <td class="row">
                                         <a href="#" class="btn btn-primary edit-variant" data-id="{{ $variant->id }}">Edit</a>
                                         <a href="#" class="btn btn-outline-danger ml-2 delete-variant" data-id="{{ $variant->id }}">Delete</a>
