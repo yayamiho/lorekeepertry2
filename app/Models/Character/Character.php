@@ -390,7 +390,10 @@ class Character extends Model {
             $writingCode = $this->is_gift_writing_allowed == 1 ? 'badge-success' : ($this->is_gift_writing_allowed == 2 ? 'badge-warning text-light' : 'badge-danger');
             $nsfwCode = $this->is_nsfw_allowed == 1 ? 'badge-success' : ($this->is_nsfw_allowed == 2 ? 'badge-warning text-light' : 'badge-danger');
 
-            $nonMyoSection = "<span class='badge ".$artCode."'><i class='fas fa-pencil-ruler'></i></span> <span class='badge ".$writingCode."'><i class='fas fa-file-alt'></i></span> ";
+            $nonMyoSection = "<span class='badge ".
+            $artCode."'><i class='fas fa-pencil-ruler'></i></span> <span class='badge ".
+            $writingCode."'><i class='fas fa-file-alt'></i></span> ".
+            $nsfwCode."'><i class='fas fa-heart'></i></span>";
         }
 
         return ' ・ <i class="fas fa-info-circle help-icon m-0" data-toggle="tooltip" data-html="true" title="'.$nonMyoSection.$tradingSection.'"></i>';
