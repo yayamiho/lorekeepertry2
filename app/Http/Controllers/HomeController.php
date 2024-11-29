@@ -41,7 +41,7 @@ class HomeController extends Controller {
             'gallerySubmissions'  => $gallerySubmissions,
             'about' => SitePage::where('key', 'about')->first(),
             'newses'   => News::visible()->orderBy('updated_at', 'DESC')->take(2)->get(),
-            'saleses' => Sales::visible()->orderBy('id', 'DESC')->take(2)->get(),
+            'saleses' => Sales::visible()->orderBy('id', 'DESC')->take(1)->get(),
         ]);
     }
 

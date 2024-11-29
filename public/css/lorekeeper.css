@@ -20,9 +20,9 @@
 
 **************************************************************************************************/
 
-.col-6{
-    margin-bottom:10px;
-    margin-top:10px;
+.col-6 {
+    margin-bottom: 10px;
+    margin-top: 10px;
 }
 
 h1,
@@ -188,7 +188,7 @@ main>.row {
     font-weight: bold;
 }
 
-.sidebar-section-header{
+.sidebar-section-header {
     background-color: rgb(228, 228, 228);
 }
 
@@ -743,16 +743,16 @@ tr.accountbound {
 
 /* DASHBOARD **********************************************************/
 
-.dashboard-button{
+.dashboard-button {
     width: 250px;
 }
 
-.dashboard-button:hover{
+.dashboard-button:hover {
     filter: brightness(105%);
 }
 
-@media (max-width: 767px){
-    .dashboard-button{
+@media (max-width: 767px) {
+    .dashboard-button {
         width: 125px;
     }
 }
@@ -928,12 +928,25 @@ tr.accountbound {
     max-width: 90%;
 }
 
+
+.navbar .container-fluid .clock-styling{
+    display: none;
+}
 .clock-styling {
     padding: 10px 15px;
     border-radius: 15px 15px;
     margin-bottom: .5em;
     color: #fff;
     letter-spacing: .05em;
+    display: flex;
+}
+
+@media (max-width: 650px) {
+    .navbar .container-fluid .clock-styling {
+        display: flex;
+        right: 12%;
+        left: auto !important;
+    }
 }
 
 .image-info-box {
@@ -991,4 +1004,33 @@ tr.accountbound {
     filter: alpha(opacity=40);
     zoom: 1;
     /* needed to trigger "hasLayout" in IE if no width or height is set */
+}
+
+.newsSeparateSales{
+    display: none;
+}
+@media (max-width: 800px) {
+    
+    .newsSeparateSales{
+        display: block;
+    }
+
+    .newsSeparateSales div{
+        width: 100% !important;
+    }
+
+    .newsSales{
+        display:none;
+    }
+
+    
+}
+@media(max-width:500px) {
+    .newsSeparateSales .sales .pt-0 div .col-md-9{
+        display:none !important;
+    }
+    .newsSeparateSales .sales .pt-0 div .col-md-3{
+        max-width:100% !important;
+        flex:auto  !important;
+    }
 }

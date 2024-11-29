@@ -5,9 +5,16 @@
     @include('widgets._carousel')
 
     </div>
-    <div class="row" style=" width:99%">
+    <div class="row newsSales" style=" width:99%">
         @include('widgets._news', ['textPreview' => true])
 
+        @include('widgets._sales')
+    </div>
+
+    <div class="row newsSeparateSales" style=" width:99%">
+        @include('widgets._news', ['textPreview' => true])
+    </div>
+    <div class="row newsSeparateSales" style=" width:99%">
         @include('widgets._sales')
     </div>
     

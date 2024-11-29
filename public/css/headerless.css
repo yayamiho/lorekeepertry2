@@ -23,8 +23,11 @@ main {
     border-radius: 10px;
 }
 
+
 @media (max-width: 991px) {
     main.container-fluid {
         margin-top: 52px;
     }
+
+    
 }

@@ -177,7 +177,8 @@ header('Permissions-Policy: interest-cohort=()');
             @include('layouts._nav')
         @if (View::hasSection('sidebar'))
             <div class="site-mobile-header bg-secondary"><a href="#" class="btn btn-sm btn-outline-light"
-                    id="mobileMenuButton">Menu <i class="fas fa-caret-right ml-1"></i></a></div>
+                    id="mobileMenuButton">Menu <i class="fas fa-caret-right ml-1"></i></a>
+                </div>
         @endif
 
         <main class="container-fluid" id="main">
@@ -334,8 +335,8 @@ header('Permissions-Policy: interest-cohort=()');
                     // this doesn't look correct so we basically ''force'' it to be correct by adding and (sometimes) removed the extra 0
                     // we do getUTC so that it doesn't change per person and is universal
                     // you can see more here https://stackoverflow.com/a/39418437/11052835
-                    var display = (time.getUTCHours()) + ":" + ('0' + time.getUTCMinutes()).substr(-2) + ":" + ('0' + time.getUTCSeconds()).substr(-2); // make it look pretty
-                    $("#clock").text(display); // set the div to new time
+                    var display = ('0'+time.getUTCHours()).substr(-2) + ":" + ('0' + time.getUTCMinutes()).substr(-2) + ":" + ('0' + time.getUTCSeconds()).substr(-2); // make it look pretty
+                    $(".clock").text(display); // set the div to new time
                 }, 1000)
             } // times it out for 1 second so loop
 

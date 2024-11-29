@@ -1,4 +1,4 @@
-<div class="card mb-4" style="width:calc(100%/2)">
+<div class="card mb-4 sales" style="width:calc(100%/2)">
     <div class="card-header d-flex flex-column flex-sm-row justify-content-between align-items-center">
         <h4 class="mb-0"><i class="fas fa-money-bill-wave"></i>Sales</h4>
         <!--<a href="{{ url('sales') }}" class="btn btn-primary">View All Sales <i class="fas fa-arrow-right"></i></a>-->
@@ -7,12 +7,12 @@
     <div class="card-body pt-0">
         @if($saleses->count())
             @foreach($saleses as $sales)
-                <div class="row border-bottom py-3">
+                <div class="row py-3">
                     @if($sales->characters->count())
                         <div class="col-md-3 text-center" style="
-                        max-width: 50% !important;
+                        max-width: 50%;
                         min-width: 25% !important;
-                        flex: 0 0 50% !important;
+                        flex: 0 0 50%;
                         ">
                             <a href="{{ $sales->url }}">
                                 <img style="background-color:rgba(0,0,0,0)" src="{{ $sales->characters->first()->character->image->thumbnailUrl }}" alt="{!! $sales->characters->first()->character->fullName !!}" class="img-thumbnail" />

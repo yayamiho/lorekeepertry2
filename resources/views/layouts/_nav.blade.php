@@ -3,6 +3,10 @@
         <a class="navbar-brand" href="{{ url('/') }}">
             {{ config('lorekeeper.settings.site_name', 'Lorekeeper') }}
         </a>
+
+        @include('layouts._clock')
+
+
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
             <span class="navbar-toggler-icon"></span>
@@ -160,7 +164,7 @@
                     </a>
 
                     <div class="dropdown-menu" aria-labelledby="loreDropdown">
-                    <a class="dropdown-item" href="{{ url('info/rules') }}">
+                        <a class="dropdown-item" href="{{ url('info/rules') }}">
                             Rules
                         </a>
                         <a class="dropdown-item" href="{{ url('info/find-us') }}">
@@ -258,7 +262,7 @@
                             </a>
                             <a class="dropdown-item" href="{{ route('logout') }}"
                                 onclick="event.preventDefault();
-                                                                                                                                                document.getElementById('logout-form').submit();">
+                                                                                                                                                                    document.getElementById('logout-form').submit();">
                                 {{ __('Logout') }}
                             </a>
 
@@ -271,4 +275,25 @@
             </ul>
         </div>
     </div>
+    @yield('scripts')
+    @include('layouts._pagination_js')
+    <script>// CLOCK
+        function time() {
+            setInterval(function () {
+                var date = new Date(); // initial date, this acts kinda like a first carbon instance so we can preform functions on it
+                var time = new Date(date.getTime() - (3 * (60 * 60 * 1000)));  // preform function on first date (basically get time in timestamp format, the 60*60*1000 is an offset of +1 hour. To do other timezones just convert it to the necessary amount of hours +- GMT-3
+                var cycle = (time.getUTCHours()) >= 12 ? ' PM' : ' AM'; // this gets the hour in military time so if it's greater than 12 it's pm
+                // substr is a function that'll knock of certain letters from a given input. 
+                // Because ours is -2, if we have 001, it'll read as 01. If we have 042, it'll be 42
+                // we want this because getUTCSeconds() for example gives a single integer value for values < 10 (ex 1 second shows as 1)
+                // this doesn't look correct so we basically ''force'' it to be correct by adding and (sometimes) removed the extra 0
+                // we do getUTC so that it doesn't change per person and is universal
+                // you can see more here https://stackoverflow.com/a/39418437/11052835
+                var display = ('0'+time.getUTCHours()).substr(-2)  + ":" + ('0' + time.getUTCMinutes()).substr(-2) + ":" + ('0' + time.getUTCSeconds()).substr(-2); // make it look pretty
+                $(".clock").text(display); // set the div to new time
+            }, 1000)
+        } // times it out for 1 second so loop
+
+        setInterval(time(), 1000); // loop
+    </script>
 </nav>
