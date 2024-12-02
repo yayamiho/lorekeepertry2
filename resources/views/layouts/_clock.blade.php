@@ -43,7 +43,7 @@
     $(document).ready(function setTimerWidth() {
         console.log("we");
         @if (!Auth::user()) {
-                $(".clock-styling-child").css("width", "65px");
+                $(".clock-styling-child").css("width", "70px");
             }
         @endif
     });

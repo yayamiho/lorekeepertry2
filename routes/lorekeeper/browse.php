@@ -231,8 +231,9 @@ Route::group(['prefix' => 'reports', 'namespace' => 'Users'], function () {
 });
 
 /**************************************************************************************************
-    Terms accept
+    Mail - this has to be in browse so banned users can view mail
 **************************************************************************************************/
-Route::group(['prefix' => 'terms'], function() {
-    Route::get('/accept', 'TermsController@acceptTerms');
+Route::group(['prefix' => 'inbox', 'namespace' => 'Users'], function () {
+    Route::get('/', 'MailController@getIndex');
+    Route::get('view/{id}', 'MailController@getModMail');
 });

@@ -197,7 +197,12 @@ header('Permissions-Policy: interest-cohort=()');
                                 @endif
                             </div>
                         @endif
-                        @if (Auth::check() && !Config::get('lorekeeper.extensions.navbar_news_notif'))
+                        @if (Auth::check() && Auth::user()->hasUnseenMail)
+                            <div class="alert alert-danger">
+                                <h5 class="mb-0"><i class="fas fa-exclamation"></i> <i class="fas fa-envelope"></i> - You have unread messages from staff. <a href="{{ url('mail#modMail') }}">View here.</a></h5>
+                            </div>
+                        @endif
+                        @if (Auth::check() && !config('lorekeeper.extensions.navbar_news_notif'))
                             @if (Auth::user()->is_news_unread)
                                 <div class="alert alert-info"><a href="{{ url('news') }}">There is a new news post!</a></div>
                             @endif

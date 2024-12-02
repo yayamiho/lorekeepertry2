@@ -523,12 +523,19 @@ class UserService extends Service {
      *
      * @return bool
      */
-    public function unban($user, $staff) {
+    public function unban($user, $staff = null) {
         DB::beginTransaction();
 
         try {
-            if (!$this->logAdminAction($staff, 'Unbanned User', 'Unbanned '.$user->displayname)) {
-                throw new \Exception('Failed to log admin action.');
+            if (!$staff) {
+                $staff = $user;
+                if (!$this->logAdminAction($staff, 'Unbanned User', 'Unbanned '.$user->displayname.' after strike expiry.')) {
+                    throw new \Exception('Failed to log admin action.');
+                }
+            } else {
+                if (!$this->logAdminAction($staff, 'Unbanned User', 'Unbanned '.$user->displayname)) {
+                    throw new \Exception('Failed to log admin action.');
+                }
             }
 
             if ($user->is_banned) {

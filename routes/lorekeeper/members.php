@@ -73,7 +73,7 @@ Route::group(['prefix' => 'inventory', 'namespace' => 'Users'], function () {
     Route::post('quickstock-items', 'InventoryController@postQuickstock');
 });
 
-Route::group(['prefix' => __('awards.awardcase'), 'namespace' => 'Users'], function() {
+Route::group(['prefix' => __('awards.awardcase'), 'namespace' => 'Users'], function () {
     Route::get('/', 'AwardCaseController@getIndex');
     Route::post('edit', 'AwardCaseController@postEdit');
     Route::post('claim/{id}', 'AwardCaseController@postClaimAward');
@@ -140,13 +140,13 @@ Route::group(['prefix' => 'trades', 'namespace' => 'Users'], function () {
     Route::post('{id}/cancel-trade', 'TradeController@postCancelTrade');
 });
 
-Route::group(['prefix' => 'crafting', 'namespace' => 'Users'], function() {
+Route::group(['prefix' => 'crafting', 'namespace' => 'Users'], function () {
     Route::get('/', 'CraftingController@getIndex');
     Route::get('craft/{id}', 'CraftingController@getCraftRecipe');
     Route::post('craft/{id}', 'CraftingController@postCraftRecipe');
 });
-Route::group(['prefix' => 'user-shops', 'namespace' => 'Users'], function() {
-    Route::get('/', 'UserShopController@getUserIndex'); 
+Route::group(['prefix' => 'user-shops', 'namespace' => 'Users'], function () {
+    Route::get('/', 'UserShopController@getUserIndex');
     Route::get('create', 'UserShopController@getCreateShop');
     Route::get('edit/{id}', 'UserShopController@getEditShop');
     Route::get('delete/{id}', 'UserShopController@getDeleteShop');
@@ -166,9 +166,9 @@ Route::group(['prefix' => 'user-shops', 'namespace' => 'Users'], function() {
     Route::post('quickstock/{id}', 'UserShopController@postQuickstockStock');
 });
 
-Route::group(['prefix' => 'user-shops',], function() {
-    Route::get('/shop-index', 'UserShopController@getIndex'); 
-    Route::get('/shop/{id}', 'UserShopController@getShop'); 
+Route::group(['prefix' => 'user-shops',], function () {
+    Route::get('/shop-index', 'UserShopController@getIndex');
+    Route::get('/shop/{id}', 'UserShopController@getShop');
     Route::post('/shop/buy', 'UserShopController@postBuy');
     Route::get('{id}/{stockId}', 'UserShopController@getShopStock')->where(['id' => '[0-9]+', 'stockId' => '[0-9]+']);
 });
@@ -180,7 +180,7 @@ Route::group(['prefix' => 'character', 'namespace' => 'Characters'], function ()
     Route::get('{slug}/profile/edit', 'CharacterController@getEditCharacterProfile');
     Route::post('{slug}/profile/edit', 'CharacterController@postEditCharacterProfile');
 
-    Route::post('{slug}/'.__('awards.awardcase').'/edit', 'CharacterController@postAwardEdit');
+    Route::post('{slug}/' . __('awards.awardcase') . '/edit', 'CharacterController@postAwardEdit');
     Route::post('{slug}/inventory/edit', 'CharacterController@postInventoryEdit');
 
     Route::post('{slug}/bank/transfer', 'CharacterController@postCurrencyTransfer');
@@ -286,7 +286,7 @@ Route::group(['prefix' => 'designs', 'namespace' => 'Characters'], function () {
     Route::post('{id}/cancel', 'DesignController@postCancel');
 });
 
-Route::group(['prefix' => 'event-tracking'], function() {
+Route::group(['prefix' => 'event-tracking'], function () {
     Route::post('team/{id}', 'EventController@postJoinTeam');
 });
 
@@ -317,7 +317,7 @@ Route::group(['prefix' => 'comments', 'namespace' => 'Comments'], function () {
     Advent Calendars
 **************************************************************************************************/
 
-Route::group(['prefix' => 'advent-calendars'], function() {
+Route::group(['prefix' => 'advent-calendars'], function () {
     Route::get('{id}', 'AdventController@getAdvent');
     Route::post('{id}', 'AdventController@postClaimPrize');
 });
@@ -338,9 +338,9 @@ Route::group(['prefix' => 'criteria'], function () {
     Cultivation
 **************************************************************************************************/
 
-Route::group(['prefix' => __('cultivation.cultivation')], function() {
+Route::group(['prefix' => __('cultivation.cultivation')], function () {
     Route::get('{id}', 'CultivationController@getArea');
-    
+
     Route::get('area/delete/{id}', 'CultivationController@getDeleteAreaModal');
     Route::post('area/delete/{id}', 'CultivationController@postDeleteArea');
 
@@ -355,8 +355,21 @@ Route::group(['prefix' => __('cultivation.cultivation')], function() {
     Collection
 **************************************************************************************************/
 
-Route::group(['prefix' => 'collection', 'namespace' => 'Users'], function() {
+Route::group(['prefix' => 'collection', 'namespace' => 'Users'], function () {
     Route::get('/', 'CollectionController@getIndex');
     Route::get('complete/{id}', 'CollectionController@getCompleteCollection');
     Route::post('complete/{id}', 'CollectionController@postCompleteCollection');
+});
+
+
+/**************************************************************************************************
+    User Mail - mod mail is in browse, so banned users can view mail
+**************************************************************************************************/
+Route::group(['prefix' => 'mail', 'namespace' => 'Users'], function () {
+    Route::get('/', 'MailController@getIndex');
+    Route::get('view/{id}', 'MailController@getUserMail');
+    Route::post('view/{id}', 'MailController@postCreateUserMail');
+
+    Route::get('new', 'MailController@getCreateUserMail');
+    Route::post('new/{id?}', 'MailController@postCreateUserMail');
 });

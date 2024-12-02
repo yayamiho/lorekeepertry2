@@ -147,6 +147,9 @@ class AddSiteSettings extends Command
         $this->addSiteSetting('can_transfer_currency_directly', 1, 'Whether or not users can directly transfer currency to other users without trading. 0: Users cannot directly transfer currency. 1: Direct currency transfers are allowed.');
 
         $this->addSiteSetting('can_transfer_items_directly', 1, 'Whether or not users can directly transfer items to other users without trading. 0: Users cannot directly transfer items. 1: Direct item transfers are allowed.');
+        
+        
+        $this->addSiteSetting('max_strike_count', 3, 'Number of strikes a user can have before being automatically banned.');
 
         $this->line("\nSite settings up to date!");
     }

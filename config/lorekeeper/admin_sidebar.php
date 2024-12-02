@@ -78,6 +78,10 @@ return [
                 'name' => 'Invitation Keys',
                 'url'  => 'admin/invitations',
             ],
+            [
+                'name' => 'Mod Mail',
+                'url'  => 'admin/mail',
+            ],
         ],
     ],
     'Queues'     => [

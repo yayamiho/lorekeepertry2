@@ -19,13 +19,13 @@
         <div class="mb-4 logs-table setting-table">
             <div class="logs-table-header">
                 <div class="row">
-                    <div class="col-6 col-md-3">
+                    <div class="col-6 col-md-4">
                         <div class="logs-table-cell">Key</div>
                     </div>
-                    <div class="col-6 col-md-3">
+                    <div class="col-6 col-md-4">
                         <div class="logs-table-cell">Description</div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-6 col-md-4">
                         <div class="logs-table-cell">Value</div>
                     </div>
                 </div>
@@ -34,13 +34,13 @@
                 @foreach ($settings as $setting)
                     <div class="logs-table-row">
                         <div class="row flex-wrap">
-                            <div class="col-6 col-md-3">
+                            <div class="col-6 col-md-4">
                                 <div class="logs-table-cell">{{ $setting->key }}</div>
                             </div>
-                            <div class="col-6 col-md-3">
+                            <div class="col-6 col-md-4">
                                 <div class="logs-table-cell">{{ $setting->description }}</div>
                             </div>
-                            <div class="col-6 col-md-3">
+                            <div class="col-6 col-md-4">
                                 <div class="logs-table-cell">
                                     {!! Form::open(['url' => 'admin/settings/' . $setting->key, 'class' => 'd-flex justify-content-end']) !!}
                                     <div class="form-group mr-3 mb-3">

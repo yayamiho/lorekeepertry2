@@ -9,5 +9,7 @@ return [
     'App\Models\Report\Report',
     'App\Models\SitePage',
     'App\Models\Gallery\GallerySubmission',
+    'App\Models\Mail\ModMail',
+    'App\Models\Mail\UserMail',
 
 ];
